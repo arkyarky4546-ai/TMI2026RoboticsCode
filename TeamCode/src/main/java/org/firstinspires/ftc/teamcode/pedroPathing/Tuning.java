@@ -24,6 +24,8 @@ import com.pedropathing.util.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,6 +206,8 @@ class ForwardTuner extends OpMode {
         telemetryM.debug("Distance Moved: " + follower.getPose().getX());
         telemetryM.debug("The multiplier will display what your forward ticks to inches should be to scale your current distance to " + DISTANCE + " inches.");
         telemetryM.debug("Multiplier: " + (DISTANCE / (follower.getPose().getX() / follower.getPoseTracker().getLocalizer().getForwardMultiplier())));
+        //telemetryM.debug("follower getposegetx = " + follower.getPose().getX());
+        //telemetryM.debug("follower getposegety = " + follower.getPose().getY());
         telemetryM.update(telemetry);
 
         drawCurrentAndHistory();
@@ -322,7 +326,7 @@ class TurnTuner extends OpMode {
  */
 class ForwardVelocityTuner extends OpMode {
     private final ArrayList<Double> velocities = new ArrayList<>();
-    public static double DISTANCE = 48;
+    public static double DISTANCE = 80;
     public static double RECORD_NUMBER = 10;
 
     private boolean end;
@@ -388,6 +392,7 @@ class ForwardVelocityTuner extends OpMode {
             double average = 0;
             for (double velocity : velocities) {
                 average += velocity;
+
             }
             average /= velocities.size();
             telemetryM.debug("Forward Velocity: " + average);
@@ -428,7 +433,7 @@ class ForwardVelocityTuner extends OpMode {
 class LateralVelocityTuner extends OpMode {
     private final ArrayList<Double> velocities = new ArrayList<>();
 
-    public static double DISTANCE = 48;
+    public static double DISTANCE = 80;
     public static double RECORD_NUMBER = 10;
 
     private boolean end;
@@ -527,8 +532,7 @@ class LateralVelocityTuner extends OpMode {
  */
 class ForwardZeroPowerAccelerationTuner extends OpMode {
     private final ArrayList<Double> accelerations = new ArrayList<>();
-    public static double VELOCITY = 30;
-
+    public static double VELOCITY = 60;//supposed to be 30
     private double previousVelocity;
     private long previousTimeNano;
 
@@ -585,18 +589,24 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
                     follower.setTeleOpDrive(0,0,0,true);
                 }
             } else {
+                telemetryM.debug("velocity: " + follower.getVelocity().dot(heading));
+                telemetryM.update(telemetry);
                 double currentVelocity = follower.getVelocity().dot(heading);
                 accelerations.add((currentVelocity - previousVelocity) / ((System.nanoTime() - previousTimeNano) / Math.pow(10.0, 9)));
                 previousVelocity = currentVelocity;
                 previousTimeNano = System.nanoTime();
                 if (currentVelocity < follower.getConstraints().getVelocityConstraint()) {
                     end = true;
+                    telemetry.addLine("end is true");
+                    telemetry.update();
                 }
             }
         } else {
             double average = 0;
             for (double acceleration : accelerations) {
                 average += acceleration;
+                telemetry.addData("accleration: ", acceleration);
+                telemetry.update();
             }
             average /= accelerations.size();
 
@@ -631,7 +641,7 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
  */
 class LateralZeroPowerAccelerationTuner extends OpMode {
     private final ArrayList<Double> accelerations = new ArrayList<>();
-    public static double VELOCITY = 30;
+    public static double VELOCITY = 60;
     private double previousVelocity;
     private long previousTimeNano;
     private boolean stopping;
@@ -699,6 +709,16 @@ class LateralZeroPowerAccelerationTuner extends OpMode {
             double average = 0;
             for (double acceleration : accelerations) {
                 average += acceleration;
+               // telemetryM.debug("acceleration", acceleration);
+                //telemetryM.update(telemetry);
+            }
+            if (average == 0){
+                telemetryM.debug("Error average is 0");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
             average /= accelerations.size();
 
@@ -891,12 +911,14 @@ class DriveTuner extends OpMode {
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(0,0), new Pose(DISTANCE,0)))
                 .setConstantHeadingInterpolation(0)
+                .setBrakingStrength(1.2)
                 .build();
 
         backwards = follower.pathBuilder()
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(DISTANCE,0), new Pose(0,0)))
                 .setConstantHeadingInterpolation(0)
+                .setBrakingStrength(1.2)
                 .build();
 
         follower.followPath(forwards);

@@ -19,8 +19,9 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -65,7 +66,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 @Disabled
 @TeleOp(name = "OctoQuad Basic", group="OctoQuad")
-public class SensorOctoQuad extends LinearOpMode {
+public class stupidOctoquad extends LinearOpMode {
 
     // Identify which encoder OctoQuad inputs are connected to each odometry pod.
     private final int ODO_LEFT  = 0; // Facing forward direction on left side of robot
