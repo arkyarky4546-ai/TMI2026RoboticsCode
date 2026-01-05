@@ -40,6 +40,7 @@ public class colorShootFunc {
     int coolor;
     float time = System.currentTimeMillis();
     private int[] spindexColors = new int[3];
+    private int[] spindexColors1 = new int[3];
     private int currentScanPos = 0;
     private boolean isScanning = false;
     private ElapsedTime scanTimer = new ElapsedTime();
@@ -121,7 +122,7 @@ public class colorShootFunc {
             shootPower = 0;
         }
         else {
-            shootPower = PIDControl(shoot2.getVelocity(), getGoodVel(distance));
+            shootPower = PIDControl(shooting2.getVelocity(), getGoodVel(distance));
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
@@ -143,12 +144,24 @@ public class colorShootFunc {
             artiPush.setPosition(kickUp);
             shootOneBall();
             spindexColors[i] = 0;
+
             i+=1;
-            return (stage-1);
+            if (i==3){
+                i=0;
+            }
+            if (stage == 0){
+                return 0;
+            }
+            else {
+                return (stage - 1);
+            }
         }
         else{
             artiPush.setPosition(kickZero);
-            i+=1;
+            i += 1;
+            if (i==3){
+                i=0;
+            }
             servRo.startRotate(servRo.getPosition(), 120, 0);
             return stage;
         }
@@ -156,10 +169,10 @@ public class colorShootFunc {
     }
     public int scOOON () {
         if (scanPos < 3 && timer12.milliseconds() > 100){
-            scanPos++;
             timer12.reset();
             servRo.startRotate(servRo.getPosition(), 120, 0);
             spindexColors[scanPos] = getColors();
+            scanPos++;
         }
         return scanPos;
     }

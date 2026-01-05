@@ -71,7 +71,7 @@ public class newFinalParentAuto extends OpMode {
     double turTurn = .6;
     boolean reverse = true;
     int Nonetwo = 120;
-    int stageProg = 0;
+    int stageProg = 2;
 
     double limelightPause = System.currentTimeMillis();
     int indexForSpindex =0;
@@ -82,7 +82,7 @@ public class newFinalParentAuto extends OpMode {
     int actual = 120;
     DistanceSensor dis;
     double doos;
-    CRServo slave;
+    Servo slave;
     private NormalizedColorSensor coloora;
 
     Servo push, turretRight, turretLeft, up, hood, wally;
@@ -461,7 +461,7 @@ public class newFinalParentAuto extends OpMode {
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
-        slave = hardwareMap.get(CRServo.class, "slave");
+        slave = hardwareMap.get(Servo.class, "slave");
         // smart = hardwareMap.get(AxonRotator.class, "spindexRoter");
         smart1 = new ServoRotate(hardwareMap,"spindexRoter", "slave");
         //stay1 = turretLeft.getPosition();
