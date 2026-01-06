@@ -35,6 +35,7 @@ public class colorShootFunc {
     ElapsedTime timer12 = new ElapsedTime();
     ElapsedTime timer123 = new ElapsedTime();
     ElapsedTime timer1234 = new ElapsedTime();
+    boolean intake = false;
     double lasterror = 0;
     Servo wally;
     int coolor;
@@ -74,6 +75,7 @@ public class colorShootFunc {
     Servo artiPush;
     double shootPower;
     int i = 0;
+    int colorIndex = 0;
 
     public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
         this.servRo  = servoRot;
@@ -127,13 +129,23 @@ public class colorShootFunc {
         Integralsum = integralsum;
         lasterror = Lasterror;
         inta2.setPower(power);
-        inta2.setPower(-power);
+        inta1.setPower(-power);
         shooting1.setPower(shootPower);
         shooting2.setPower(-shootPower);
         if( dis < 5 && timer123.milliseconds() > 100){
             servRo.startRotate(servRo.getPosition() , 120, 0);
+            i += 1;
+            if (i == 3){
+                i = 0;
+            }
+           // intake = true;
             timer123.reset();
         }
+        /*if (intake && timer123.milliseconds() > 75){
+            servRo.startRotate(servRo.getPosition() , 80, 0);
+            timer123.reset();
+            intake = false;
+        }*/
         scOOON();
     }
     public double getGoodVel(double dis){
@@ -162,19 +174,31 @@ public class colorShootFunc {
             if (i==3){
                 i=0;
             }
-            servRo.startRotate(servRo.getPosition(), 120, 0);
+            if( servRo.getPosition() >= .39){
+                servRo.startRotate(servRo.getPosition(), 0, 0);
+            }
+            else {
+                servRo.startRotate(servRo.getPosition(), 120, 0);
+            }
             return stage;
         }
 
     }
     public int scOOON () {
-        if (scanPos < 3 && timer12.milliseconds() > 100){
+        if (scanPos < 3 && timer12.milliseconds() > 100 && (spindexColors[0] == 0 || spindexColors[1] == 0 || spindexColors[2] == 0)){
             timer12.reset();
             servRo.startRotate(servRo.getPosition(), 120, 0);
             spindexColors[scanPos] = getColors();
+            i++;
+            if( i >= 3){
+                i = 0;
+            }
             scanPos++;
         }
         return scanPos;
+    }
+    public void reset () {
+        scanPos = 0;
     }
 
     public int shootOneBall(){ //wasn't letting me use thread.sleep for some reason so it told me to add this

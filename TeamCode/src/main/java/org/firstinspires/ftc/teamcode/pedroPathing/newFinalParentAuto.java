@@ -217,6 +217,7 @@ public class newFinalParentAuto extends OpMode {
             case 5:
                 wally.setPosition(0.5);
                 if(actionTimer.getElapsedTimeSeconds() > 1) {
+                    hehe.reset();
                     follower.followPath(scoreLoad2,true);
                     setPathState(6);
                 }
@@ -227,34 +228,17 @@ public class newFinalParentAuto extends OpMode {
                     lasterror=0;
                     actionTimer.resetTimer();
                     follower.holdPoint(scorePose1);
+                    stageProg = 3;
                     timer12345.reset();
                     setPathState(7);
                 }
                 break;
             case 7:
-                if (timer12345.milliseconds() > 1800) {
-                    if( index12){
-                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 0);
-                        index12 = false;
-                    }
-                    // I just do this so it goes back to original position
+                if (timer12345.milliseconds() > 100 && stageProg > 0){
+                    stageProg = hehe.score(pattern, stageProg);
+                    timer12345.reset();
                 }
-                else if (timer12345.milliseconds() > 1300){
-                    hehe.shootOneBall();
-                }
-                else if (timer12345.milliseconds() > 1200) {
-                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                }
-                else if (timer12345.milliseconds() > 700) {
-                    hehe.shootOneBall();
-                }
-                else if (timer12345.milliseconds() > 600) {
-                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                }
-                else if (timer12345.milliseconds() > 20) {
-                    hehe.shootOneBall();
-                }
+
 
 
 
@@ -296,6 +280,7 @@ public class newFinalParentAuto extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds() > 1) {
                     follower.followPath(scoreLoad2,true);
                     setPathState(11);
+                    hehe.reset();
                 }
                 break;
             case 11:
@@ -304,6 +289,7 @@ public class newFinalParentAuto extends OpMode {
                     lasterror=0;
                     actionTimer.resetTimer();
                     follower.holdPoint(scorePose1);
+                    stageProg = 3;
                     timer12345.reset();
                     setPathState(12);
                 }
@@ -346,29 +332,11 @@ public class newFinalParentAuto extends OpMode {
                     wally.setPosition(0.2);
                     push.setPosition(kickZero);
                 }*/
-                if (timer12345.milliseconds() > 1800) {
-                    if( index12){
-                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 0);
-                        index12 = false;
-                    }
-                    // I just do this so it goes back to original position
+                if (timer12345.milliseconds() > 100 && stageProg > 0){
+                    stageProg = hehe.score(pattern, stageProg);
+                    timer12345.reset();
                 }
-                else if (timer12345.milliseconds() > 1300){
-                    hehe.shootOneBall();
-                }
-                else if (timer12345.milliseconds() > 1200) {
-                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                }
-                else if (timer12345.milliseconds() > 700) {
-                    hehe.shootOneBall();
-                }
-                else if (timer12345.milliseconds() > 600) {
-                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                }
-                else if (timer12345.milliseconds() > 20) {
-                    hehe.shootOneBall();
-                }
+
                 if(actionTimer.getElapsedTimeSeconds() > 2) {
                     //spindexRoter.setPower(0);
                     intake.setPower(0);
@@ -400,10 +368,10 @@ public class newFinalParentAuto extends OpMode {
         }
         follower.update();
 
-        double current = shooter2.getVelocity();
-        TargetVelocity = 1300;
+        //double current = shooter2.getVelocity();
+        //TargetVelocity = 1300;
         hood.setPosition(.52);
-        shooterPower = PIDControl(TargetVelocity+150, current);
+        //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
             hehe.update(distance, 1, doos, Integralsum, lasterror, pathState);
         }
