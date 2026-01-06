@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.colorShootFunc;
 import java.util.List;
 
 @Autonomous(name = "newFinalParentAuto", group = "Autonomous")
-public class newFinalParentAuto extends OpMode {
+public class test extends OpMode {
     private Limelight3A limelight3A;
     AxonRotator smart;
     colorShootFunc hehe;
@@ -141,7 +141,7 @@ public class newFinalParentAuto extends OpMode {
             case 0:
                 Integralsum=0;
                 lasterror=0;
-                follower.followPath(score1);
+                //follower.followPath(score1);
                 setPathState(1);
                 break;
             case 1:
@@ -149,210 +149,23 @@ public class newFinalParentAuto extends OpMode {
                     Integralsum=0;
                     lasterror=0;
                     actionTimer.resetTimer();
-                    follower.holdPoint(scorePose1);
+                    //follower.holdPoint(scorePose1);
                     setPathState(2);}
                 break;
             case 2:
-                /*actual = 120;
-                if (index1) {
-                    actual = 60;
-                }
-                if(shooter2.getVelocity()>(.87*TargetVelocity)){
 
-                    wally.setPosition(0);
-                    if (indexForSpindex == 0){
-                        index1 = false;
-                        timer123.reset();
-                        smart1.startRotate(actual);
-                        //spoon+=1;
-                        //smart2.startRotate120(actual);
-                        indexForSpindex += 1;
-                    }
-                    else if (indexForSpindex ==2 && timer123.seconds() > 0.35){
-                        //spoon+=1;
-                        smart1.startRotate(actual);
-                        //smart2.startRotate120(actual);
-                        indexForSpindex = 0;
-                    }
-                    else if (indexForSpindex ==1 && timer123.seconds() > 0.2){
-                        smart1.startRotate(actual);
-                        //spoon+=1;
-                        //smart2.startRotate120(actual);
-                        indexForSpindex += 1;
-                    }
-                    push.setPosition(kickUp);
-
-                    //gateShoot = false;
-                }
-
-                else {
-                    //spindexRoter.setPower(.03);
-
-                    wally.setPosition(0.2);
-                    push.setPosition(kickZero);
-                }*/
-                if(scoonTrack < 2 && timer12345.milliseconds() > 200){
+                if(scoonTrack > 2 && timer12345.milliseconds() > 800){
                     timer12345.reset();
                     stageProg = hehe.score(pattern, stageProg);
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
+
+                if(actionTimer.getElapsedTimeSeconds() > 20) {
                     wally.setPosition(.5);
-                    follower.followPath(firstLoad,true);
-                    setPathState(3);
+                    //follower.followPath(firstLoad,true);
+                    setPathState(2);
                 }
                 break;
-            case 3:
-                if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,true);
-                    setPathState(4);
-                }
-                break;
-            case 4:
-                if(!follower.isBusy()) {
-                    Integralsum=0;
-                    lasterror=0;
-                    follower.holdPoint(acIntakePose1);
-                    actionTimer.resetTimer();
-                    setPathState(5);
-                }
-                break;
-            case 5:
-                wally.setPosition(0.5);
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
-                    hehe.reset();
-                    follower.followPath(scoreLoad2,true);
-                    setPathState(6);
-                }
-                break;
-            case 6:
-                if(!follower.isBusy()) {
-                    Integralsum=0;
-                    lasterror=0;
-                    actionTimer.resetTimer();
-                    follower.holdPoint(scorePose1);
-                    stageProg = 2;
-                    timer12345.reset();
-                    setPathState(7);
-                }
-                break;
-            case 7:
-                if (timer12345.milliseconds() > 200 && stageProg >= 0){
-                    stageProg = hehe.score(pattern, stageProg);
-                    timer12345.reset();
-                }
-
-
-
-
-
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
-
-                    wally.setPosition(.5);
-                    follower.followPath(secondLoad,true);
-                    setPathState(8);
-                }
-
-                break;
-            case 8:
-                if(!follower.isBusy()) {
-                    index12 = true;
-                    follower.followPath(acSecondLoad,true);
-                    setPathState(9);
-                }
-                break;
-            case 9:
-                if(!follower.isBusy()) {
-                    follower.holdPoint(acIntakePose2);
-                    actionTimer.resetTimer();
-                    setPathState(10);
-                }
-                break;
-            case 10:
-                /*wally.setPosition(0.5);
-                actual = Nonetwo;
-                if (!index1){
-                    actual = -60;
-                }
-                if ((doos<5) && timer12.milliseconds()>100) {
-                    smart1.startRotate(Nonetwo);
-                    //smart2.startRotate120(Nonetwo);
-                    index1 = true;
-                    timer12.reset();
-                }*/
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
-                    follower.followPath(scoreLoad2,true);
-                    setPathState(11);
-                    hehe.reset();
-                }
-                break;
-            case 11:
-                if(!follower.isBusy()) {
-                    Integralsum=0;
-                    lasterror=0;
-                    actionTimer.resetTimer();
-                    follower.holdPoint(scorePose1);
-                    stageProg = 2;
-                    timer12345.reset();
-                    setPathState(12);
-                }
-                break;
-            case 12:
-               /* actual = 120;
-                if (index1) {
-                    actual = 60;
-                }
-                if(shooter2.getVelocity()>(.87*TargetVelocity)){
-
-                    wally.setPosition(0);
-                    if (indexForSpindex == 0){
-                        index1 = false;
-                        timer123.reset();
-                        smart1.startRotate(actual);
-                        //spoon+=1;
-                        //smart2.startRotate120(actual);
-                        indexForSpindex += 1;
-                    }
-                    else if (indexForSpindex ==2 && timer123.seconds() > 0.35){
-                        //spoon+=1;
-                        smart1.startRotate(actual);
-                        //smart2.startRotate120(actual);
-                        indexForSpindex = 0;
-                    }
-                    else if (indexForSpindex ==1 && timer123.seconds() > 0.2){
-                        smart1.startRotate(actual);
-                        //spoon+=1;
-                        //smart2.startRotate120(actual);
-                        indexForSpindex += 1;
-                    }
-                    push.setPosition(kickUp);
-
-                    //gateShoot = false;
-                }
-
-                else {
-                    //spindexRoter.setPower(.03);
-                    wally.setPosition(0.2);
-                    push.setPosition(kickZero);
-                }*/
-                if (timer12345.milliseconds() > 200 && stageProg >= 0){
-                    stageProg = hehe.score(pattern, stageProg);
-                    timer12345.reset();
-                }
-
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
-                    //spindexRoter.setPower(0);
-                    intake.setPower(0);
-                    intake1.setPower(0);
-                    shooter.setPower(0);
-                    shooter2.setPower(0);
-                    follower.followPath(end,true);
-                    setPathState(13);
-                }
-
-                break;
-            case 13:
-                break;
         }
     }
     public void setPathState(int pState) {

@@ -17,6 +17,8 @@ public class ServoRotate {
     public ServoRotate(HardwareMap hardwareMap, String servoName, String servoName2) {
         servo = hardwareMap.get(Servo.class, servoName);
         servo2 = hardwareMap.get(Servo.class, servoName2);
+        servo.setPosition(0);
+        servo2.setPosition(0);
         // pidTimer.reset();
 
     }

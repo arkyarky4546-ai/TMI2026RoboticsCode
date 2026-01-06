@@ -30,6 +30,8 @@ public class colorShootFunc {
     public static double Kd=0;
     public static double Kf=0;
 
+    boolean indextooffset = true;
+
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime timer1 = new ElapsedTime();
     ElapsedTime timer12 = new ElapsedTime();
@@ -128,11 +130,11 @@ public class colorShootFunc {
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
-        inta2.setPower(power);
-        inta1.setPower(-power);
+        inta2.setPower(-power);
+        inta1.setPower(power);
         shooting1.setPower(shootPower);
         shooting2.setPower(-shootPower);
-        if( dis < 5 && timer123.milliseconds() > 100){
+        if( dis < 5 && timer123.milliseconds() > 300){
             servRo.startRotate(servRo.getPosition() , 120, 0);
             i += 1;
             if (i == 3){
@@ -152,6 +154,11 @@ public class colorShootFunc {
         return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
     }
     public int score(int[] pattern, int stage){
+        if( !indextooffset ){
+            indextooffset = true;
+            servRo.startRotate(servRo.getPosition(), -30, 0);
+
+        }
         if( spindexColors[i] == pattern[stage]){
             artiPush.setPosition(kickUp);
             shootOneBall();
@@ -185,9 +192,18 @@ public class colorShootFunc {
 
     }
     public int scOOON () {
-        if (scanPos < 3 && timer12.milliseconds() > 100 && (spindexColors[0] == 0 || spindexColors[1] == 0 || spindexColors[2] == 0)){
+        if (scanPos < 3 && timer12.milliseconds() > 1000){
+            if(indextooffset){
+                servRo.startRotate(servRo.getPosition(), 30, 0);
+                indextooffset = false;
+            }
             timer12.reset();
-            servRo.startRotate(servRo.getPosition(), 120, 0);
+            if (servRo.getPosition() >= .39){
+                servRo.startRotate(servRo.getPosition(), 0, 0);
+            }
+            else {
+                servRo.startRotate(servRo.getPosition(), 120, 0);
+            }
             spindexColors[scanPos] = getColors();
             i++;
             if( i >= 3){
@@ -206,6 +222,9 @@ public class colorShootFunc {
         Integralsum = 0;
         lasterror = 0;
         TargetVelocity = getGoodVel(shooting2.getVelocity());
+        if(TargetVelocity > 1500){
+            TargetVelocity = 1100;
+        }
         if(shooting2.getVelocity()>(.92*TargetVelocity)){
             wall.setPosition(0);
             artiPush.setPosition(kickUp);
