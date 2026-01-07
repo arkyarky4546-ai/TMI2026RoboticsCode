@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.ServoRotate;
 
 public class colorShootFunc {
@@ -77,6 +79,7 @@ public class colorShootFunc {
     Servo artiPush;
     double shootPower;
     int i = 0;
+    int shootTrack = 1;
     int colorIndex = 0;
 
     public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
@@ -121,7 +124,7 @@ public class colorShootFunc {
         timer.reset();
         return (error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
     }
-    public void update( double distance, double power, double dis, double integralsum, double Lasterror, int pathstate){
+    public int update( double distance, double power, double dis, double integralsum, double Lasterror, int pathstate, Telemetry telemetry){
         if(pathstate == 12) {
             shootPower = 0;
         }
@@ -134,7 +137,10 @@ public class colorShootFunc {
         inta1.setPower(power);
         shooting1.setPower(shootPower);
         shooting2.setPower(-shootPower);
-        if( dis < 5 && timer123.milliseconds() > 300){
+        telemetry.addData("color array 1: ", spindexColors[0]);
+        telemetry.addData("color array 2: ", spindexColors[1]);
+        telemetry.addData("color array 3: ", spindexColors[2]);
+        /*if( dis < 5 && timer123.milliseconds() > 300){
             servRo.startRotate(servRo.getPosition() , 120, 0);
             i += 1;
             if (i == 3){
@@ -142,26 +148,26 @@ public class colorShootFunc {
             }
            // intake = true;
             timer123.reset();
-        }
+        }*/
         /*if (intake && timer123.milliseconds() > 75){
             servRo.startRotate(servRo.getPosition() , 80, 0);
             timer123.reset();
             intake = false;
         }*/
-        scOOON();
+        return scOOON();
     }
     public double getGoodVel(double dis){
         return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
     }
     public int score(int[] pattern, int stage){
-        if( !indextooffset ){
+        /*if( !indextooffset ){
             indextooffset = true;
             servRo.startRotate(servRo.getPosition(), -30, 0);
 
-        }
-        if( spindexColors[i] == pattern[stage]){
+        }*/
+        if( spindexColors[i] == pattern[stage] && shootTrack == 1){
             artiPush.setPosition(kickUp);
-            shootOneBall();
+            shootTrack = shootOneBall();
             spindexColors[i] = 0;
 
             i+=1;
@@ -175,42 +181,51 @@ public class colorShootFunc {
                 return (stage - 1);
             }
         }
-        else{
+        else if (shootTrack == 1){
             artiPush.setPosition(kickZero);
             i += 1;
             if (i==3){
                 i=0;
             }
-            if( servRo.getPosition() >= .39){
+
+            if (servRo.getPosition() >= .39) {
                 servRo.startRotate(servRo.getPosition(), 0, 0);
-            }
-            else {
+            } else {
                 servRo.startRotate(servRo.getPosition(), 120, 0);
             }
+
+            return stage;
+        }
+        else{
             return stage;
         }
 
     }
     public int scOOON () {
-        if (scanPos < 3 && timer12.milliseconds() > 1000){
-            if(indextooffset){
+        if (scanPos < 3) {
+            spindexColors[scanPos] = getColors();
+            if (timer12.milliseconds() > 1000) {
+
+
+            /*if(indextooffset){
                 servRo.startRotate(servRo.getPosition(), 30, 0);
                 indextooffset = false;
+            }*/
+                timer12.reset();
+                if (servRo.getPosition() >= .39) {
+                    servRo.startRotate(servRo.getPosition(), 0, 0);
+                } else {
+                    servRo.startRotate(servRo.getPosition(), 120, 0);
+                }
+
+                i++;
+                if (i >= 3) {
+                    i = 0;
+                }
+                scanPos++;
             }
-            timer12.reset();
-            if (servRo.getPosition() >= .39){
-                servRo.startRotate(servRo.getPosition(), 0, 0);
-            }
-            else {
-                servRo.startRotate(servRo.getPosition(), 120, 0);
-            }
-            spindexColors[scanPos] = getColors();
-            i++;
-            if( i >= 3){
-                i = 0;
-            }
-            scanPos++;
         }
+
         return scanPos;
     }
     public void reset () {

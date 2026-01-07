@@ -376,10 +376,10 @@ public class newFinalParentAuto extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-            hehe.update(distance, 1, doos, Integralsum, lasterror, pathState);
+            hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
         }
         else {
-            hehe.update(distance, 0, doos, Integralsum, lasterror, pathState);
+            hehe.update(distance, 0, doos, Integralsum, lasterror, pathState,telemetry);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){

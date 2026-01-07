@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.colorShootFunc;
 
 import java.util.List;
 
-@Autonomous(name = "newFinalParentAuto", group = "Autonomous")
+@Autonomous(name = "test", group = "Autonomous")
 public class test extends OpMode {
     private Limelight3A limelight3A;
     AxonRotator smart;
@@ -45,6 +45,7 @@ public class test extends OpMode {
     int index = 0;
     private Path score1;
     int scoonTrack = 0;
+    int i = 0;
 
     int[] pattern = new int[] {2,2,1};
 
@@ -153,11 +154,43 @@ public class test extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
-
-                if(scoonTrack > 2 && timer12345.milliseconds() > 800){
-                    timer12345.reset();
+                if(scoonTrack == 3 && timer12345.milliseconds()> 800){
                     stageProg = hehe.score(pattern, stageProg);
+                    timer12345.reset();
                 }
+                /*if(actionTimer.getElapsedTimeSeconds() > 18){
+                    hehe.shootOneBall();
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 16 && i == 3 ){
+                    i++;
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 14){
+                    hehe.shootOneBall();
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 12 && i == 2){
+                    i++;
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 10){
+
+                    hehe.shootOneBall();
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 8 && i == 1){
+                    i++;
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 6){
+                    hehe.shootOneBall();
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 4 && i == 0){
+                    i++;
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                }
+                else if(actionTimer.getElapsedTimeSeconds() > 2){
+
+                    hehe.shootOneBall();
+                }*/
 
                 if(actionTimer.getElapsedTimeSeconds() > 20) {
                     wally.setPosition(.5);
@@ -175,9 +208,9 @@ public class test extends OpMode {
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
         doos = dis.getDistance(DistanceUnit.CM);
-        if (scoonTrack < 3){
+        /*if (scoonTrack < 3){
             scoonTrack = hehe.scOOON();
-        }
+        }*/
         if (index == 0) {
             limelightPause = System.currentTimeMillis();
             index = 67; // I am an adult
@@ -189,10 +222,10 @@ public class test extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-            hehe.update(distance, 1, doos, Integralsum, lasterror, pathState);
+           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
         }
         else {
-            hehe.update(distance, 0, doos, Integralsum, lasterror, pathState);
+            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){
