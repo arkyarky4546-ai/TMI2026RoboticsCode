@@ -83,7 +83,7 @@ public class Turret {
 
     public void manualLeft(){
         if((servoLeft.getPosition() > 0.15) && (lastManual.getElapsedTime() > 100)){
-            double toBeSetPos = servoLeft.getPosition() - 0.1;
+            double toBeSetPos = servoLeft.getPosition() - 0.01;
             servoLeft.setPosition(toBeSetPos);
             servoRight.setPosition(toBeSetPos);
             lastManual.resetTimer();
@@ -92,7 +92,7 @@ public class Turret {
 
     public void manualRight(){
         if((servoLeft.getPosition() < 0.85) && (lastManual.getElapsedTime() > 100)){
-            double toBeSetPos = servoLeft.getPosition() + 0.1;
+            double toBeSetPos = servoLeft.getPosition() + 0.01;
             servoLeft.setPosition(toBeSetPos);
             servoRight.setPosition(toBeSetPos);
             lastManual.resetTimer();
@@ -102,22 +102,21 @@ public class Turret {
     //TODO: confirm center values
     public void setTurretCenter(){
         autoAiming = false;
-        servoLeft.setPosition(0.55);
-        servoRight.setPosition(0.55);
+        servoLeft.setPosition(0.0);
+        servoRight.setPosition(0.0);
     }
 
     public boolean isAutoAiming(){
         return autoAiming;
     }
 
-    //TODO: add specific goal locations
     public void setModeRed(){
-        targetX = 72.0;
-        targetY = 72.0;
+        targetX = 144.0;
+        targetY = -144.0;
     }
 
     public void setModeBlue(){
-        targetX = 72.0;
-        targetY = 72.0;
+        targetX = 144.0;
+        targetY = 0.0;
     }
 }

@@ -132,15 +132,14 @@ public class Drivetrain {
         }
     }
 
-    //TODO: add actual goal positions
     public double getDistanceFromGoal(){
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
         if(mode == RED){
-            return Math.sqrt((x - 144) * (x - 144) + (y - 144) * (y - 144));
+            return Math.sqrt((x + 144) * (x + 144) + (y - 144) * (y - 144)); //-144, 144
         }
         else if(mode == BLUE){
-            return Math.sqrt((x + 144) * (x - 144) + (y - 144) * (y - 144));
+            return Math.sqrt((x + 0) * (x + 0) + (y - 144) * (y - 144)); //0, 144
         }
         else{
             return 0;

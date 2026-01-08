@@ -154,9 +154,17 @@ public class test extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
-                if(scoonTrack == 3 && timer12345.milliseconds()> 800){
+                /*if(scoonTrack == 3 && timer12345.milliseconds()> 1500){
                     stageProg = hehe.score(pattern, stageProg);
                     timer12345.reset();
+                }*/
+                if (scoonTrack == 3 && timer12345.milliseconds()>5000) {
+                    timer12345.reset();
+                    if (hehe.servRo.getPosition() >= .39) {
+                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 0);
+                    } else {
+                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
+                    }
                 }
                 /*if(actionTimer.getElapsedTimeSeconds() > 18){
                     hehe.shootOneBall();
@@ -208,7 +216,7 @@ public class test extends OpMode {
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
         doos = dis.getDistance(DistanceUnit.CM);
-        /*if (scoonTrack < 3){
+        /*if (scoonTrack < 3) {
             scoonTrack = hehe.scOOON();
         }*/
         if (index == 0) {
@@ -223,6 +231,7 @@ public class test extends OpMode {
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            //scoonTrack = 3;
         }
         else {
             scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
@@ -269,6 +278,7 @@ public class test extends OpMode {
         actionTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
+        timer12345.reset();
         coloora = hardwareMap.get(NormalizedColorSensor.class, "coloora");
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         dis = hardwareMap.get(DistanceSensor.class, "disDiss");

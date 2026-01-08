@@ -97,8 +97,7 @@ public class ShooterAndIntake {
         shooterPower = 1;
 
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "coloora");
-        //TODO: double check
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "ds");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "disDiss");
 
         currentPos = 0;
 
@@ -108,19 +107,18 @@ public class ShooterAndIntake {
         intakeTimer.reset();
     }
 
-    //TODO: figure out which is which
     public void setPattern(int pat){
-        if(pat == 0){
+        if(pat == 1){ //23
             pattern[0] = PURPLE;
             pattern[1] = PURPLE;
             pattern[2] = GREEN;
         }
-        else if(pat == 1){
+        else if(pat == 2){ //22
             pattern[0] = PURPLE;
             pattern[1] = GREEN;
             pattern[2] = PURPLE;
         }
-        else if(pat == 2){
+        else if(pat == 3){ //21
             pattern[0] = GREEN;
             pattern[1] = PURPLE;
             pattern[2] = PURPLE;
@@ -131,8 +129,6 @@ public class ShooterAndIntake {
     }
 
     //some of the stuff was for pedro so i made it an exclusively teleop class
-    //TODO: is intakeDis when an artifact is in the robot or just outside?
-    //TODO: do we want scan to happen every second (built in) or only when called for?
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut){
         //new:
         if(intakeActive){
@@ -156,13 +152,14 @@ public class ShooterAndIntake {
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             shootPower = shooterPIDControl(shoot2.getVelocity(), getGoodShootVel(distance));
-            //TODO: stage?
             stage = score(stage);
             if(stage == 0){
                 stage = 2;
             }
         }
         else{
+            intake1.setPower(0);
+            intake2.setPower(0);
             scanAll();
         }
 

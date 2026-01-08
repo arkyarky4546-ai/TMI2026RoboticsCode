@@ -39,6 +39,7 @@ public class colorShootFunc {
     ElapsedTime timer12 = new ElapsedTime();
     ElapsedTime timer123 = new ElapsedTime();
     ElapsedTime timer1234 = new ElapsedTime();
+    ElapsedTime timer123456 = new ElapsedTime();
     boolean intake = false;
     double lasterror = 0;
     Servo wally;
@@ -155,6 +156,7 @@ public class colorShootFunc {
             intake = false;
         }*/
         return scOOON();
+        //return 0;
     }
     public double getGoodVel(double dis){
         return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
@@ -166,23 +168,41 @@ public class colorShootFunc {
             return stage;
 
         }
-        else if( spindexColors[i] == pattern[stage] && shootTrack == 1){
-            artiPush.setPosition(kickUp);
-            shootTrack = shootOneBall();
-            spindexColors[i] = 0;
+        else if( spindexColors[i] == pattern[stage]) {
+            if (shootTrack == 0) {
+                shootTrack = shootOneBall();
+                timer123456.reset();
+                return stage;
+            }
 
-            i+=1;
-            if (i==3){
-                i=0;
+            else if (shootTrack == 1 && timer123456.milliseconds() > 500) {
+                timer123456.reset();
+                spindexColors[i] = 0;
+                shootTrack = 0;
+                artiPush.setPosition(kickZero);
+
+                i += 1;
+                if (i == 3) {
+                    i = 0;
+                }
+                if (servRo.getPosition() >= .39) {
+                    servRo.startRotate(servRo.getPosition(), 0, 60);
+                } else {
+                    servRo.startRotate(servRo.getPosition(), 120, 60);
+                }
+                if (stage == 0) {
+                    return 0;
+                } else {
+                    return (stage - 1);
+                }
             }
-            if (stage == 0){
-                return 0;
+            else{
+                return stage;
             }
-            else {
-                return (stage - 1);
-            }
+
         }
-        else if (shootTrack == 1){
+        else if (spindexColors[i] != pattern[stage] && timer123456.milliseconds() > 1500){
+            timer123456.reset();
             artiPush.setPosition(kickZero);
             i += 1;
             if (i==3){
@@ -201,8 +221,9 @@ public class colorShootFunc {
             return stage;
         }
 
-    }
+       }
     public int scOOON () {
+        wall.setPosition(.3);
         if (scanPos < 3) {
             spindexColors[scanPos] = getColors();
             if (timer12.milliseconds() > 1000) {
@@ -213,17 +234,20 @@ public class colorShootFunc {
                 indextooffset = false;
             }*/
                 timer12.reset();
-                if (servRo.getPosition() >= .39) {
+                if( servRo.getPosition() >= .39){
                     servRo.startRotate(servRo.getPosition(), 0, 0);
-                } else {
+                }
+                else {
                     servRo.startRotate(servRo.getPosition(), 120, 0);
                 }
+
 
                 i++;
                 if (i >= 3) {
                     i = 0;
                 }
                 scanPos++;
+
             }
         }
 
@@ -239,7 +263,7 @@ public class colorShootFunc {
         lasterror = 0;
         TargetVelocity = getGoodVel(shooting2.getVelocity());
         if(TargetVelocity > 1500){
-            TargetVelocity = 1100;
+            TargetVelocity = 1300;
         }
         if(shooting2.getVelocity()>(.92*TargetVelocity)){
             wall.setPosition(0);
