@@ -29,21 +29,25 @@ public class ServoRotate {
     public double getPosition(){
         return servo.getPosition();
     }
-    public void startRotate(double position, double angle, double startAngle) {
+    public void startRotate(double position, double angle, double maxAngle) {
         //double position2 = 1 - position;
-        startAngle = startAngle / 360;
-        if (position >= .39 + startAngle) {
-            position = 0 + startAngle;
+        maxAngle = maxAngle/360 * 2/5;
+        if (position >= maxAngle - .01) {
+            position = maxAngle - .4;
             //position2 = 1;
         }
         //else {
-        position += (angle / 360) * .4 + startAngle;
+        position += (angle / 360) * maxAngle;
        // position2 -= (angle / 360) * .4;
         //}
-        if (position >= .39 + startAngle){
-            position = .4 + startAngle;
+        if (position >= maxAngle - .01){
+            position = maxAngle;
             //position2 = .6;
         }
+        if ( position == 0){
+            position = (maxAngle - .4);
+        }
+
         servo.setPosition(position);
         servo2.setPosition(position);
     }

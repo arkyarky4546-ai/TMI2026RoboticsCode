@@ -68,6 +68,7 @@ public class test extends OpMode {
     boolean index12 = true;
     CRServo spindexRoter;
     ServoRotate smart1;
+    double offset = 60/360 * .4;
     public static double TURN_Constant = 0.01;
     double turTurn = .6;
     boolean reverse = true;
@@ -158,13 +159,13 @@ public class test extends OpMode {
                     stageProg = hehe.score(pattern, stageProg);
                     timer12345.reset();
                 }*/
-                if (scoonTrack == 3 && timer12345.milliseconds()>5000) {
+                if (scoonTrack == 3 && timer12345.milliseconds()>2000) {
                     timer12345.reset();
-                    if (hehe.servRo.getPosition() >= .39) {
-                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 0);
-                    } else {
-                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 0);
-                    }
+                   // if (hehe.servRo.getPosition() >= .39 + offset) {
+                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 420);
+                    //} else {
+                        //hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 60);
+                    //}
                 }
                 /*if(actionTimer.getElapsedTimeSeconds() > 18){
                     hehe.shootOneBall();
@@ -230,11 +231,11 @@ public class test extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
-            //scoonTrack = 3;
+           //scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            scoonTrack = 3;
         }
         else {
-            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
+            //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){

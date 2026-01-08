@@ -164,7 +164,7 @@ public class colorShootFunc {
     public int score(int[] pattern, int stage){
         if( !indextooffset ){
             indextooffset = true;
-            servRo.startRotate(servRo.getPosition(), 0, 60);
+            servRo.startRotate(servRo.getPosition(), 0, 420);
             return stage;
 
         }
@@ -186,9 +186,9 @@ public class colorShootFunc {
                     i = 0;
                 }
                 if (servRo.getPosition() >= .39) {
-                    servRo.startRotate(servRo.getPosition(), 0, 60);
+                    servRo.startRotate(servRo.getPosition(), 0, 420);
                 } else {
-                    servRo.startRotate(servRo.getPosition(), 120, 60);
+                    servRo.startRotate(servRo.getPosition(), 120, 420);
                 }
                 if (stage == 0) {
                     return 0;
@@ -210,9 +210,9 @@ public class colorShootFunc {
             }
 
             if (servRo.getPosition() >= .39) {
-                servRo.startRotate(servRo.getPosition(), 0, 60);
+                servRo.startRotate(servRo.getPosition(), 0, 420);
             } else {
-                servRo.startRotate(servRo.getPosition(), 120, 60);
+                servRo.startRotate(servRo.getPosition(), 120, 420);
             }
 
             return stage;
@@ -235,10 +235,10 @@ public class colorShootFunc {
             }*/
                 timer12.reset();
                 if( servRo.getPosition() >= .39){
-                    servRo.startRotate(servRo.getPosition(), 0, 0);
+                    servRo.startRotate(servRo.getPosition(), 0, 360);
                 }
                 else {
-                    servRo.startRotate(servRo.getPosition(), 120, 0);
+                    servRo.startRotate(servRo.getPosition(), 120, 360);
                 }
 
 
