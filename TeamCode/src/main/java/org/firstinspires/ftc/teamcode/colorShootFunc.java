@@ -160,12 +160,13 @@ public class colorShootFunc {
         return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
     }
     public int score(int[] pattern, int stage){
-        /*if( !indextooffset ){
+        if( !indextooffset ){
             indextooffset = true;
-            servRo.startRotate(servRo.getPosition(), -30, 0);
+            servRo.startRotate(servRo.getPosition(), 0, 60);
+            return stage;
 
-        }*/
-        if( spindexColors[i] == pattern[stage] && shootTrack == 1){
+        }
+        else if( spindexColors[i] == pattern[stage] && shootTrack == 1){
             artiPush.setPosition(kickUp);
             shootTrack = shootOneBall();
             spindexColors[i] = 0;
@@ -189,9 +190,9 @@ public class colorShootFunc {
             }
 
             if (servRo.getPosition() >= .39) {
-                servRo.startRotate(servRo.getPosition(), 0, 0);
+                servRo.startRotate(servRo.getPosition(), 0, 60);
             } else {
-                servRo.startRotate(servRo.getPosition(), 120, 0);
+                servRo.startRotate(servRo.getPosition(), 120, 60);
             }
 
             return stage;

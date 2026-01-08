@@ -32,19 +32,19 @@ public class ServoRotate {
     public void startRotate(double position, double angle, double startAngle) {
         //double position2 = 1 - position;
         startAngle = startAngle / 360;
-        if (position >= .39) {
-            position = 0;
+        if (position >= .39 + startAngle) {
+            position = 0 + startAngle;
             //position2 = 1;
         }
         //else {
-        position += (angle / 360) * .4;
+        position += (angle / 360) * .4 + startAngle;
        // position2 -= (angle / 360) * .4;
         //}
-        if (position >= .39){
-            position = .4;
+        if (position >= .39 + startAngle){
+            position = .4 + startAngle;
             //position2 = .6;
         }
-        servo.setPosition(position + startAngle);
-        servo2.setPosition(position + startAngle);
+        servo.setPosition(position);
+        servo2.setPosition(position);
     }
 }
