@@ -159,27 +159,28 @@ public class test extends OpMode {
                     stageProg = hehe.score(pattern, stageProg);
                     timer12345.reset();
                 }*/
-                if (scoonTrack == 3 && timer12345.milliseconds()>2000) {
+                hehe.shootOneBall();
+                /*if (scoonTrack == 3 && timer12345.milliseconds()>2000) {
                     timer12345.reset();
-                   // if (hehe.servRo.getPosition() >= .39 + offset) {
+                    if (hehe.servRo.getPosition() >= .39 + offset) {
                         hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 420);
-                    //} else {
-                        //hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 60);
-                    //}
-                }
+                    } else {
+                        hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 420);
+                    }
+                }*/
                 /*if(actionTimer.getElapsedTimeSeconds() > 18){
                     hehe.shootOneBall();
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 16 && i == 3 ){
                     i++;
-                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 420);
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 14){
                     hehe.shootOneBall();
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 12 && i == 2){
                     i++;
-                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 420);
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 10){
 
@@ -187,26 +188,26 @@ public class test extends OpMode {
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 8 && i == 1){
                     i++;
-                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 420);
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 6){
                     hehe.shootOneBall();
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 4 && i == 0){
                     i++;
-                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 0);
+                    hehe.servRo.startRotate(hehe.servRo.getPosition() , 120, 420);
                 }
                 else if(actionTimer.getElapsedTimeSeconds() > 2){
 
                     hehe.shootOneBall();
-                }*/
+                }
 
                 if(actionTimer.getElapsedTimeSeconds() > 20) {
                     wally.setPosition(.5);
                     //follower.followPath(firstLoad,true);
                     setPathState(2);
                 }
-                break;
+                break;*/
 
         }
     }
@@ -231,8 +232,8 @@ public class test extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-           //scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
-            scoonTrack = 3;
+           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            //scoonTrack = 3;
         }
         else {
             //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);

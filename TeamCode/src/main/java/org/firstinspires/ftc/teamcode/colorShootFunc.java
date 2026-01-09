@@ -134,22 +134,22 @@ public class colorShootFunc {
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
-        inta2.setPower(-power);
-        inta1.setPower(power);
+       // inta2.setPower(-power);
+        //inta1.setPower(power);
         shooting1.setPower(shootPower);
         shooting2.setPower(-shootPower);
         telemetry.addData("color array 1: ", spindexColors[0]);
         telemetry.addData("color array 2: ", spindexColors[1]);
         telemetry.addData("color array 3: ", spindexColors[2]);
-        /*if( dis < 5 && timer123.milliseconds() > 300){
-            servRo.startRotate(servRo.getPosition() , 120, 0);
+        if( dis < 5 && timer123.milliseconds() > 300){
+            servRo.startRotate(servRo.getPosition() , 120, 360);
             i += 1;
             if (i == 3){
                 i = 0;
             }
            // intake = true;
             timer123.reset();
-        }*/
+        }
         /*if (intake && timer123.milliseconds() > 75){
             servRo.startRotate(servRo.getPosition() , 80, 0);
             timer123.reset();
