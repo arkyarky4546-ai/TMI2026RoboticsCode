@@ -82,8 +82,8 @@ public class colorShootFunc {
     int i = 0;
     int shootTrack = 1;
     int colorIndex = 0;
-    double offset  = 420/360*2/5 * 355/360;
-    double gearOff = 355/360;
+    double offset  = 420/360*2/5 * 360/355;
+    double gearOff = 360/355;
 
     public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
         this.servRo  = servoRot;
@@ -166,7 +166,7 @@ public class colorShootFunc {
     public int score(int[] pattern, int stage){
         if( !indextooffset ){
             indextooffset = true;
-            servRo.startRotate(servRo.getPosition(), 0, 355+355/6);
+            servRo.startRotate(servRo.getPosition(), 0, 360);
             return stage;
 
         }
@@ -188,9 +188,9 @@ public class colorShootFunc {
                     i = 0;
                 }
                 if (servRo.getPosition() >= .39 * gearOff + offset) {
-                    servRo.startRotate(servRo.getPosition(), 0, 355+355/6);
+                    servRo.startRotate(servRo.getPosition(), 0, 360);
                 } else {
-                    servRo.startRotate(servRo.getPosition(), 355/3, 355+355/6);
+                    servRo.startRotate(servRo.getPosition(), 120, 360);
                 }
                 if (stage == 0) {
                     return 0;
@@ -212,9 +212,9 @@ public class colorShootFunc {
             }
 
             if (servRo.getPosition() >= .39 * gearOff + offset) {
-                servRo.startRotate(servRo.getPosition(), 0, 355+355/6);
+                servRo.startRotate(servRo.getPosition(), 0, 420);
             } else {
-                servRo.startRotate(servRo.getPosition(), 355/3, 355+355/6);
+                servRo.startRotate(servRo.getPosition(), 120, 420);
             }
 
             return stage;
@@ -237,10 +237,10 @@ public class colorShootFunc {
             }*/
                 timer12.reset();
                 if( servRo.getPosition() >= .39 * gearOff){
-                    servRo.startRotate(servRo.getPosition(), 0, 355);
+                    servRo.startRotate(servRo.getPosition(), 0, 360);
                 }
                 else {
-                    servRo.startRotate(servRo.getPosition(), 355/3, 355);
+                    servRo.startRotate(servRo.getPosition(), 120, 120);
                 }
 
 
