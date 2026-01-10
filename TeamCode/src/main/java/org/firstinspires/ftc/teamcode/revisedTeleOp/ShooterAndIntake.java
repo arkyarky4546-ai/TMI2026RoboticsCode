@@ -129,7 +129,7 @@ public class ShooterAndIntake {
     }
 
     //some of the stuff was for pedro so i made it an exclusively teleop class
-    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut){
+    public void update(double distance, boolean intakeActive, boolean normalShoot, boolean intakeOut, boolean colorShoot){
         //new:
         if(intakeActive){
             double intakeDis = distanceSensor.getDistance(DistanceUnit.INCH);
@@ -148,7 +148,11 @@ public class ShooterAndIntake {
             intake1.setPower(-intakePower);
             intake2.setPower(intakePower);
         }
-        else if(shootActive){
+        else if(normalShoot){
+            shootPower = shooterPIDControl(shoot2.getVelocity(), getGoodShootVel(distance));
+            normalShoot();
+        }
+        else if(colorShoot){
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             shootPower = shooterPIDControl(shoot2.getVelocity(), getGoodShootVel(distance));
@@ -158,6 +162,8 @@ public class ShooterAndIntake {
             }
         }
         else{
+            shoot1.setPower(0);
+            shoot2.setPower(0);
             intake1.setPower(0);
             intake2.setPower(0);
             scanAll();
@@ -219,6 +225,22 @@ public class ShooterAndIntake {
 
     public double getGoodShootVel(double dis){
         return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
+    }
+
+    public void normalShoot(){
+        shoot1.setPower(shooterPower);
+        shoot2.setPower(shooterPower);
+        if( !offsetForScoring ) {
+            offsetForScoring = true;
+            servRo.startRotate(servRo.getPosition(), 0, 60);
+            return;
+        }
+        if (servRo.getPosition() >= .39) {
+            servRo.startRotate(servRo.getPosition(), 0, 60);
+        } else {
+            servRo.startRotate(servRo.getPosition(), 120, 60);
+        }
+        shootOneBall();
     }
 
     public int shootOneBall(){ //wasn't letting me use thread.sleep for some reason so it told me to add this
