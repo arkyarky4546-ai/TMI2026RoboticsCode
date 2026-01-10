@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -155,11 +156,14 @@ public class test extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
+                hehe.servRo.servo.setPosition(360/355*.4);
+                hehe.servRo.servo2.setPosition(360/355*.4);
                 /*if(scoonTrack == 3 && timer12345.milliseconds()> 1500){
                     stageProg = hehe.score(pattern, stageProg);
                     timer12345.reset();
                 }*/
-                hehe.shootOneBall();
+
+                //hehe.shootOneBall();
                 /*if (scoonTrack == 3 && timer12345.milliseconds()>2000) {
                     timer12345.reset();
                     if (hehe.servRo.getPosition() >= .39 + offset) {
@@ -232,8 +236,8 @@ public class test extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
-            //scoonTrack = 3;
+           //scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            scoonTrack = 3;
         }
         else {
             //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);

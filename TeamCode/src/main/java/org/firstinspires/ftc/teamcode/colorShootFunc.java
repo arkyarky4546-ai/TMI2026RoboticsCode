@@ -187,7 +187,7 @@ public class colorShootFunc {
                 if (i == 3) {
                     i = 0;
                 }
-                if (servRo.getPosition() >= .39 * gearOff + offset) {
+                if (servRo.getPosition() >= .399 * gearOff + offset) {
                     servRo.startRotate(servRo.getPosition(), 0, 360);
                 } else {
                     servRo.startRotate(servRo.getPosition(), 120, 360);
@@ -211,7 +211,7 @@ public class colorShootFunc {
                 i=0;
             }
 
-            if (servRo.getPosition() >= .39 * gearOff + offset) {
+            if (servRo.getPosition() >= .399 * gearOff + offset) {
                 servRo.startRotate(servRo.getPosition(), 0, 420);
             } else {
                 servRo.startRotate(servRo.getPosition(), 120, 420);
@@ -236,11 +236,11 @@ public class colorShootFunc {
                 indextooffset = false;
             }*/
                 timer12.reset();
-                if( servRo.getPosition() >= .39 * gearOff){
+                if( servRo.getPosition() >= .399 * gearOff){
                     servRo.startRotate(servRo.getPosition(), 0, 360);
                 }
                 else {
-                    servRo.startRotate(servRo.getPosition(), 120, 120);
+                    servRo.startRotate(servRo.getPosition(), 120, 360);
                 }
 
 
