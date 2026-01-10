@@ -31,13 +31,13 @@ public class ServoRotate {
     }
     public void startRotate(double position, double angle, double maxAngle) {
         //double position2 = 1 - position;
-        maxAngle = maxAngle/360 * 2/5;
+        maxAngle = maxAngle/355 * 2/5;
         if (position >= maxAngle - .01) {
-            position = maxAngle - .4;
+            position = maxAngle - .4 * 360/355;
             //position2 = 1;
         }
         //else {
-        position += (angle / 360) * maxAngle;
+        position += (angle / 355) * maxAngle;
        // position2 -= (angle / 360) * .4;
         //}
         if (position >= maxAngle - .01){
@@ -45,7 +45,7 @@ public class ServoRotate {
             //position2 = .6;
         }
         if ( position == 0){
-            position = (maxAngle - .4);
+            position = (maxAngle - .4 * 360 / 355);
         }
 
         servo.setPosition(position);

@@ -82,6 +82,8 @@ public class colorShootFunc {
     int i = 0;
     int shootTrack = 1;
     int colorIndex = 0;
+    double offset  = 420/360*2/5 * 355/360;
+    double gearOff = 355/360;
 
     public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
         this.servRo  = servoRot;
@@ -134,14 +136,14 @@ public class colorShootFunc {
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
-       // inta2.setPower(-power);
-        //inta1.setPower(power);
+        inta2.setPower(-power);
+        inta1.setPower(power);
         shooting1.setPower(shootPower);
         shooting2.setPower(-shootPower);
         telemetry.addData("color array 1: ", spindexColors[0]);
         telemetry.addData("color array 2: ", spindexColors[1]);
         telemetry.addData("color array 3: ", spindexColors[2]);
-        if( dis < 5 && timer123.milliseconds() > 300){
+        /*if( dis < 5 && timer123.milliseconds() > 300){
             servRo.startRotate(servRo.getPosition() , 120, 360);
             i += 1;
             if (i == 3){
@@ -149,7 +151,7 @@ public class colorShootFunc {
             }
            // intake = true;
             timer123.reset();
-        }
+        }*/
         /*if (intake && timer123.milliseconds() > 75){
             servRo.startRotate(servRo.getPosition() , 80, 0);
             timer123.reset();
@@ -164,7 +166,7 @@ public class colorShootFunc {
     public int score(int[] pattern, int stage){
         if( !indextooffset ){
             indextooffset = true;
-            servRo.startRotate(servRo.getPosition(), 0, 420);
+            servRo.startRotate(servRo.getPosition(), 0, 355+355/6);
             return stage;
 
         }
@@ -185,10 +187,10 @@ public class colorShootFunc {
                 if (i == 3) {
                     i = 0;
                 }
-                if (servRo.getPosition() >= .39) {
-                    servRo.startRotate(servRo.getPosition(), 0, 420);
+                if (servRo.getPosition() >= .39 * gearOff + offset) {
+                    servRo.startRotate(servRo.getPosition(), 0, 355+355/6);
                 } else {
-                    servRo.startRotate(servRo.getPosition(), 120, 420);
+                    servRo.startRotate(servRo.getPosition(), 355/3, 355+355/6);
                 }
                 if (stage == 0) {
                     return 0;
@@ -209,10 +211,10 @@ public class colorShootFunc {
                 i=0;
             }
 
-            if (servRo.getPosition() >= .39) {
-                servRo.startRotate(servRo.getPosition(), 0, 420);
+            if (servRo.getPosition() >= .39 * gearOff + offset) {
+                servRo.startRotate(servRo.getPosition(), 0, 355+355/6);
             } else {
-                servRo.startRotate(servRo.getPosition(), 120, 420);
+                servRo.startRotate(servRo.getPosition(), 355/3, 355+355/6);
             }
 
             return stage;
@@ -234,11 +236,11 @@ public class colorShootFunc {
                 indextooffset = false;
             }*/
                 timer12.reset();
-                if( servRo.getPosition() >= .39){
-                    servRo.startRotate(servRo.getPosition(), 0, 360);
+                if( servRo.getPosition() >= .39 * gearOff){
+                    servRo.startRotate(servRo.getPosition(), 0, 355);
                 }
                 else {
-                    servRo.startRotate(servRo.getPosition(), 120, 360);
+                    servRo.startRotate(servRo.getPosition(), 355/3, 355);
                 }
 
 
