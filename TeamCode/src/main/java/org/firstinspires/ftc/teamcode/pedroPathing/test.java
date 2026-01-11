@@ -67,10 +67,12 @@ public class test extends OpMode {
     double distance;
     double shooterPower;
     boolean index12 = true;
+    boolean index1234 = false;
     CRServo spindexRoter;
     ServoRotate smart1;
     double offset = 60/360 * .4;
     public static double TURN_Constant = 0.01;
+    boolean index123 = true;
     double turTurn = .6;
     boolean reverse = true;
     int Nonetwo = 120;
@@ -156,12 +158,18 @@ public class test extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
-                hehe.servRo.servo.setPosition(360/355*.4);
-                hehe.servRo.servo2.setPosition(360/355*.4);
-                /*if(scoonTrack == 3 && timer12345.milliseconds()> 1500){
+                hehe.servRo.servo.setPosition(360/355*.06*23/21);
+                hehe.servRo.servo2.setPosition(360/355*.06*23/21);
+                /*if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
+                    index1234 = true;
+                    index123 = false;
+                }
+                if(scoonTrack == 3 && stageProg >= 0 && !index123){
+
                     stageProg = hehe.score(pattern, stageProg);
-                    timer12345.reset();
+
                 }*/
+                //hehe.shootOneBall();
 
                 //hehe.shootOneBall();
                 /*if (scoonTrack == 3 && timer12345.milliseconds()>2000) {
