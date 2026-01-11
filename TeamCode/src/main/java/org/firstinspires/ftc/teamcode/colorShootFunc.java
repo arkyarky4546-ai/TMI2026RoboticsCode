@@ -82,7 +82,7 @@ public class colorShootFunc {
     int i = 0;
     int shootTrack = 0;
     int colorIndex = 0;
-    double offset  = 420/360*2/5 * 360/355 * 23/21;
+    double offset  = 405/360*2/5 * 360/355 * 23/21;
     double gearOff = 360/355 * 23/21;
 
     public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
@@ -169,7 +169,7 @@ public class colorShootFunc {
             servRo.servo.setPosition(0);
             i = 0;
             servRo.servo2.setPosition(0);
-            servRo.startRotate(servRo.getPosition(), 0, 420);
+            servRo.startRotate(servRo.getPosition(), 0, 405);
             return stage;
 
         }
@@ -185,16 +185,16 @@ public class colorShootFunc {
                 timer123456.reset();
                 spindexColors[i] = 0;
                 shootTrack = 0;
-                //artiPush.setPosition(kickZero);
+                artiPush.setPosition(kickZero);
 
                 i += 1;
                 if (i == 3) {
                     i = 0;
                 }
                 if (servRo.getPosition() >= .399 * gearOff + offset) {
-                    servRo.startRotate(servRo.getPosition(), 0, 420);
+                    servRo.startRotate(servRo.getPosition(), 0, 405);
                 } else {
-                    servRo.startRotate(servRo.getPosition(), 120, 420);
+                    servRo.startRotate(servRo.getPosition(), 120, 405);
                 }
                 if (stage == 0) {
                     return 0;
@@ -216,9 +216,9 @@ public class colorShootFunc {
             }
 
             if (servRo.getPosition() >= .399 * gearOff + offset) {
-                servRo.startRotate(servRo.getPosition(), 0, 420);
+                servRo.startRotate(servRo.getPosition(), 0, 405);
             } else {
-                servRo.startRotate(servRo.getPosition(), 120, 420);
+                servRo.startRotate(servRo.getPosition(), 120, 405);
             }
 
             return stage;

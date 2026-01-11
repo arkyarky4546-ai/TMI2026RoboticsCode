@@ -158,9 +158,9 @@ public class test extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
-                hehe.servRo.servo.setPosition(360/355*.06*23/21);
-                hehe.servRo.servo2.setPosition(360/355*.06*23/21);
-                /*if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
+                //hehe.servRo.servo.setPosition(360/355*.06*23/21);
+                //hehe.servRo.servo2.setPosition(360/355*.06*23/21);
+                if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
                     index1234 = true;
                     index123 = false;
                 }
@@ -168,7 +168,7 @@ public class test extends OpMode {
 
                     stageProg = hehe.score(pattern, stageProg);
 
-                }*/
+                }
                 //hehe.shootOneBall();
 
                 //hehe.shootOneBall();
@@ -244,8 +244,8 @@ public class test extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-           //scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
-            scoonTrack = 3;
+           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+           // scoonTrack = 3;
         }
         else {
             //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
