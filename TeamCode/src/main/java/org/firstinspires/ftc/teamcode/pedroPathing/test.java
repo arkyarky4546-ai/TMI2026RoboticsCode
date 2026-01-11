@@ -329,7 +329,7 @@ public class test extends OpMode {
         //spindexRoter.setPower(0);
         hood.setPosition(hoodPos);
         hehe = new colorShootFunc(hardwareMap, smart1, shooter, shooter2, coloora, intake, intake1, wally, push);
-
+        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 360);
     }
 
 
