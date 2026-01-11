@@ -82,8 +82,8 @@ public class colorShootFunc {
     int i = 0;
     int shootTrack = 1;
     int colorIndex = 0;
-    double offset  = 420/360*2/5 * 360/355;
-    double gearOff = 360/355;
+    double offset  = 420/360*2/5 * 360/355 * 23/21;
+    double gearOff = 360/355 * 23/21;
 
     public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
         this.servRo  = servoRot;
