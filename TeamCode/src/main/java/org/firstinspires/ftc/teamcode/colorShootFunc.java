@@ -233,7 +233,7 @@ public class colorShootFunc {
     public int scOOON () {
 
         if (scanPos < 3) {
-            wall.setPosition(.3);
+            wall.setPosition(.5);
             if (timer12.milliseconds() > 1000) {
                 spindexColors[scanPos] = getColors();
 
