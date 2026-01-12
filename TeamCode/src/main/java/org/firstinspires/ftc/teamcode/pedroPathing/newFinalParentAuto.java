@@ -30,6 +30,7 @@ import java.util.List;
 public class newFinalParentAuto extends OpMode {
     private Limelight3A limelight3A;
     AxonRotator smart;
+    //int scoonTrack = 0;
     colorShootFunc hehe;
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
@@ -362,9 +363,9 @@ public class newFinalParentAuto extends OpMode {
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
         doos = dis.getDistance(DistanceUnit.CM);
-        if (scoonTrack < 3){
+        /*if (scoonTrack < 3){
             scoonTrack = hehe.scOOON();
-        }
+        }*/
         if (index == 0) {
             limelightPause = System.currentTimeMillis();
             index = 67; // I am an adult
@@ -376,10 +377,10 @@ public class newFinalParentAuto extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-            hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
         }
         else {
-            hehe.update(distance, 0, doos, Integralsum, lasterror, pathState,telemetry);
+            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState,telemetry);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){
@@ -459,7 +460,7 @@ public class newFinalParentAuto extends OpMode {
         //spindexRoter.setPower(0);
         hood.setPosition(hoodPos);
         hehe = new colorShootFunc(hardwareMap, smart1, shooter, shooter2, coloora, intake, intake1, wally, push);
-
+        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 360);
     }
 
 
