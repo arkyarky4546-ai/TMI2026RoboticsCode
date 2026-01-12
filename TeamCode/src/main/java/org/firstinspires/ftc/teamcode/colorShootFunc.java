@@ -193,6 +193,7 @@ public class colorShootFunc {
                 }
                 if (servRo.getPosition() >= .399 * gearOff + offset) {
                     servRo.startRotate(servRo.getPosition(), 0, 405);
+                    i = 0;
                 } else {
                     servRo.startRotate(servRo.getPosition(), 120, 405);
                 }
@@ -217,6 +218,7 @@ public class colorShootFunc {
 
             if (servRo.getPosition() >= .399 * gearOff + offset) {
                 servRo.startRotate(servRo.getPosition(), 0, 405);
+                i = 0;
             } else {
                 servRo.startRotate(servRo.getPosition(), 120, 405);
             }
@@ -229,9 +231,9 @@ public class colorShootFunc {
 
        }
     public int scOOON () {
-        wall.setPosition(.3);
-        if (scanPos < 3) {
 
+        if (scanPos < 3) {
+            wall.setPosition(.3);
             if (timer12.milliseconds() > 1000) {
                 spindexColors[scanPos] = getColors();
 
@@ -242,6 +244,7 @@ public class colorShootFunc {
                 timer12.reset();
                 if( servRo.getPosition() >= .399 * gearOff){
                     servRo.startRotate(servRo.getPosition(), 0, 360);
+                    i = 0;
                 }
                 else {
                     servRo.startRotate(servRo.getPosition(), 120, 360);
