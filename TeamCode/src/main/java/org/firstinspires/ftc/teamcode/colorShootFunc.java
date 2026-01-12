@@ -241,6 +241,10 @@ public class colorShootFunc {
                 servRo.startRotate(servRo.getPosition(), 30, 0);
                 indextooffset = false;
             }*/
+                i++;
+                if (i >= 3) {
+                    i = 0;
+                }
                 timer12.reset();
                 if( servRo.getPosition() >= .399 * gearOff){
                     servRo.startRotate(servRo.getPosition(), 0, 360);
@@ -251,10 +255,7 @@ public class colorShootFunc {
                 }
 
 
-                i++;
-                if (i >= 3) {
-                    i = 0;
-                }
+
                 scanPos++;
 
             }
