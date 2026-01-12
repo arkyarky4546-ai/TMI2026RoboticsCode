@@ -158,8 +158,12 @@ public class test extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
+                //test position
                 //hehe.servRo.servo.setPosition(360/355*.06*23/21);
                 //hehe.servRo.servo2.setPosition(360/355*.06*23/21);
+
+
+                //test colorshoot
                 if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
                     index1234 = true;
                     index123 = false;
