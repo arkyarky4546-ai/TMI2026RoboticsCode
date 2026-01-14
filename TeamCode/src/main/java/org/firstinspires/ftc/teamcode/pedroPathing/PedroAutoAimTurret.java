@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,25 +11,26 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 @TeleOp
 public class PedroAutoAimTurret extends OpMode {
+
     private Servo servoLeft;
     private Servo servoRight;
-    private static final double CENTER_POSITION = 0.5;
-    private double servoRangeDegrees = 180;
-    private double gearRatio = 1.0; //input / output
+    private static final double CENTER_POSITION = 0.96;
+    private double servoRangeDegrees = 230;
+    private double gearRatio =  1.0055911*1.11111111;//360/355; //input / output 1.0055911
     private double targetX = 0.0;
     private double targetY = 0.0;
     private double currentServoPosition = CENTER_POSITION;
+    private double turretZeroDegOffset=0;
+    private final Pose startPose = new Pose(128,-26, Math.toRadians(47));
+    private boolean auto = true;
+    private double manualpos = 1.0;
 
     private Follower follower;
 
     @Override
     public void init() {
-        this.servoRangeDegrees = servoRangeDegrees;
-        this.gearRatio = gearRatio;
         servoLeft = hardwareMap.get(Servo.class, "turretLeft");
         servoRight = hardwareMap.get(Servo.class, "turretRight");
 
@@ -39,10 +41,11 @@ public class PedroAutoAimTurret extends OpMode {
         follower = Constants.createFollower(hardwareMap);
 
         // Optional: set starting pose
-        follower.setPose(new Pose(0, 0, 0));
 
-        // Initial target (example: high basket)
-        setTargetCoordinates(48, 48);
+        follower.setStartingPose(startPose);
+
+        // Initial target
+        setTargetCoordinates(144, 0);//blue goal
 
         telemetry.addLine("Turret Initialized");
     }
@@ -53,25 +56,64 @@ public class PedroAutoAimTurret extends OpMode {
         follower.update();
 
         // Auto aim turret
-        updateTurret(follower,telemetry);
+        if (auto) {
 
 
-        Pose pose = follower.getPose();
+            updateTurret(follower, telemetry);
+        }
+
+        if(gamepad1.dpad_up){
+            auto = false;
+            setManualPosition(manualpos);
+        }
+        if(gamepad1.dpad_down){
+            auto = true;
+        }
+        if(gamepad1.dpad_left){
+            manualpos -= 0.01;
+        }
+        if(gamepad1.dpad_right){
+            manualpos += 0.01;
+        }
+        if(gamepad2.a){
+            targetX=0;
+            targetY=0;
+        }
+        if(gamepad1.a){
+            targetX=144;//blue goal
+            targetY=0;
+        }
+        if(gamepad1.b){
+            targetX=144;//red goal
+            targetY=-144;
+        }
+        if(gamepad1.x){
+            auto = false;
+            setManualPosition(0.0);
+        }
+        if(gamepad1.y){
+            auto = false;
+            setManualPosition(1.0);
+        }
         // Telemetry
         telemetry.addData("Robot X", follower.getPose().getX());
         telemetry.addData("Robot Y", follower.getPose().getY());
         telemetry.addData("Heading",
                 Math.toDegrees(follower.getPose().getHeading()));
 
+        telemetry.addData("target X", targetX);
+        telemetry.addData("target Y", targetY);
+        telemetry.addData("gear Ratio", gearRatio);
+        telemetry.addData("manualPos", manualpos);
         telemetry.update();
     }
 
-    public PedroAutoAimTurret(HardwareMap hardwareMap, String leftServoName, String rightServoName, double servoRangeDegrees, double gearRatio) {
+    /*public PedroAutoAimTurret(HardwareMap hardwareMap, String leftServoName, String rightServoName, double servoRangeDegrees, double gearRatio) {
         servoLeft = hardwareMap.get(Servo.class, leftServoName);
         servoRight = hardwareMap.get(Servo.class, rightServoName);
         this.servoRangeDegrees = servoRangeDegrees;
         this.gearRatio = gearRatio;
-    }
+    }*/
 
     public void setTargetCoordinates(double x, double y) {
         this.targetX = x;
@@ -88,11 +130,17 @@ public class PedroAutoAimTurret extends OpMode {
         telemetry.addData("Turret Y", robotY);
         telemetry.addData("Turret Head", Math.toDegrees(robotHeadingRad));
         double angleToTargetRad = Math.atan2(targetY - robotY, targetX - robotX);
+
         double relativeAngleRad = angleToTargetRad - robotHeadingRad;
         relativeAngleRad = AngleUnit.normalizeRadians(relativeAngleRad);
         double relativeAngleDeg = Math.toDegrees(relativeAngleRad);
-        double servoAngleNeeded = relativeAngleDeg * gearRatio;
-        double targetPos = (servoAngleNeeded / servoRangeDegrees) + CENTER_POSITION;
+        double servoAngleNeeded = relativeAngleDeg * gearRatio/360;
+        double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
+
+        if(targetPos < 0){
+            targetPos += 360/355*1.111111111;
+
+        }
         targetPos = Range.clip(targetPos, 0.0, 1.0);
         servoLeft.setPosition(1 - targetPos);
         servoRight.setPosition(1 - targetPos);

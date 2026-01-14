@@ -68,14 +68,14 @@ public class colorShootFunc {
 
     DcMotorEx shooting1;
     DcMotorEx shooting2;
-    DcMotor inta1;
-    DcMotor inta2;
+    DcMotorEx inta1;
+    DcMotorEx inta2;
     int scanPos = 0;
     int green = 1;
     int purple = 2;
     double TargetVelocity;
     double kickZero = 0.85;
-    double kickUp = 0.75;
+    double kickUp = 0.72;
     Servo wall;
     Servo artiPush;
     double shootPower;
@@ -84,8 +84,11 @@ public class colorShootFunc {
     int colorIndex = 0;
     double offset  = 405/360*2/5 * 360/355 * 23/21;
     double gearOff = 360/355 * 23/21;
+    double intakeVelocity;
+    boolean oppInt = false;
+    boolean fstspdachvd = false;
 
-    public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotor intake1, DcMotor intake2, Servo wally, Servo ArtifactPush) {
+    public colorShootFunc(HardwareMap hardwareMap, ServoRotate servoRot, DcMotorEx shoot1, DcMotorEx shoot2, NormalizedColorSensor coloora, DcMotorEx intake1, DcMotorEx intake2, Servo wally, Servo ArtifactPush) {
         this.servRo  = servoRot;
         this.shooting1 = shoot1;
         this.shooting2 = shoot2;
@@ -97,6 +100,7 @@ public class colorShootFunc {
         timer12.reset();
         timer1234.reset();
         timer123.reset();
+        timer1.reset();
 
 
     }
@@ -136,13 +140,39 @@ public class colorShootFunc {
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
-        inta2.setPower(-power);
-        inta1.setPower(power);
+
+        intakeVelocity = -inta1.getVelocity();
+        if (!fstspdachvd){
+            inta2.setPower(-power);
+            inta1.setPower(power);
+        }
+        if (intakeVelocity > 1200){
+            fstspdachvd = true;
+        }
+        if (fstspdachvd) {
+            if (intakeVelocity < 1000 && power != 0 && timer1.milliseconds() > 2000) {
+                oppInt = true;
+                artiPush.setPosition(kickZero);
+                inta2.setPower(power);
+                inta1.setPower(-power);
+            }
+            if (oppInt) {
+                oppInt = false;
+                timer1.reset();
+            } else if (timer1.milliseconds() > 300) {
+                inta2.setPower(-power);
+                inta1.setPower(power);
+            }
+        }
+
+
         shooting1.setPower(shootPower);
         shooting2.setPower(-shootPower);
         telemetry.addData("color array 1: ", spindexColors[0]);
         telemetry.addData("color array 2: ", spindexColors[1]);
         telemetry.addData("color array 3: ", spindexColors[2]);
+        telemetry.addData("intakevel ", inta1.getVelocity());
+
         /*if( dis < 5 && timer123.milliseconds() > 300){
             servRo.startRotate(servRo.getPosition() , 120, 360);
             i += 1;
@@ -173,7 +203,7 @@ public class colorShootFunc {
             return stage;
 
         }
-        else if( spindexColors[i] == pattern[stage]) {
+        else if( spindexColors[i] == pattern[stage] && timer123456.milliseconds() > 500) {
             if (shootTrack == 0) {
 
                 shootTrack = shootOneBall();
@@ -185,7 +215,7 @@ public class colorShootFunc {
                 timer123456.reset();
                 spindexColors[i] = 0;
                 shootTrack = 0;
-                //artiPush.setPosition(kickZero);
+                artiPush.setPosition(kickZero);
 
                 i += 1;
                 if (i == 3) {

@@ -38,9 +38,9 @@ public class newFinalParentAuto extends OpMode {
     private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(88, -52, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(88, -25 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(60, -60, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(60, -20, Math.toRadians(90));
+    private final Pose acIntakePose1 = new Pose(88, -30 , Math.toRadians(90));
+    private final Pose intakePose2 = new Pose(64, -60, Math.toRadians(90));
+    private final Pose acIntakePose2 = new Pose(64, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(65, -48, Math.toRadians(0));
     private final Pose scorePose3 = new Pose(96, -54, Math.toRadians(47));
     int index = 0;
@@ -69,7 +69,7 @@ public class newFinalParentAuto extends OpMode {
     CRServo spindexRoter;
     ServoRotate smart1;
     public static double TURN_Constant = 0.01;
-    double turTurn = .6;
+    double turTurn = .2;
     boolean reverse = true;
     int Nonetwo = 120;
     int stageProg = 2;
@@ -222,7 +222,7 @@ public class newFinalParentAuto extends OpMode {
                 wally.setPosition(0.5);
                 if(actionTimer.getElapsedTimeSeconds() > 1) {
                     hehe.reset();
-                    follower.followPath(scoreLoad2,true);
+                    follower.followPath(scoreLoad1,true);
                     setPathState(6);
                 }
                 break;

@@ -48,7 +48,7 @@ public class test extends OpMode {
     int scoonTrack = 0;
     int i = 0;
 
-    int[] pattern = new int[] {2,2,1};
+    int[] pattern = new int[] {2,1,2};
 
     boolean aiming = false;
     private PathChain firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2;
@@ -168,7 +168,7 @@ public class test extends OpMode {
                     index1234 = true;
                     index123 = false;
                 }
-                if(scoonTrack == 3 && stageProg >= 0 && !index123){
+                if(scoonTrack == 3 && !index123){
 
                     stageProg = hehe.score(pattern, stageProg);
 
@@ -310,6 +310,10 @@ public class test extends OpMode {
         shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
