@@ -174,7 +174,12 @@ public class colorShootFunc {
         telemetry.addData("intakevel ", inta1.getVelocity());
 
         if( dis < 5 && timer123.milliseconds() > 200){
-            servRo.startRotate(servRo.getPosition() , 120, 360);
+            if (servRo.getPosition() >= .399 * gearOff + offset) {
+                servRo.startRotate(servRo.getPosition(), 0, 360);
+                i = 0;
+            } else {
+                servRo.startRotate(servRo.getPosition(), 120, 360);
+            }
             i += 1;
             if (i == 3){
                 i = 0;

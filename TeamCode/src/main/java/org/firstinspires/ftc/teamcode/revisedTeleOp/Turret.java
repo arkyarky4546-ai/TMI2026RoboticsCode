@@ -17,7 +17,7 @@ public class Turret {
     private Servo servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 361.0;
-    private static final double CENTER_POSITION = 0.5;
+    private static final double CENTER_POSITION = 0.96;
 
     private double targetX = 0.0;
     private double targetY = 0.0;
@@ -103,8 +103,8 @@ public class Turret {
     //TODO: confirm center values
     public void setTurretCenter(){
         autoAiming = false;
-        servoLeft.setPosition(0.0);
-        servoRight.setPosition(0.0);
+        servoLeft.setPosition(CENTER_POSITION);
+        servoRight.setPosition(CENTER_POSITION);
     }
 
     public boolean isAutoAiming(){
