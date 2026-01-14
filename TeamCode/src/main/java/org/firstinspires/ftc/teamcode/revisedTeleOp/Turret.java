@@ -23,6 +23,7 @@ public class Turret {
     private double targetY = 0.0;
 
     private double currentServoPosition = CENTER_POSITION;
+    private final double gearRatio =  1.0055911*1.11111111;//input / output 1.0055911
 
     private boolean autoAiming;
     private Timer lastManual = new Timer();
@@ -50,24 +51,24 @@ public class Turret {
         double robotX = robotPose.getX();
         double robotY = robotPose.getY();
         double robotHeadingRad = robotPose.getHeading();
-        telemetry.addData("x = ", robotX);
-        telemetry.addData("y = ", robotY);
-        telemetry.addData("head = ", Math.toDegrees(robotHeadingRad));
+        telemetry.addData("Turret X", robotX);
+        telemetry.addData("Turret Y", robotY);
+        telemetry.addData("Turret Head", Math.toDegrees(robotHeadingRad));
         double angleToTargetRad = Math.atan2(targetY - robotY, targetX - robotX);
 
         double relativeAngleRad = angleToTargetRad - robotHeadingRad;
-
         relativeAngleRad = AngleUnit.normalizeRadians(relativeAngleRad);
-
         double relativeAngleDeg = Math.toDegrees(relativeAngleRad);
+        double servoAngleNeeded = relativeAngleDeg * gearRatio/360;
+        double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
 
-        double targetPos = (relativeAngleDeg / SERVO_RANGE_DEGREES) + CENTER_POSITION;
+        if(targetPos < 0){
+            targetPos += 360/355*1.111111111;
 
+        }
         targetPos = Range.clip(targetPos, 0.0, 1.0);
-
-        servoLeft.setPosition(1-targetPos);
-        servoRight.setPosition(1-targetPos);
-
+        servoLeft.setPosition(1 - targetPos);
+        servoRight.setPosition(1 - targetPos);
         currentServoPosition = targetPos;
     }
 

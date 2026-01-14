@@ -11,14 +11,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
-@TeleOp
-public class PedroAutoAimTurret extends OpMode {
+//@TeleOp
+public class PedroAutoAimTurret {
 
     private Servo servoLeft;
     private Servo servoRight;
     private static final double CENTER_POSITION = 0.96;
     private double servoRangeDegrees = 230;
-    private double gearRatio =  1.0055911*1.11111111;//360/355; //input / output 1.0055911
+    private double gearRatio =  1.0055911*1.11111111;//input / output 1.0055911
     private double targetX = 0.0;
     private double targetY = 0.0;
     private double currentServoPosition = CENTER_POSITION;
@@ -29,7 +29,7 @@ public class PedroAutoAimTurret extends OpMode {
 
     private Follower follower;
 
-    @Override
+    /*@Override
     public void init() {
         servoLeft = hardwareMap.get(Servo.class, "turretLeft");
         servoRight = hardwareMap.get(Servo.class, "turretRight");
@@ -106,14 +106,14 @@ public class PedroAutoAimTurret extends OpMode {
         telemetry.addData("gear Ratio", gearRatio);
         telemetry.addData("manualPos", manualpos);
         telemetry.update();
-    }
+    }*/
 
-    /*public PedroAutoAimTurret(HardwareMap hardwareMap, String leftServoName, String rightServoName, double servoRangeDegrees, double gearRatio) {
+    public PedroAutoAimTurret(HardwareMap hardwareMap, String leftServoName, String rightServoName, double servoRangeDegrees, double gearRatio) {
         servoLeft = hardwareMap.get(Servo.class, leftServoName);
         servoRight = hardwareMap.get(Servo.class, rightServoName);
         this.servoRangeDegrees = servoRangeDegrees;
         this.gearRatio = gearRatio;
-    }*/
+    }
 
     public void setTargetCoordinates(double x, double y) {
         this.targetX = x;

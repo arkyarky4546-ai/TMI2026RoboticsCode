@@ -82,8 +82,8 @@ public class colorShootFunc {
     int i = 0;
     int shootTrack = 0;
     int colorIndex = 0;
-    double offset  = 405/360*2/5 * 360/355 * 23/21;
-    double gearOff = 360/355 * 23/21;
+    double offset  = 405/360*2/5 * 360/355 * 20/18;
+    double gearOff = 360/355 * 20/18;
     double intakeVelocity;
     boolean oppInt = false;
     boolean fstspdachvd = false;
@@ -150,7 +150,7 @@ public class colorShootFunc {
             fstspdachvd = true;
         }
         if (fstspdachvd) {
-            if (intakeVelocity < 1000 && power != 0 && timer1.milliseconds() > 2000) {
+            if (intakeVelocity < 600 && power != 0 && timer1.milliseconds() > 2000) {
                 oppInt = true;
                 artiPush.setPosition(kickZero);
                 inta2.setPower(power);
@@ -173,7 +173,7 @@ public class colorShootFunc {
         telemetry.addData("color array 3: ", spindexColors[2]);
         telemetry.addData("intakevel ", inta1.getVelocity());
 
-        /*if( dis < 5 && timer123.milliseconds() > 300){
+        if( dis < 5 && timer123.milliseconds() > 200){
             servRo.startRotate(servRo.getPosition() , 120, 360);
             i += 1;
             if (i == 3){
@@ -181,7 +181,8 @@ public class colorShootFunc {
             }
            // intake = true;
             timer123.reset();
-        }*/
+            telemetry.addData("dis ", dis);
+        }
         /*if (intake && timer123.milliseconds() > 75){
             servRo.startRotate(servRo.getPosition() , 80, 0);
             timer123.reset();

@@ -164,7 +164,7 @@ public class test extends OpMode {
 
 
                 //test colorshoot
-                if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
+                /*if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
                     index1234 = true;
                     index123 = false;
                 }
@@ -172,7 +172,7 @@ public class test extends OpMode {
 
                     stageProg = hehe.score(pattern, stageProg);
 
-                }
+                }*/
                 //hehe.shootOneBall();
 
                 //hehe.shootOneBall();
@@ -234,6 +234,7 @@ public class test extends OpMode {
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
         doos = dis.getDistance(DistanceUnit.CM);
+        telemetry.addData("disguisedjlsd ", doos);
         /*if (scoonTrack < 3) {
             scoonTrack = hehe.scOOON();
         }*/
@@ -249,7 +250,7 @@ public class test extends OpMode {
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
-           // scoonTrack = 3;
+            //scoonTrack = 3;
         }
         else {
             //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);

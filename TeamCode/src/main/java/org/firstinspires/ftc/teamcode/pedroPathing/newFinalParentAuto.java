@@ -38,7 +38,7 @@ public class newFinalParentAuto extends OpMode {
     private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(88, -52, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(88, -30 , Math.toRadians(90));
+    private final Pose acIntakePose1 = new Pose(88, -22 , Math.toRadians(90));
     private final Pose intakePose2 = new Pose(64, -60, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(64, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(65, -48, Math.toRadians(0));
@@ -221,7 +221,7 @@ public class newFinalParentAuto extends OpMode {
             case 5:
                 wally.setPosition(0.5);
                 if(actionTimer.getElapsedTimeSeconds() > 1) {
-                    hehe.reset();
+                    //hehe.reset();
                     follower.followPath(scoreLoad1,true);
                     setPathState(6);
                 }
@@ -232,7 +232,7 @@ public class newFinalParentAuto extends OpMode {
                     lasterror=0;
                     actionTimer.resetTimer();
                     follower.holdPoint(scorePose1);
-                    stageProg = 2;
+                    //stageProg = 2;
                     timer12345.reset();
                     setPathState(7);
                 }
@@ -293,7 +293,7 @@ public class newFinalParentAuto extends OpMode {
                     lasterror=0;
                     actionTimer.resetTimer();
                     follower.holdPoint(scorePose1);
-                    stageProg = 2;
+                    //stageProg = 2;
                     timer12345.reset();
                     setPathState(12);
                 }
@@ -377,6 +377,7 @@ public class newFinalParentAuto extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
+            //scoonTrack = 3;
             scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
         }
         else {
