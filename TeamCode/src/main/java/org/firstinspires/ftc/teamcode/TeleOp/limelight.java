@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
-@TeleOp
+//@TeleOp
 public class limelight extends OpMode {
     Limelight3A limelight3A;
     @Override

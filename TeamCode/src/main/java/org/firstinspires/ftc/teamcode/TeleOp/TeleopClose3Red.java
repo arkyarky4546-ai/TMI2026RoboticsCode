@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 @Configurable
-@TeleOp
+//@TeleOp
 public class TeleopClose3Red extends OpMode {
     private NormalizedColorSensor coloora;
     private Follower follower;

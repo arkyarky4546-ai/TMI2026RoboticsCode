@@ -146,9 +146,9 @@ public class colorShootFunc {
             inta2.setPower(-power);
             inta1.setPower(power);
         }
-        if (intakeVelocity > 1200){
+        /*if (intakeVelocity > 1200){
             fstspdachvd = true;
-        }
+        }*/
         if (fstspdachvd) {
             if (intakeVelocity < 600 && power != 0 && timer1.milliseconds() > 2000) {
                 oppInt = true;
@@ -301,6 +301,34 @@ public class colorShootFunc {
     }
     public void reset () {
         scanPos = 0;
+    }
+
+    public boolean shootOneGreen(){
+        if (spindexColors[i] == green) {
+            return (shootOneBall() == 1);
+        }
+        else{
+            servRo.startRotate(servRo.getPosition(), 120, 405);
+            i--;
+            if(i == -1){
+                i = 2;
+            }
+            return false;
+        }
+    }
+
+    public boolean shootOnePurple(){
+        if (spindexColors[i] == purple) {
+            return (shootOneBall() == 1);
+        }
+        else{
+            servRo.startRotate(servRo.getPosition(), 120, 405);
+            i--;
+            if(i == -1){
+                i = 2;
+            }
+            return false;
+        }
     }
 
     public int shootOneBall(){ //wasn't letting me use thread.sleep for some reason so it told me to add this

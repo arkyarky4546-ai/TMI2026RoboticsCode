@@ -9,11 +9,12 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.ServoRotate;
 import org.firstinspires.ftc.teamcode.colorShootFunc;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+//import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 //neater colorShootFunc with a few extra things
 public class ShooterAndIntake {
@@ -68,6 +69,7 @@ public class ShooterAndIntake {
     double gearOff = 360/355 * 20/18;
 
     private colorShootFunc ColorShootFunc;
+    private ElapsedTime servoRotate = new ElapsedTime();
 
     public ShooterAndIntake(HardwareMap hardwareMap){
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
@@ -129,31 +131,82 @@ public class ShooterAndIntake {
     }
 
     //some of the stuff was for pedro so i made it an exclusively teleop class
-    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut, boolean colorShootActive){
+    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut, boolean colorShootActive, boolean shootGreen, boolean shootPurple, Telemetry telemetry){
         //new:
         double intakeDis = distanceSensor.getDistance(DistanceUnit.INCH);
         if(intakeActive){
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
+            //telemetry.addData("intakeTimer", intakeTimer.milliseconds());
             if(intakeDis < 5 && intakeTimer.milliseconds() > 300) {
                 servRo.startRotate(servRo.getPosition(), 120, 0);
                 intakeTimer.reset();
             }
+            shoot1.setPower(0);
+            shoot2.setPower(0);
         }
         else if(intakeOut){
             intake1.setPower(-intakePower);
             intake2.setPower(intakePower);
+            shoot1.setPower(0);
+            shoot2.setPower(0);
+        }
+        else if(shootGreen){
+            ColorShootFunc.shootOneGreen();
+            servRo.startRotate(servRo.getPosition(),120, 405);
+        }
+        else if(shootPurple){
+            ColorShootFunc.shootOnePurple();
+            servRo.startRotate(servRo.getPosition(),120, 405);
         }
         else if(shootActive){
             shootPower = shooterPIDControl(shoot2.getVelocity(), getGoodShootVel(distance));
-            if(ColorShootFunc.shootOneBall() == 1){
+            shootPower = 1300;
+            /*if(ColorShootFunc.shootOneBall() == 1){
                 if(servRo.getPosition() > .399 * gearOff + offset) {
                     servRo.startRotate(servRo.getPosition(), 0, 405);
                 }
                 else{
                 servRo.startRotate(servRo.getPosition(),120, 405);
                 }
+            } */
+            shoot1.setPower(-shootPower);
+            shoot2.setPower(shootPower);
+            if(shoot2.getVelocity()>(.92*shootPower)){
+                wall.setPosition(0);
+                artifactPush.setPosition(kickUp);
+                if(intakeTimer.milliseconds() > 300){
+                    servRo.startRotate(servRo.getPosition(),120, 405);
+                    intakeTimer.reset();
+                }
             }
+            else {
+                wall.setPosition(.3);
+                artifactPush.setPosition(kickZero);
+            }
+
+            /*wall.setPosition(0.3);
+        Integralsum = 0;
+        lasterror = 0;
+        TargetVelocity = getGoodVel(shooting2.getVelocity());
+        if(TargetVelocity > 1500){
+            TargetVelocity = 1300;
+        }
+        if(shooting2.getVelocity()>(.92*TargetVelocity)){
+            wall.setPosition(0);
+            artiPush.setPosition(kickUp);
+
+            //artifactPush.setPosition(kickZero);
+           // timer1234.reset();
+            return 1;
+
+            //gateShoot = false;
+        }
+        else {
+            wall.setPosition(.3);
+            return 0;
+        }
+    }*/
 
         }
         else if(colorShootActive){
@@ -165,6 +218,10 @@ public class ShooterAndIntake {
         }
         else{
             ColorShootFunc.update(distance, intake1.getPower(), intakeDis, Integralsum, lasterror, 1, telemetry);
+            shoot1.setPower(0);
+            shoot2.setPower(0);
+            intake1.setPower(0);
+            intake2.setPower(0);
         }
 
     }

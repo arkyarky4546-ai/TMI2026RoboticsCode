@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 
 @Configurable
-@TeleOp
+//@TeleOp
 public class ImprovedTeleOp6221 extends OpMode {
     private NormalizedColorSensor coloora;
     private Follower follower;

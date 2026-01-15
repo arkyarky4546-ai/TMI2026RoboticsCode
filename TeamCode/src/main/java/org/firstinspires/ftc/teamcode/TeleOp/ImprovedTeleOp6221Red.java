@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp
+//@TeleOp
 public class ImprovedTeleOp6221Red extends OpMode {
     private Follower follower;
     public static Pose startingPose; //See ExampleAuto to understand how to use this

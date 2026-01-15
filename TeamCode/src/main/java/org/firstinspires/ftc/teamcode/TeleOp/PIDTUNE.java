@@ -22,7 +22,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.List;
 
-@TeleOp
+//@TeleOp
 public class PIDTUNE extends OpMode {
     public static double Kp=0.0047;
     public static double Ki=0.0004;

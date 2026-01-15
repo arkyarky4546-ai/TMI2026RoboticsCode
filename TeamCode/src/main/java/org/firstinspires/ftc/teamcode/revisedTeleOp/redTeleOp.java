@@ -66,7 +66,15 @@ public class redTeleOp extends OpMode {
 
         //shooter and intake calls - controlled by gamepad2
         //(left trigger = intake, left bumper = out intake, right trigger = shoot)
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), (gamepad2.left_trigger > 0.25), (gamepad2.right_trigger > 0.25), gamepad2.left_bumper, gamepad2.right_bumper);
+        boolean leftTrigger = false, rightTrigger = false;
+        if(gamepad2.left_trigger > 0.75){
+            leftTrigger = true;
+        }
+        if(gamepad2.right_trigger > 0.75){
+            rightTrigger = true;
+        }
+        telemetry.addData("rightTrigger", rightTrigger);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, telemetry);
 
         //limelight pattern detection
         if(!patternDetected) {

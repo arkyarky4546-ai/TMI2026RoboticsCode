@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
-@TeleOp
+//@TeleOp
 public class autoaimingTest extends OpMode {
     ElapsedTime timer =new ElapsedTime();
     Limelight3A limelight3A;
