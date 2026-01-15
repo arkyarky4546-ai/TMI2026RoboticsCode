@@ -28,6 +28,7 @@ public class Drivetrain {
 
     public Drivetrain(HardwareMap hardwareMap) {
         mode = 0;
+        //TODO: determine auto starting pose
         startingPose = new Pose(65, -97, Math.toRadians(0));
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
