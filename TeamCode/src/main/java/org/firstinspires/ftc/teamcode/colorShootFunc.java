@@ -40,6 +40,7 @@ public class colorShootFunc {
     ElapsedTime timer123 = new ElapsedTime();
     ElapsedTime timer1234 = new ElapsedTime();
     ElapsedTime timer123456 = new ElapsedTime();
+    ElapsedTime timer1234567 = new ElapsedTime();
     boolean intake = false;
     double lasterror = 0;
     Servo wally;
@@ -208,6 +209,40 @@ public class colorShootFunc {
             servRo.startRotate(servRo.getPosition(), 0, 400);
             return stage;
 
+        }
+        if(stage == 0){
+            if(spindexColors[2] !=0){
+                servRo.servo.setPosition(240/360 * 2/5 * 360/355 * 20/18+offset);
+                servRo.servo2.setPosition(0+offset);
+                wall.setPosition(kickUp);
+                timer1234567.reset();
+                spindexColors[2] = 0;
+                return 0;
+            } else if (spindexColors[1] != 0) {
+                servRo.servo.setPosition(120/360 * 2/5 * 360/355 * 20/18+offset);
+                servRo.servo2.setPosition(0+offset);
+                wall.setPosition(kickUp);
+                timer1234567.reset();
+                spindexColors[1] = 0;
+                return 0;
+            }
+            else if (spindexColors[0] != 0){
+                servRo.servo.setPosition(0+offset);
+                servRo.servo2.setPosition(0+offset);
+                wall.setPosition(kickUp);
+                timer1234567.reset();
+                spindexColors[0] = 0;
+                return 0;
+            }
+            else if (timer1234567.milliseconds() > 300) {
+                servRo.servo.setPosition(0);
+                servRo.servo2.setPosition(0);
+                wall.setPosition(kickZero);
+                return 0;
+            }
+            else {
+                return 0;
+            }
         }
         else if( spindexColors[i] == pattern[stage] && timer123456.milliseconds() > 500) {
             if (shootTrack == 0) {
