@@ -172,6 +172,7 @@ public class ShooterAndIntake {
                 else{
                     ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(),120, 400);
                 }
+                intakeTimer.reset();
             }
         }
         else if(shootPurple){
@@ -183,6 +184,7 @@ public class ShooterAndIntake {
                 else{
                     ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(),120, 400);
                 }
+                intakeTimer.reset();
             }
         }
         else if(shootActive){
