@@ -164,7 +164,7 @@ public class test extends OpMode {
 
 
                 //test colorshoot
-                /*if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
+                if( actionTimer.getElapsedTimeSeconds() > 3 && !index1234){
                     index1234 = true;
                     index123 = false;
                 }
@@ -172,7 +172,7 @@ public class test extends OpMode {
 
                     stageProg = hehe.score(pattern, stageProg);
 
-                }*/
+                }
                 //hehe.shootOneBall();
 
                 //hehe.shootOneBall();
@@ -249,11 +249,11 @@ public class test extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1);
             //scoonTrack = 3;
         }
         else {
-            //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
+            //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry, 1);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){

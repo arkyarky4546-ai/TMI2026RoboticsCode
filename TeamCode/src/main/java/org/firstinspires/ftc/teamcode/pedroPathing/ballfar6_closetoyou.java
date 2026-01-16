@@ -222,7 +222,7 @@ public class ballfar6_closetoyou extends OpMode {
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1);
             //scoonTrack = 3;
         }
         else {

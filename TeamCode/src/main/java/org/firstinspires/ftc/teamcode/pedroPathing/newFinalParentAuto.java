@@ -378,10 +378,10 @@ public class newFinalParentAuto extends OpMode {
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
             //scoonTrack = 3;
-            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry);
+            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1);
         }
         else {
-            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState,telemetry);
+            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry, 1);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){
