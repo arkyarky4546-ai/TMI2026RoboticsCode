@@ -133,7 +133,7 @@ public class colorShootFunc {
         return (error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
     }
     public int update( double distance, double power, double dis, double integralsum, double Lasterror, int pathstate, Telemetry telemetry, int on){
-        if(pathstate == 12 || on == 0) {
+        if(pathstate == 14 || on == 0) {
             shootPower = 0;
         }
         else {
@@ -216,14 +216,14 @@ public class colorShootFunc {
                 servRo.servo2.setPosition(0+offset);
                 wall.setPosition(kickUp);
                 timer1234567.reset();
-                spindexColors[2] = 0;
+                //spindexColors[2] = 0;
                 return 0;
             } else if (spindexColors[1] != 0) {
                 servRo.servo.setPosition(120/360 * 2/5 * 360/355 * 20/18+offset);
                 servRo.servo2.setPosition(0+offset);
                 wall.setPosition(kickUp);
                 timer1234567.reset();
-                spindexColors[1] = 0;
+                //spindexColors[1] = 0;
                 return 0;
             }
             else if (spindexColors[0] != 0){
@@ -231,16 +231,10 @@ public class colorShootFunc {
                 servRo.servo2.setPosition(0+offset);
                 wall.setPosition(kickUp);
                 timer1234567.reset();
-                spindexColors[0] = 0;
+                //spindexColors[0] = 0;
                 return 0;
             }
-            else if (timer1234567.milliseconds() > 300) {
-                servRo.servo.setPosition(0);
-                servRo.servo2.setPosition(0);
-                wall.setPosition(kickZero);
-                return 0;
-            }
-            else {
+            else{
                 return 0;
             }
         }
@@ -365,7 +359,9 @@ public class colorShootFunc {
             return false;
         }
     }
-
+    public void reseti(){
+        i = 0;
+    }
     public int shootOneBall(){ //wasn't letting me use thread.sleep for some reason so it told me to add this
         wall.setPosition(0.3);
         Integralsum = 0;

@@ -149,6 +149,9 @@ public class ballfar6_closetoyou extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds() > 10) {
                     wally.setPosition(.5);
                     follower.followPath(score1,true);
+                    hehe.servRo.servo.setPosition(0);
+                    hehe.servRo.servo2.setPosition(0);
+                    hehe.reseti();
                     stageProg = 2;
                     setPathState(2);
                 }

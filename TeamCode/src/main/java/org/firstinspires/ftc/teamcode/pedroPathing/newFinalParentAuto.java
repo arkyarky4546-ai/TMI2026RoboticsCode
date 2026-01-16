@@ -66,6 +66,8 @@ public class newFinalParentAuto extends OpMode {
     double distance;
     double shooterPower;
     boolean index12 = true;
+    boolean index123 = false;
+    boolean index1234 = true;
     CRServo spindexRoter;
     ServoRotate smart1;
     public static double TURN_Constant = 0.01;
@@ -154,6 +156,24 @@ public class newFinalParentAuto extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
+                if( actionTimer.getElapsedTimeSeconds() > 1 && !index123){
+                    index1234 = false;
+                    index123 = true;
+                }
+                if(scoonTrack == 3 && !index1234){
+
+                    stageProg = hehe.score(pattern, stageProg);
+
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 7) {
+                    wally.setPosition(.5);
+                    follower.followPath(firstLoad,true);
+                    hehe.servRo.servo.setPosition(0);
+                    hehe.servRo.servo2.setPosition(0);
+                    hehe.reseti();
+                    stageProg = 2;
+                    setPathState(3);
+                }
                 /*actual = 120;
                 if (index1) {
                     actual = 60;
@@ -192,15 +212,7 @@ public class newFinalParentAuto extends OpMode {
                     wally.setPosition(0.2);
                     push.setPosition(kickZero);
                 }*/
-                if(scoonTrack < 2 && timer12345.milliseconds() > 200){
-                    timer12345.reset();
-                    //stageProg = hehe.score(pattern, stageProg);
-                }
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
-                    wally.setPosition(.5);
-                    follower.followPath(firstLoad,true);
-                    setPathState(3);
-                }
+
                 break;
             case 3:
                 if(!follower.isBusy()) {
@@ -220,7 +232,7 @@ public class newFinalParentAuto extends OpMode {
                 break;
             case 5:
                 wally.setPosition(0.5);
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
                     //hehe.reset();
                     follower.followPath(scoreLoad1,true);
                     setPathState(6);
@@ -238,19 +250,18 @@ public class newFinalParentAuto extends OpMode {
                 }
                 break;
             case 7:
-                if (timer12345.milliseconds() > 200 && stageProg >= 0){
-                    //stageProg = hehe.score(pattern, stageProg);
-                    timer12345.reset();
+                if(scoonTrack == 3 && !index1234){
+
+                    stageProg = hehe.score(pattern, stageProg);
+
                 }
-
-
-
-
-
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
-
+                if(actionTimer.getElapsedTimeSeconds() > 5) {
                     wally.setPosition(.5);
                     follower.followPath(secondLoad,true);
+                    hehe.servRo.servo.setPosition(0);
+                    hehe.servRo.servo2.setPosition(0);
+                    hehe.reseti();
+                    stageProg = 2;
                     setPathState(8);
                 }
 
@@ -281,7 +292,7 @@ public class newFinalParentAuto extends OpMode {
                     index1 = true;
                     timer12.reset();
                 }*/
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
                     follower.followPath(scoreLoad2,true);
                     setPathState(11);
                     hehe.reset();
@@ -336,23 +347,28 @@ public class newFinalParentAuto extends OpMode {
                     wally.setPosition(0.2);
                     push.setPosition(kickZero);
                 }*/
-                if (timer12345.milliseconds() > 200 && stageProg >= 0){
-                    stageProg = hehe.score(pattern, stageProg);
-                    timer12345.reset();
-                }
+                if(scoonTrack == 3 && !index1234){
 
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
-                    //spindexRoter.setPower(0);
-                    intake.setPower(0);
-                    intake1.setPower(0);
-                    shooter.setPower(0);
-                    shooter2.setPower(0);
+                    stageProg = hehe.score(pattern, stageProg);
+
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 5) {
+                    wally.setPosition(.5);
                     follower.followPath(end,true);
+                    hehe.servRo.servo.setPosition(0);
+                    hehe.servRo.servo2.setPosition(0);
+                    hehe.reseti();
+                    stageProg = 2;
                     setPathState(13);
                 }
 
                 break;
             case 13:
+                if(!follower.isBusy()){
+                    setPathState(14);
+                }
+                break;
+            case 14:
                 break;
         }
     }
