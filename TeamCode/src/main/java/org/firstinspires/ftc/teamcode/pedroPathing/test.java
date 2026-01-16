@@ -229,7 +229,7 @@ public class test extends OpMode {
     }
     public void setPathState(int pState) {
         pathState = pState;
-        pathTimer.resetTimer();
+        //pathTimer.resetTimer();
     }
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
