@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
@@ -9,11 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.revisedTeleOp.Drivetrain;
 
 @Configurable
 @TeleOp
 public class shootingReg extends OpMode {
-    Drivetrain drivetrain;
+    org.firstinspires.ftc.teamcode.revisedTeleOp.Drivetrain drivetrain;
 
     DcMotorEx shoot1;
     DcMotorEx shoot2;

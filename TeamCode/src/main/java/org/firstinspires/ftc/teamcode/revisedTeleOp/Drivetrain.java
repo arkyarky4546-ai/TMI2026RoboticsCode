@@ -140,7 +140,7 @@ public class Drivetrain {
             return Math.sqrt((x + 144) * (x + 144) + (y - 144) * (y - 144)); //144,-144
         }
         else if(mode == BLUE){
-            return Math.sqrt((x + 0) * (x + 0) + (y - 144) * (y - 144)); //144,0
+            return Math.sqrt((x - 144) * (x - 144) + (y + 0) * (y + 0)); //144,0
         }
         else{
             return 0;

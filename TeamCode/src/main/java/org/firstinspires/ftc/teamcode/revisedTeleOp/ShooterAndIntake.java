@@ -18,6 +18,8 @@ import org.firstinspires.ftc.teamcode.colorShootFunc;
 
 //neater colorShootFunc with a few extra things
 public class ShooterAndIntake {
+    //drivetrain
+    Drivetrain drivetrain;
     //intake
     DcMotorEx intake1;
     DcMotorEx intake2;
@@ -40,7 +42,6 @@ public class ShooterAndIntake {
     Servo wall;
     Servo shooterHood;
     private final double TURRET_START = 0.5;
-    private double shooterPower;
 
     NormalizedColorSensor colorSensor;
 
@@ -73,6 +74,8 @@ public class ShooterAndIntake {
     private ElapsedTime servoRotate = new ElapsedTime();
 
     public ShooterAndIntake(HardwareMap hardwareMap){
+        drivetrain = new Drivetrain(hardwareMap);
+
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
         intake2 = hardwareMap.get(DcMotorEx.class, "intake1");
         intakeGate = hardwareMap.get(Servo.class, "intakeGate");
@@ -97,7 +100,6 @@ public class ShooterAndIntake {
         shooterHood = hardwareMap.get(Servo.class, "shooterHood");
         shooterHood.setPosition(0.4);
         artifactPush.setPosition(kickZero);
-        shooterPower = 1;
 
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "coloora");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "disDiss");
@@ -194,7 +196,7 @@ public class ShooterAndIntake {
                 ColorShootFunc.servRo.servo2.setPosition(0);
             }*/
             shootPower = shooterPIDControl(shoot2.getVelocity(), getGoodShootVel(distance));
-            shootPower = 1;
+
             /*if(ColorShootFunc.shootOneBall() == 1){
                 if(servRo.getPosition() > .399 * gearOff + offset) {
                     servRo.startRotate(servRo.getPosition(), 0, 405);
@@ -208,7 +210,7 @@ public class ShooterAndIntake {
             intake1.setPower(1);
             intake2.setPower(-1);
             telemetry.addData("shjoot power", shoot2.getVelocity());
-            if(shoot2.getVelocity() > (.92*1300)){
+            if((shoot2.getVelocity() > (.92*shootPower))&&(shoot2.getVelocity()<(1.08*shootPower))){
                 wall.setPosition(0);
                 artifactPush.setPosition(kickUp);
                 if(intakeTimer.milliseconds() > 300){
@@ -253,8 +255,10 @@ public class ShooterAndIntake {
             wall.setPosition(.3);
             return 0;
         }
-    }*/
-
+    }*/     telemetry.addData("distance",distance);
+            telemetry.addData("shootingVelocity",shootPower);
+            telemetry.addData("currentVelocity",shoot2.getVelocity());
+            telemetry.update();
         }
         else if(colorShootActive){
             ColorShootFunc.update(distance, intake1.getPower(), intakeDis, Integralsum, lasterror, 1, telemetry, 1);
@@ -284,9 +288,7 @@ public class ShooterAndIntake {
     }
 
     public double getGoodShootVel(double dis){
-        return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
+        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1687.01299;
     }
-
-
 }
 

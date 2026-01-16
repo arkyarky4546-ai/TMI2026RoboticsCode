@@ -51,6 +51,8 @@ public class Turret {
         double robotX = robotPose.getX();
         double robotY = robotPose.getY();
         double robotHeadingRad = robotPose.getHeading();
+        robotX += (-Math.cos(robotHeadingRad) - 3*Math.sin(robotHeadingRad)); //compensate for turret offset on the robot
+        robotY += (3*Math.cos(robotHeadingRad) - Math.sin(robotHeadingRad)); //estimated at 1 inch down, 3 inch left from center
         telemetry.addData("Turret X", robotX);
         telemetry.addData("Turret Y", robotY);
         telemetry.addData("Turret Head", Math.toDegrees(robotHeadingRad));
