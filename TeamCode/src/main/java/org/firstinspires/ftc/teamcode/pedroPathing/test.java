@@ -249,7 +249,7 @@ public class test extends OpMode {
         distance = Math.sqrt((-144-follower.getPose().getY()) * (-144-follower.getPose().getY()) + (144 - follower.getPose().getX()) * (144 - follower.getPose().getX()));
         telemetry.addData("distance", distance);
         if (pathState != 12){
-           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1);
+           scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1, 1);
             //scoonTrack = 3;
         }
         else {

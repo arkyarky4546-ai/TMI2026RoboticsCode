@@ -198,6 +198,72 @@ public class colorShootFunc {
         return scOOON();
         //return 0;
     }
+    public int update( double distance, double power, double dis, double integralsum, double Lasterror, int pathstate, Telemetry telemetry, int on, int auto){
+        if(pathstate == 14 || on == 0) {
+            shootPower = 0;
+        }
+        else {
+            shootPower = 1;
+            TargetVelocity = 1300;
+        }
+        Integralsum = integralsum;
+        lasterror = Lasterror;
+
+        intakeVelocity = -inta1.getVelocity();
+        if (!fstspdachvd){
+            inta2.setPower(-power);
+            inta1.setPower(power);
+        }
+        /*if (intakeVelocity > 1200){
+            fstspdachvd = true;
+        }*/
+        if (fstspdachvd) {
+            if (intakeVelocity < 600 && power != 0 && timer1.milliseconds() > 2000) {
+                oppInt = true;
+                artiPush.setPosition(kickZero);
+                inta2.setPower(power);
+                inta1.setPower(-power);
+            }
+            if (oppInt) {
+                oppInt = false;
+                timer1.reset();
+            } else if (timer1.milliseconds() > 300) {
+                inta2.setPower(-power);
+                inta1.setPower(power);
+            }
+        }
+
+
+        shooting1.setPower(-shootPower);
+        shooting2.setPower(shootPower);
+        telemetry.addData("color array 1: ", spindexColors[0]);
+        telemetry.addData("color array 2: ", spindexColors[1]);
+        telemetry.addData("color array 3: ", spindexColors[2]);
+        telemetry.addData("intakevel ", inta1.getVelocity());
+
+        if( dis < 5 && timer123.milliseconds() > 200){
+            if (servRo.getPosition() >= .399 * gearOff + offset) {
+                servRo.startRotate(servRo.getPosition(), 0, 360);
+                i = 0;
+            } else {
+                servRo.startRotate(servRo.getPosition(), 120, 360);
+            }
+            i += 1;
+            if (i == 3){
+                i = 0;
+            }
+            // intake = true;
+            timer123.reset();
+            telemetry.addData("dis ", dis);
+        }
+        /*if (intake && timer123.milliseconds() > 75){
+            servRo.startRotate(servRo.getPosition() , 80, 0);
+            timer123.reset();
+            intake = false;
+        }*/
+        return scOOON();
+        //return 0;
+    }
     public double getGoodVel(double dis){
         return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1687.01299;
     }
@@ -207,39 +273,12 @@ public class colorShootFunc {
             servRo.servo.setPosition(0);
             i = 0;
             servRo.servo2.setPosition(0);
+
             servRo.startRotate(servRo.getPosition(), 0, 400);
             return stage;
 
         }
-        if(stage == 0){
-            if(spindexColors[2] !=0){
-                servRo.servo.setPosition(240/360 * 2/5 * 360/355 * 20/18+offset);
-                servRo.servo2.setPosition(0+offset);
-                wall.setPosition(kickUp);
-                timer1234567.reset();
-                //spindexColors[2] = 0;
-                return 0;
-            } else if (spindexColors[1] != 0) {
-                servRo.servo.setPosition(120/360 * 2/5 * 360/355 * 20/18+offset);
-                servRo.servo2.setPosition(0+offset);
-                wall.setPosition(kickUp);
-                timer1234567.reset();
-                //spindexColors[1] = 0;
-                return 0;
-            }
-            else if (spindexColors[0] != 0){
-                servRo.servo.setPosition(0+offset);
-                servRo.servo2.setPosition(0+offset);
-                wall.setPosition(kickUp);
-                timer1234567.reset();
-                //spindexColors[0] = 0;
-                return 0;
-            }
-            else{
-                return 0;
-            }
-        }
-        else if( spindexColors[i] == pattern[stage] && timer123456.milliseconds() > 500) {
+        else if( spindexColors[i] == pattern[stage]) {
             if (shootTrack == 0) {
 
                 shootTrack = shootOneBall();
@@ -247,7 +286,7 @@ public class colorShootFunc {
                 return stage;
             }
 
-            else if (shootTrack == 1 && timer123456.milliseconds() > 3000) {
+            else if (shootTrack == 1 && timer123456.milliseconds() > 1000) {
                 timer123456.reset();
                 spindexColors[i] = 0;
                 shootTrack = 0;
@@ -258,9 +297,11 @@ public class colorShootFunc {
                     i = 0;
                 }
                 if (servRo.getPosition() >= .399 * gearOff + offset) {
+
                     servRo.startRotate(servRo.getPosition(), 0, 400);
                     i = 0;
                 } else {
+
                     servRo.startRotate(servRo.getPosition(), 120, 400);
                 }
                 if (stage == 0) {
@@ -274,8 +315,9 @@ public class colorShootFunc {
             }
 
         }
-        else if (spindexColors[i] != pattern[stage] && timer123456.milliseconds() > 3000){
+        else if (spindexColors[i] != pattern[stage] && timer123456.milliseconds() > 1000){
             timer123456.reset();
+            //wall.setPosition(kickZero);
             artiPush.setPosition(kickZero);
             i += 1;
             if (i==3){
@@ -283,9 +325,11 @@ public class colorShootFunc {
             }
 
             if (servRo.getPosition() >= .399 * gearOff + offset) {
+
                 servRo.startRotate(servRo.getPosition(), 0, 400);
                 i = 0;
             } else {
+
                 servRo.startRotate(servRo.getPosition(), 120, 400);
             }
 
@@ -295,7 +339,7 @@ public class colorShootFunc {
             return stage;
         }
 
-       }
+    }
     public int scOOON () {
 
         if (scanPos < 3) {
@@ -371,7 +415,7 @@ public class colorShootFunc {
         if(TargetVelocity > 1500){
             TargetVelocity = 1300;
         }
-        if(shooting2.getVelocity()>(.92*TargetVelocity)){
+        if(Math.abs(shooting2.getVelocity())>(.92*TargetVelocity)){
             wall.setPosition(0);
             artiPush.setPosition(kickUp);
 

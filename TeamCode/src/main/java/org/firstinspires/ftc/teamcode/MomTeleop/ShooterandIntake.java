@@ -1,23 +1,18 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+/*package org.firstinspires.ftc.teamcode.MomTeleop;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.ServoRotate;
-import org.firstinspires.ftc.teamcode.colorShootFunc;
 
-//import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
-//neater colorShootFunc with a few extra things
-public class ShooterAndIntake {
+public class ShooterandIntake {
     //drivetrain
     Drivetrain drivetrain;
     //intake
@@ -43,14 +38,6 @@ public class ShooterAndIntake {
     Servo shooterHood;
     private final double TURRET_START = 0.5;
 
-    NormalizedColorSensor colorSensor;
-
-    final int GREEN = 1;
-    final int PURPLE = 2;
-
-    private int pattern[] = {PURPLE, PURPLE, GREEN};
-    private int[] spindexColors = new int[3];
-
     double Integralsum = 0;
     public static double Kp=0.0047;
     public static double Ki=0.0004;
@@ -71,10 +58,9 @@ public class ShooterAndIntake {
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
 
-    private colorShootFunc ColorShootFunc;
     private ElapsedTime servoRotate = new ElapsedTime();
 
-    public ShooterAndIntake(HardwareMap hardwareMap){
+    public ShooterandIntake(HardwareMap hardwareMap){
         drivetrain = new Drivetrain(hardwareMap);
 
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
@@ -102,37 +88,14 @@ public class ShooterAndIntake {
         shooterHood.setPosition(0.4);
         artifactPush.setPosition(kickZero);
 
-        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "coloora");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "disDiss");
 
         PIDTimer.reset();
         shootTimer.reset();
         intakeTimer.reset();
 
-        ColorShootFunc = new colorShootFunc(hardwareMap, servRot, shoot1, shoot2, colorSensor, intake1, intake2, wall, artifactPush);
-        //, DcMotorEx
     }
 
-    public void setPattern(int pat){
-        if(pat == 1){ //23
-            pattern[0] = PURPLE;
-            pattern[1] = PURPLE;
-            pattern[2] = GREEN;
-        }
-        else if(pat == 2){ //22
-            pattern[0] = PURPLE;
-            pattern[1] = GREEN;
-            pattern[2] = PURPLE;
-        }
-        else if(pat == 3){ //21
-            pattern[0] = GREEN;
-            pattern[1] = PURPLE;
-            pattern[2] = PURPLE;
-        }
-    }
-    public int[] getPattern(){
-        return pattern;
-    }
 
     //some of the stuff was for pedro so i made it an exclusively teleop class
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut, boolean colorShootActive, boolean shootGreen, boolean shootPurple, Telemetry telemetry){
@@ -166,36 +129,7 @@ public class ShooterAndIntake {
             shoot1.setPower(0);
             shoot2.setPower(0);
         }
-        else if(shootGreen){
-            ColorShootFunc.shootOneGreen();
-            if(intakeTimer.milliseconds() > 300){
-                if( ColorShootFunc.servRo.getPosition() > .39 * gearOff + offset) {
-                    ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 400);
-                }
-                else{
-                    ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(),120, 400);
-                }
-                intakeTimer.reset();
-            }
-        }
-        else if(shootPurple){
-            ColorShootFunc.shootOnePurple();
-            if(intakeTimer.milliseconds() > 300){
-                if( ColorShootFunc.servRo.getPosition() > .39 * gearOff + offset) {
-                    ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 400);
-                }
-                else{
-                    ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(),120, 400);
-                }
-                intakeTimer.reset();
-            }
-        }
         else if(shootActive){
-           /* if (!index1){
-                index1 = true;
-                ColorShootFunc.servRo.servo.setPosition(0);
-                ColorShootFunc.servRo.servo2.setPosition(0);
-            }*/
             currentVelocity=shoot2.getVelocity();
             targetVelocity=getGoodShootVel(distance);
             shootPower = shooterPIDControl(targetVelocity, currentVelocity);
@@ -208,7 +142,7 @@ public class ShooterAndIntake {
                 servRo.startRotate(servRo.getPosition(),120, 405);
                 }
             } */
-            shoot1.setPower(-shootPower);
+           /* shoot1.setPower(-shootPower);
             shoot2.setPower(shootPower);
             intake1.setPower(1);
             intake2.setPower(-1);
@@ -258,18 +192,11 @@ public class ShooterAndIntake {
             wall.setPosition(.3);
             return 0;
         }
-    }*/     telemetry.addData("distance",distance);
+    }     telemetry.addData("distance",distance);
             telemetry.addData("targetVelocity",targetVelocity);
             telemetry.addData("currentVelocity",currentVelocity);
             telemetry.addData("shootingVelocity",shootPower);
             telemetry.update();
-        }
-        else if(colorShootActive){
-            ColorShootFunc.update(distance, intake1.getPower(), intakeDis, Integralsum, lasterror, 1, telemetry, 1);
-            stage = ColorShootFunc.score(pattern, stage);
-            if(stage == 0){
-                stage = 2;
-            }
         }
         else{
             ColorShootFunc.update(distance, intake1.getPower(), intakeDis, Integralsum, lasterror, 1, telemetry, 0);
@@ -295,5 +222,6 @@ public class ShooterAndIntake {
     public double getGoodShootVel(double dis){
         return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1687.01299;
     }
-}
+}*/
+
 
