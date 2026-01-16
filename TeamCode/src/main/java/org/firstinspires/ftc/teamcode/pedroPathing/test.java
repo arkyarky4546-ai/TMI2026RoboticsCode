@@ -73,7 +73,7 @@ public class test extends OpMode {
     double offset = 60/360 * .4;
     public static double TURN_Constant = 0.01;
     boolean index123 = true;
-    double turTurn = .6;
+    double turTurn = .15;
     boolean reverse = true;
     int Nonetwo = 120;
     int stageProg = 2;
@@ -105,9 +105,7 @@ public class test extends OpMode {
         double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
         return output;
     }
-    public double getGoodVel(double dis){
-        return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
-    }
+
     public void buildPaths() {//this is where we build the path stuff
         score1 = new Path(new BezierLine(startPose, scorePose1));
         score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
@@ -248,6 +246,8 @@ public class test extends OpMode {
         //TargetVelocity = 1300;
         hood.setPosition(.52);
         //shooterPower = PIDControl(TargetVelocity+150, current);
+        distance = Math.sqrt((-144-follower.getPose().getY()) * (-144-follower.getPose().getY()) + (144 - follower.getPose().getX()) * (144 - follower.getPose().getX()));
+        telemetry.addData("distance", distance);
         if (pathState != 12){
            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1);
             //scoonTrack = 3;
@@ -255,7 +255,7 @@ public class test extends OpMode {
         else {
             //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry, 1);
         }
-        LLResult result = limelight3A.getLatestResult();
+        /*LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){
             List<LLResultTypes.FiducialResult> results = result.getFiducialResults();
             for(LLResultTypes.FiducialResult tag: results){
@@ -276,7 +276,7 @@ public class test extends OpMode {
                     }
                     turretLeft.setPosition(toBeSetPos);
                     turretRight.setPosition(toBeSetPos);
-                }}}
+                }}}*/
         try {
             autonomousPathUpdate();
         } catch (InterruptedException e) {

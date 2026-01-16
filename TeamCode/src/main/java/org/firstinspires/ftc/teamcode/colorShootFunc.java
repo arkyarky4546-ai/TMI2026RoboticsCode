@@ -137,7 +137,8 @@ public class colorShootFunc {
             shootPower = 0;
         }
         else {
-            shootPower = PIDControl(shooting2.getVelocity(), getGoodVel(distance));
+            shootPower = PIDControl(getGoodVel(distance),shooting2.getVelocity());
+            TargetVelocity = getGoodVel(distance);
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
@@ -198,7 +199,7 @@ public class colorShootFunc {
         //return 0;
     }
     public double getGoodVel(double dis){
-        return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
+        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1687.01299;
     }
     public int score(int[] pattern, int stage){
         if( !indextooffset ){

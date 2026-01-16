@@ -61,6 +61,7 @@ public class ShooterAndIntake {
     ElapsedTime PIDTimer = new ElapsedTime();
     double TargetVelocity;
     ElapsedTime shootTimer = new ElapsedTime();
+    double currentVelocity,targetVelocity;
     double shootPower;
 
     ElapsedTime intakeTimer = new ElapsedTime();
@@ -195,7 +196,9 @@ public class ShooterAndIntake {
                 ColorShootFunc.servRo.servo.setPosition(0);
                 ColorShootFunc.servRo.servo2.setPosition(0);
             }*/
-            shootPower = shooterPIDControl(shoot2.getVelocity(), getGoodShootVel(distance));
+            currentVelocity=shoot2.getVelocity();
+            targetVelocity=getGoodShootVel(distance);
+            shootPower = shooterPIDControl(targetVelocity, currentVelocity);
 
             /*if(ColorShootFunc.shootOneBall() == 1){
                 if(servRo.getPosition() > .399 * gearOff + offset) {
@@ -209,7 +212,7 @@ public class ShooterAndIntake {
             shoot2.setPower(shootPower);
             intake1.setPower(1);
             intake2.setPower(-1);
-            telemetry.addData("shjoot power", shoot2.getVelocity());
+            //telemetry.addData("shjoot power", shoot2.getVelocity());
             if((shoot2.getVelocity() > (.92*shootPower))&&(shoot2.getVelocity()<(1.08*shootPower))){
                 wall.setPosition(0);
                 artifactPush.setPosition(kickUp);
@@ -256,8 +259,9 @@ public class ShooterAndIntake {
             return 0;
         }
     }*/     telemetry.addData("distance",distance);
+            telemetry.addData("targetVelocity",targetVelocity);
+            telemetry.addData("currentVelocity",currentVelocity);
             telemetry.addData("shootingVelocity",shootPower);
-            telemetry.addData("currentVelocity",shoot2.getVelocity());
             telemetry.update();
         }
         else if(colorShootActive){
@@ -278,6 +282,7 @@ public class ShooterAndIntake {
     }
 
     public double shooterPIDControl(double reference, double state){ //current velocity, target velocity
+        //Hey guys, the real PID is actually target velocity - current velocity
         double error=reference-state;
         double dt = PIDTimer.seconds();
         Integralsum+=error*dt;
