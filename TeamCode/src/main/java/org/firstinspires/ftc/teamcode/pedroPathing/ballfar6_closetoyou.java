@@ -36,8 +36,8 @@ public class ballfar6_closetoyou extends OpMode {
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
     private final Pose startPose = new Pose(8,-53, Math.toRadians(90));
-    private final Pose intakePose1 = new Pose(8, -10, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(8, -20 , Math.toRadians(90));
+    private final Pose intakePose1 = new Pose(8, -20, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(8, -10 , Math.toRadians(90));
     private final Pose endPose1 = new Pose(15, -25, Math.toRadians(0));
 
     int index = 0;
