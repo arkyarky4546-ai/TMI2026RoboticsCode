@@ -157,30 +157,30 @@ public class finalKYS extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
-                if ( actionTimer.getElapsedTimeSeconds() > 3.5){
+                if ( actionTimer.getElapsedTimeSeconds() > 4){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 3) {
+                else if ( actionTimer.getElapsedTimeSeconds() > 3.5) {
                     hehe.zerPos();
                     if (!index1) {
                         index1 = true;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 2.1){
+                else if ( actionTimer.getElapsedTimeSeconds() > 2){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1.6){
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
                     hehe.zerPos();
                     if (index1) {
                         index1 = false;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1){
+                else if ( actionTimer.getElapsedTimeSeconds() > .8){
                     hehe.shootOneBall();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 4.5) {
+                if(actionTimer.getElapsedTimeSeconds() > 5) {
                     hehe.zerPos();
                     wally.setPosition(.5);
                     follower.followPath(firstLoad,true);
@@ -366,10 +366,10 @@ public class finalKYS extends OpMode {
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
             //scoonTrack = 3;
-            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1, 0, 1, 1400);
+            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1, 0, 1, 1300);
         }
         else {
-            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry, 1, 0 ,1, 1400);
+            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry, 1, 0 ,1, 1300);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){
