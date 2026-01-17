@@ -145,13 +145,14 @@ public class ShooterAndIntake {
         if(servoReset){
             servRot.servo.setPosition(0);
             servRot.servo2.setPosition(0);
+            index1 = false;
         }
         if(intakeActive){
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             ColorShootFunc.wall.setPosition(.5);
             //telemetry.addData("intakeTimer", intakeTimer.milliseconds());
-            if(intakeDis < 2 && intakeTimer.milliseconds() > 600) {
+            if(intakeDis < 4 && intakeTimer.milliseconds() > 600) {
                 if(index1 && ColorShootFunc.servRo.getPosition() > .39 * gearOff){
                     //ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 360);
                     ColorShootFunc.servRo.servo.setPosition(0);
@@ -231,15 +232,17 @@ public class ShooterAndIntake {
             //shoot2.setPower(shootPower);
             intake1.setPower(1);
             intake2.setPower(-1);
+            intake2.setPower(-1);
             //if((shoot2.getVelocity() > (.98*targetVelocity)) && (shoot2.getVelocity()<(1.02*targetVelocity))){
-            if((shoot2.getVelocity() > (targetVelocity*.85))){
+            if((Math.abs(shoot2.getVelocity()) > (targetVelocity*.85))||(Math.abs(shoot1.getVelocity()) > (targetVelocity*.85))){
                 wall.setPosition(0);
                 artifactPush.setPosition(kickUp);
                 telemetry.addData("in loop", 0);
                 if(intakeTimer.milliseconds() > 400){
                     telemetry.addData("in timer", 0);
-                    if(!index1 && ColorShootFunc.servRo.getPosition() > .39 * gearOff){
-                        ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 360);
+                    if(!index1){
+                        ColorShootFunc.servRo.servo.setPosition(0);
+                        ColorShootFunc.servRo.servo2.setPosition(0);
                         ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 400);
                         index1 = true;
                         telemetry.addData("in 1", 0);

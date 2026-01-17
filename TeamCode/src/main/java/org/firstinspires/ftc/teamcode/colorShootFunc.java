@@ -307,7 +307,7 @@ public class colorShootFunc {
         telemetry.addData("color array 3: ", spindexColors[2]);
         telemetry.addData("intakevel ", inta1.getVelocity());
 
-        if( dis < 5 && timer123.milliseconds() > 500){
+        if( dis < 4 && timer123.milliseconds() > 500){
             if (servRo.getPosition() >= .399 * gearOff) {
                 servRo.servo.setPosition(0);
                 servRo.servo2.setPosition(0);

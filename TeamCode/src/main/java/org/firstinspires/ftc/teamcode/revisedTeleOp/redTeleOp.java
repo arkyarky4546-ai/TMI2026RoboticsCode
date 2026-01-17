@@ -85,6 +85,7 @@ public class redTeleOp extends OpMode {
         telemetry.addData("shootfirst", shootFirst);
         shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, telemetry);
 
+        /*
         //limelight pattern detection
         if(!patternDetected) {
             LLResult result = limelight3A.getLatestResult();
@@ -103,6 +104,6 @@ public class redTeleOp extends OpMode {
                     }
                 }
             }
-        }
+        } */
     }
 }
