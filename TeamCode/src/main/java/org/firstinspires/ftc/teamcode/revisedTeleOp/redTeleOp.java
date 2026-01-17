@@ -22,6 +22,7 @@ public class redTeleOp extends OpMode {
 
     Limelight3A limelight3A; //for pattern recognition
     boolean patternDetected = false;
+    boolean shootFirst = true;
 
     @Override
     public void init() {
@@ -71,10 +72,18 @@ public class redTeleOp extends OpMode {
             leftTrigger = true;
         }
         if(gamepad2.right_trigger > 0.75){
+            if(shootFirst){
+                shooterAndIntake.resetPID();
+            }
             rightTrigger = true;
+            shootFirst = false;
+        }
+        else{
+            shootFirst = true;
         }
         telemetry.addData("rightTrigger", rightTrigger);
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, telemetry);
+        telemetry.addData("shootfirst", shootFirst);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, telemetry);
 
         //limelight pattern detection
         if(!patternDetected) {

@@ -37,12 +37,11 @@ public class ShooterandIntake {
     Servo wall;
     Servo shooterHood;
     private final double TURRET_START = 0.5;
-
     double Integralsum = 0;
-    public static double Kp=0.0047;
-    public static double Ki=0.0004;
-    public static double Kd=0;
-    public static double Kf=0;
+    private double p=0.0047;
+    public double i=0.0004;
+    public double d=0;
+    public double f=0;
     boolean index1 = false;
     double lasterror = 0;
     ElapsedTime PIDTimer = new ElapsedTime();
@@ -134,15 +133,7 @@ public class ShooterandIntake {
             targetVelocity=getGoodShootVel(distance);
             shootPower = shooterPIDControl(targetVelocity, currentVelocity);
 
-            /*if(ColorShootFunc.shootOneBall() == 1){
-                if(servRo.getPosition() > .399 * gearOff + offset) {
-                    servRo.startRotate(servRo.getPosition(), 0, 405);
-                }
-                else{
-                servRo.startRotate(servRo.getPosition(),120, 405);
-                }
-            } */
-           /* shoot1.setPower(-shootPower);
+            shoot1.setPower(-shootPower);
             shoot2.setPower(shootPower);
             intake1.setPower(1);
             intake2.setPower(-1);
@@ -171,7 +162,7 @@ public class ShooterandIntake {
                 artifactPush.setPosition(kickZero);
             }
 
-            /*wall.setPosition(0.3);
+            wall.setPosition(0.3);
         Integralsum = 0;
         lasterror = 0;
         TargetVelocity = getGoodVel(shooting2.getVelocity());
@@ -206,8 +197,6 @@ public class ShooterandIntake {
             intake2.setPower(0);
         }
 
-    }
-
     public double shooterPIDControl(double reference, double state){ //current velocity, target velocity
         //Hey guys, the real PID is actually target velocity - current velocity
         double error=reference-state;
@@ -216,7 +205,7 @@ public class ShooterandIntake {
         double derivative=(error-lasterror)/dt;
         lasterror=error;
         PIDTimer.reset();
-        return (error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
+        return (error*p)+(derivative*d)+(Integralsum*i)+(reference*f);
     }
 
     public double getGoodShootVel(double dis){

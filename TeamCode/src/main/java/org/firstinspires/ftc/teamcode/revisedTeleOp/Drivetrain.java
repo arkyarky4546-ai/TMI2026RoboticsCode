@@ -126,10 +126,10 @@ public class Drivetrain {
     //TODO: find actual positions (odometry pods are slightly off center)
     public void resetCurrentPose(){
         if(mode == RED){
-            follower.setPose(new Pose(0, 0, Math.toRadians(0))); //far left corner of the field
+            follower.setPose(new Pose(8.125, 8.625, Math.toRadians(0))); //far left corner of the field
         }
         else if(mode == BLUE){
-            follower.setPose(new Pose(0, -144, Math.toRadians(0))); //far right corner of the field
+            follower.setPose(new Pose(8.125, -135.375, Math.toRadians(0))); //far right corner of the field
         }
     }
 

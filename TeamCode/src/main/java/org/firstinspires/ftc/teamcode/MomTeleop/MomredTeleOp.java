@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.List;
 
 @Configurable
-@TeleOp
+// @TeleOp
 public class MomredTeleOp extends OpMode {
     /* newly created classes */
     Drivetrain drivetrain; //all driving functionality and pedro pathing
