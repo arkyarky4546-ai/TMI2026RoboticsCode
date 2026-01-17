@@ -76,7 +76,7 @@ public class colorShootFunc {
     int purple = 2;
     double TargetVelocity;
     double kickZero = 0.85;
-    double kickUp = 0.72;
+    double kickUp = 0.68;
     public Servo wall;
     Servo artiPush;
     double shootPower;
@@ -204,7 +204,7 @@ public class colorShootFunc {
         }
         else {
             shootPower = 1;
-            TargetVelocity = 1300;
+            TargetVelocity = 1250;
         }
         Integralsum = integralsum;
         lasterror = Lasterror;
@@ -241,7 +241,7 @@ public class colorShootFunc {
         telemetry.addData("color array 3: ", spindexColors[2]);
         telemetry.addData("intakevel ", inta1.getVelocity());
 
-        if( dis < 5 && timer123.milliseconds() > 200){
+        if( dis < 5 && timer123.milliseconds() > 150){
             if (servRo.getPosition() >= .399 * gearOff + offset) {
                 servRo.startRotate(servRo.getPosition(), 0, 360);
                 i = 0;
@@ -269,7 +269,7 @@ public class colorShootFunc {
             shootPower = 0;
         }
         else {
-            shootPower = .9;
+            shootPower = 1;
             TargetVelocity = TarVel;
         }
         Integralsum = integralsum;
@@ -307,7 +307,7 @@ public class colorShootFunc {
         telemetry.addData("color array 3: ", spindexColors[2]);
         telemetry.addData("intakevel ", inta1.getVelocity());
 
-        if( dis < 4 && timer123.milliseconds() > 500){
+        if( dis < 4 && timer123.milliseconds() > 250){
             if (servRo.getPosition() >= .399 * gearOff) {
                 servRo.servo.setPosition(0);
                 servRo.servo2.setPosition(0);
@@ -338,6 +338,9 @@ public class colorShootFunc {
     public void resetServ(){
         servRo.servo.setPosition(0);
         servRo.servo2.setPosition(0);
+    }
+    public void kUp(){
+        artiPush.setPosition(kickUp);
     }
     public int score(int[] pattern, int stage){
         if( !indextooffset ){

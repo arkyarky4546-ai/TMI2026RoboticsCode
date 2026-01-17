@@ -30,7 +30,7 @@ public class ShooterAndIntake {
     //both
     Servo artifactPush;
     private final double kickZero = 0.85;
-    private final double kickUp = 0.75;
+    private final double kickUp = 0.70;
 
     //axonRotator
     ServoRotate servRot;
@@ -152,7 +152,7 @@ public class ShooterAndIntake {
             intake2.setPower(-intakePower);
             ColorShootFunc.wall.setPosition(.5);
             //telemetry.addData("intakeTimer", intakeTimer.milliseconds());
-            if(intakeDis < 4 && intakeTimer.milliseconds() > 600) {
+            if(intakeDis < 4 && intakeTimer.milliseconds() > 300) {
                 if(index1 && ColorShootFunc.servRo.getPosition() > .39 * gearOff){
                     //ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 360);
                     ColorShootFunc.servRo.servo.setPosition(0);
@@ -232,13 +232,12 @@ public class ShooterAndIntake {
             //shoot2.setPower(shootPower);
             intake1.setPower(1);
             intake2.setPower(-1);
-            intake2.setPower(-1);
             //if((shoot2.getVelocity() > (.98*targetVelocity)) && (shoot2.getVelocity()<(1.02*targetVelocity))){
             if((Math.abs(shoot2.getVelocity()) > (targetVelocity*.85))||(Math.abs(shoot1.getVelocity()) > (targetVelocity*.85))){
                 wall.setPosition(0);
                 artifactPush.setPosition(kickUp);
                 telemetry.addData("in loop", 0);
-                if(intakeTimer.milliseconds() > 400){
+                if(intakeTimer.milliseconds() > 300){
                     telemetry.addData("in timer", 0);
                     if(!index1){
                         ColorShootFunc.servRo.servo.setPosition(0);
@@ -247,7 +246,7 @@ public class ShooterAndIntake {
                         index1 = true;
                         telemetry.addData("in 1", 0);
                     }
-                    else if( ColorShootFunc.servRo.getPosition() > .39 * gearOff + offset) {
+                    else if( ColorShootFunc.servRo.getPosition() > .39 * gearOff) {
                         ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 0, 400);
                         telemetry.addData("in 2", 0);
                     }
@@ -289,6 +288,8 @@ public class ShooterAndIntake {
             telemetry.addData("targetVelocity",targetVelocity);
             telemetry.addData("currentVelocity",currentVelocity);
             telemetry.addData("shootingVelocity",shootPower);
+            telemetry.addData("servo1 pos", ColorShootFunc.servRo.servo.getPosition());
+            telemetry.addData("servo2 pos", ColorShootFunc.servRo.servo2.getPosition());
             telemetry.update();
         }
         else if(colorShootActive){
@@ -323,7 +324,7 @@ public class ShooterAndIntake {
 
 
     public double getGoodShootVel(double dis){
-        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1630.01299;
+        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1655.01299;
     }
 
     public void resetPID(){

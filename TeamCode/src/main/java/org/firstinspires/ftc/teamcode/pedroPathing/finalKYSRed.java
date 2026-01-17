@@ -17,7 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -27,25 +26,28 @@ import org.firstinspires.ftc.teamcode.colorShootFunc;
 
 import java.util.List;
 
-@Autonomous(name = "KYS", group = "Autonomous")
-public class KYS extends OpMode {
+@Autonomous(name = "finalKYSRed", group = "Autonomous")
+public class finalKYSRed extends OpMode {
     private Limelight3A limelight3A;
     AxonRotator smart;
+    //int scoonTrack = 0;
     colorShootFunc hehe;
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(8,-53, Math.toRadians(90));
-    private final Pose intakePose1 = new Pose(8, -20, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(8, -10 , Math.toRadians(90));
-    private final Pose endPose1 = new Pose(15, -25, Math.toRadians(0));
-
+    private final Pose startPose = new Pose(128, -128, Math.toRadians(-47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(90, -92, Math.toRadians(-47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose intakePose1 = new Pose(81, -96, Math.toRadians(-90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(81, -134 , Math.toRadians(-90));
+    private final Pose intakePose2 = new Pose(55, -98, Math.toRadians(-90));
+    private final Pose acIntakePose2 = new Pose(59, -137, Math.toRadians(-90));
+    private final Pose endPose1 = new Pose(65, -97, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(92, -92, Math.toRadians(-50));
     int index = 0;
     private Path score1;
     int scoonTrack = 0;
-    int i = 0;
 
-    int[] pattern = new int[] {2,1,2};
+    int[] pattern = new int[] {2,2,1};
 
     boolean aiming = false;
     private PathChain firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2;
@@ -55,22 +57,21 @@ public class KYS extends OpMode {
     public static double Ki=0.0004;
     public static double Kd=0;
     public static double Kf=0;
-    double TargetVelocity = 1300;
+    double TargetVelocity = 1400;
     ElapsedTime timer=new ElapsedTime();
     //ElapsedTime pidTimer = new ElapsedTime();
     double lasterror=0;
     DcMotorEx shooter, intake, shooter2, intake1;
-    double hoodPos = .12;
+    double hoodPos = .25;
     double distance;
     double shooterPower;
     boolean index12 = true;
-    boolean index1234 = false;
+    boolean index123 = false;
+    boolean index1234 = true;
     CRServo spindexRoter;
     ServoRotate smart1;
-    double offset = 60/360 * .4;
     public static double TURN_Constant = 0.01;
-    boolean index123 = true;
-    double turTurn = 0.015;
+    double turTurn = .96;
     boolean reverse = true;
     int Nonetwo = 120;
     int stageProg = 2;
@@ -79,10 +80,7 @@ public class KYS extends OpMode {
     int[] pgp = new int[] {2,1,2};
     double limelightPause = System.currentTimeMillis();
     int indexForSpindex =0;
-    boolean index1 = true;
-
-    boolean index12345 = true;
-    boolean index123456 = false;
+    boolean index1;
     ElapsedTime timer123=new ElapsedTime();
     ElapsedTime timer12=new ElapsedTime();
     ElapsedTime timer12345=new ElapsedTime();
@@ -109,129 +107,243 @@ public class KYS extends OpMode {
         return -217*(dis*dis*dis) + 875.6403*(dis*dis) -1196.11498*(dis) + 1830.8098;
     }
     public void buildPaths() {//this is where we build the path stuff
-        score1 = new Path(new BezierLine(startPose, intakePose1));
-        score1.setLinearHeadingInterpolation(startPose.getHeading(), intakePose1.getHeading());
+        score1 = new Path(new BezierLine(startPose, scorePose1));
+        score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
         firstLoad=follower.pathBuilder()
+                .addPath(new BezierLine(scorePose1, intakePose1))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose1.getHeading())
+                .build();
+        acFirstLoad=follower.pathBuilder()
                 .addPath(new BezierLine(intakePose1, acIntakePose1))
                 .setLinearHeadingInterpolation(intakePose1.getHeading(), acIntakePose1.getHeading())
                 .build();
-        acFirstLoad=follower.pathBuilder()
-                .addPath(new BezierLine(acIntakePose1, startPose))
-                .setLinearHeadingInterpolation(acIntakePose1.getHeading(), startPose.getHeading())
-                .build();
         scoreLoad1= follower.pathBuilder()
-                .addPath(new BezierLine(startPose, endPose1))
-                .setLinearHeadingInterpolation(startPose.getHeading(), endPose1.getHeading())
+                .addPath(new BezierLine(acIntakePose1, scorePose1))
+                .setLinearHeadingInterpolation(acIntakePose1.getHeading(), scorePose1.getHeading())
+                .build();
+        secondLoad= follower.pathBuilder()
+                .addPath(new BezierLine(scorePose1,intakePose2))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose2.getHeading())
+                .build();
+        acSecondLoad= follower.pathBuilder()
+                .addPath(new BezierLine(intakePose2,acIntakePose2))
+                .setLinearHeadingInterpolation(intakePose2.getHeading(), acIntakePose2.getHeading())
+                .build();
+        scoreLoad2= follower.pathBuilder()
+                .addPath(new BezierLine(acIntakePose2, scorePose1))
+                .setLinearHeadingInterpolation(acIntakePose2.getHeading(), scorePose1.getHeading())
+                .build();
+        end= follower.pathBuilder()
+                .addPath(new BezierLine(scorePose1,endPose1))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), endPose1.getHeading())
                 .build();
 
     }
     public void autonomousPathUpdate() throws InterruptedException {//we can add a lot more paths
         switch (pathState) {
             case 0:
-
+                Integralsum=0;
+                lasterror=0;
+                follower.followPath(score1);
+                hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 0, 400);
+                setPathState(1);
+                break;
+            case 1:
                 if(!follower.isBusy()){
                     Integralsum=0;
                     lasterror=0;
                     actionTimer.resetTimer();
-                    follower.holdPoint(startPose);
-                    hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 0, 400);
-                    setPathState(1);}
+                    follower.holdPoint(scorePose1);
+                    setPathState(2);}
                 break;
-            case 1:
-                if ( actionTimer.getElapsedTimeSeconds() > 7){
+            case 2:
+                if ( actionTimer.getElapsedTimeSeconds() > 4){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 6) {
+                else if ( actionTimer.getElapsedTimeSeconds() > 3.5) {
+                    hehe.zerPos();
                     if (!index1) {
                         index1 = true;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 4){
+                else if ( actionTimer.getElapsedTimeSeconds() > 2){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 3){
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
+                    hehe.zerPos();
                     if (index1) {
                         index1 = false;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1){
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.1){
                     hehe.shootOneBall();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 9) {
+                if(actionTimer.getElapsedTimeSeconds() > 5) {
+                    hehe.zerPos();
                     wally.setPosition(.5);
-                    follower.followPath(score1,true);
+                    follower.followPath(firstLoad,true);
                     hehe.resetServ();
                     hehe.servRo.servo.setPosition(0);
                     hehe.servRo.servo2.setPosition(0);
                     hehe.reseti();
                     stageProg = 2;
-                    setPathState(2);
-                }
-                break;
-            case 2:
-                if(actionTimer.getElapsedTimeSeconds() > 11.5) {
-                    wally.setPosition(.5);
-                    follower.followPath(firstLoad,true);
                     setPathState(3);
                 }
                 break;
             case 3:
-                if(actionTimer.getElapsedTimeSeconds() > 16) {
-                    wally.setPosition(.5);
+                if(!follower.isBusy()) {
+
                     follower.followPath(acFirstLoad,true);
-                    hehe.reset();
-                    hehe.resetServ();
                     setPathState(4);
                 }
                 break;
             case 4:
-
-                if(!follower.isBusy()){
+                if(!follower.isBusy()) {
+                    Integralsum=0;
+                    lasterror=0;
+                    follower.holdPoint(acIntakePose1);
+                    actionTimer.resetTimer();
+                    setPathState(5);
+                }
+                break;
+            case 5:
+                wally.setPosition(0.5);
+                if(actionTimer.getElapsedTimeSeconds() > 1.75) {
+                    hehe.reset();
+                    hehe.resetServ();
+                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
+                    follower.followPath(scoreLoad1,true);
+                    setPathState(6);
+                }
+                break;
+            case 6:
+                if(!follower.isBusy()) {
                     Integralsum=0;
                     lasterror=0;
                     actionTimer.resetTimer();
-                    follower.holdPoint(startPose);
-                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
-                    setPathState(5);}
+                    follower.holdPoint(scorePose1);
+                    //stageProg = 2;
+                    timer12345.reset();
+                    setPathState(7);
+                }
                 break;
-            case 5:
-                if ( actionTimer.getElapsedTimeSeconds() > 7){
+            case 7:
+                if ( actionTimer.getElapsedTimeSeconds() > 3.5){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 6) {
+                else if ( actionTimer.getElapsedTimeSeconds() > 3) {
+                    hehe.zerPos();
                     if (!index1) {
                         index1 = true;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 4){
+                else if ( actionTimer.getElapsedTimeSeconds() > 2){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 3){
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
+                    hehe.zerPos();
                     if (index1) {
                         index1 = false;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1){
+                else if ( actionTimer.getElapsedTimeSeconds() > .5){
                     hehe.shootOneBall();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 9) {
+                if(actionTimer.getElapsedTimeSeconds() > 4.5) {
                     wally.setPosition(.5);
-                    follower.followPath(score1,true);
+                    follower.followPath(firstLoad,true);
+                    hehe.zerPos();
+                    hehe.resetServ();
+                    hehe.servRo.servo.setPosition(0);
+                    hehe.servRo.servo2.setPosition(0);
+                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
+                    hehe.reseti();
+                    stageProg = 2;
+                    setPathState(8);
+                }
+                break;
+            case 8:
+                if(!follower.isBusy()) {
+                    index12 = true;
+                    follower.followPath(acSecondLoad,true);
+                    setPathState(9);
+                }
+                break;
+            case 9:
+                if(!follower.isBusy()) {
+                    follower.holdPoint(acIntakePose2);
+                    actionTimer.resetTimer();
+                    setPathState(10);
+                }
+                break;
+            case 10:
+                if(actionTimer.getElapsedTimeSeconds() > 1.75) {
+                    follower.followPath(scoreLoad2,true);
+                    hehe.resetServ();
+                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
+                    setPathState(11);
+                    hehe.reset();
+                }
+                break;
+            case 11:
+                if(!follower.isBusy()) {
+                    Integralsum=0;
+                    lasterror=0;
+                    actionTimer.resetTimer();
+                    follower.holdPoint(scorePose1);
+                    //stageProg = 2;
+                    timer12345.reset();
+                    setPathState(12);
+                }
+                break;
+            case 12:
+                if ( actionTimer.getElapsedTimeSeconds() > 3.5){
+                    hehe.shootOneBall();
+                }
+                else if ( actionTimer.getElapsedTimeSeconds() > 3) {
+                    hehe.zerPos();
+                    if (!index1) {
+                        index1 = true;
+                        hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
+                    }
+                }
+                else if ( actionTimer.getElapsedTimeSeconds() > 2){
+                    hehe.shootOneBall();
+                }
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
+                    hehe.zerPos();
+                    if (index1) {
+                        index1 = false;
+                        hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
+                    }
+                }
+                else if ( actionTimer.getElapsedTimeSeconds() > .5){
+                    hehe.shootOneBall();
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 4.5) {
+                    hehe.zerPos();
+                    wally.setPosition(.5);
+                    follower.followPath(firstLoad,true);
                     hehe.resetServ();
                     hehe.servRo.servo.setPosition(0);
                     hehe.servRo.servo2.setPosition(0);
                     hehe.reseti();
                     stageProg = 2;
-                    setPathState(6);
+                    setPathState(13);
                 }
                 break;
-            case 6:
-                break;
 
+            case 13:
+                if(!follower.isBusy()){
+                    setPathState(14);
+                }
+                break;
+            case 14:
+                break;
         }
     }
     public void setPathState(int pState) {
@@ -241,10 +353,7 @@ public class KYS extends OpMode {
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
         doos = dis.getDistance(DistanceUnit.CM);
-        telemetry.addData("disguisedjlsd ", doos);
-        /*if (scoonTrack < 3) {
-            scoonTrack = hehe.scOOON();
-        }*/
+
         if (index == 0) {
             limelightPause = System.currentTimeMillis();
             index = 67; // I am an adult
@@ -253,14 +362,14 @@ public class KYS extends OpMode {
 
         //double current = shooter2.getVelocity();
         //TargetVelocity = 1300;
-        hood.setPosition(.52);
+        hood.setPosition(.6);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
-            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1,1,1, 1500);
             //scoonTrack = 3;
+            scoonTrack = hehe.update(distance, 1, doos, Integralsum, lasterror, pathState, telemetry, 1, 0, 1, 1300);
         }
         else {
-            //scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry);
+            scoonTrack = hehe.update(distance, 0, doos, Integralsum, lasterror, pathState, telemetry, 1, 0 ,1, 1300);
         }
         LLResult result = limelight3A.getLatestResult();
         if(result != null && result.isValid()){
@@ -304,7 +413,6 @@ public class KYS extends OpMode {
         actionTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
-        timer12345.reset();
         coloora = hardwareMap.get(NormalizedColorSensor.class, "coloora");
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         dis = hardwareMap.get(DistanceSensor.class, "disDiss");
@@ -318,10 +426,6 @@ public class KYS extends OpMode {
         shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");

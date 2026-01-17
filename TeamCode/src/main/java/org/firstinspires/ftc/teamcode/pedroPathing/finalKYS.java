@@ -141,6 +141,7 @@ public class finalKYS extends OpMode {
     }
     public void autonomousPathUpdate() throws InterruptedException {//we can add a lot more paths
         switch (pathState) {
+
             case 0:
                 Integralsum=0;
                 lasterror=0;
@@ -157,30 +158,36 @@ public class finalKYS extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
-                if ( actionTimer.getElapsedTimeSeconds() > 4){
+                /*if ( actionTimer.getElapsedTimeSeconds() > 4){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 3.5) {
+                else if ( actionTimer.getElapsedTimeSeconds() > 3) {
                     hehe.zerPos();
                     if (!index1) {
                         index1 = true;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 2){
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.75){
                     hehe.shootOneBall();
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
+                else if ( actionTimer.getElapsedTimeSeconds() > 1.0){
                     hehe.zerPos();
                     if (index1) {
                         index1 = false;
                         hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     }
                 }
-                else if ( actionTimer.getElapsedTimeSeconds() > .8){
+                else if ( actionTimer.getElapsedTimeSeconds() > .1){
                     hehe.shootOneBall();
+                }*/
+                if(timer123.milliseconds() > 900) {
+                    hehe.kUp();
+                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 400);
+                    timer123.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 5) {
+                    //hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     hehe.zerPos();
                     wally.setPosition(.5);
                     follower.followPath(firstLoad,true);
@@ -362,7 +369,7 @@ public class finalKYS extends OpMode {
 
         //double current = shooter2.getVelocity();
         //TargetVelocity = 1300;
-        hood.setPosition(.6);
+        hood.setPosition(.53);
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
             //scoonTrack = 3;
@@ -449,7 +456,7 @@ public class finalKYS extends OpMode {
         //spindexRoter.setPower(0);
         hood.setPosition(hoodPos);
         hehe = new colorShootFunc(hardwareMap, smart1, shooter, shooter2, coloora, intake, intake1, wally, push);
-        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 360);
+        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
     }
 
 
