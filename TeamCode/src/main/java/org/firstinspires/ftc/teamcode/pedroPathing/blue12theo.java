@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+/*package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -347,7 +347,7 @@ public class blue12theo extends OpMode {
         /*if (scoonTrack < 3){
             scoonTrack = hehe.scOOON();
         }*/
-        if (index == 0) {
+       /* if (index == 0) {
             limelightPause = System.currentTimeMillis();
             index = 67; // I am an adult
         }
@@ -459,4 +459,4 @@ public class blue12theo extends OpMode {
 
     @Override
     public void stop() {}
-}
+}*/

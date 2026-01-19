@@ -162,7 +162,7 @@ public class KYS extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds() > 9) {
                     wally.setPosition(.5);
                     follower.followPath(score1,true);
-                    hehe.resetServ();
+                    hehe.resetServ(360);
                     hehe.servRo.servo.setPosition(0);
                     hehe.servRo.servo2.setPosition(0);
                     hehe.reseti();
@@ -182,7 +182,7 @@ public class KYS extends OpMode {
                     wally.setPosition(.5);
                     follower.followPath(acFirstLoad,true);
                     hehe.reset();
-                    hehe.resetServ();
+                    hehe.resetServ(360);
                     setPathState(4);
                 }
                 break;
@@ -219,11 +219,10 @@ public class KYS extends OpMode {
                     hehe.shootOneBall();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 9) {
-                    wally.setPosition(.5);
+                    hehe.wall.setPosition(.5);
                     follower.followPath(score1,true);
-                    hehe.resetServ();
-                    hehe.servRo.servo.setPosition(0);
-                    hehe.servRo.servo2.setPosition(0);
+                    hehe.resetServ(360);
+
                     hehe.reseti();
                     stageProg = 2;
                     setPathState(6);

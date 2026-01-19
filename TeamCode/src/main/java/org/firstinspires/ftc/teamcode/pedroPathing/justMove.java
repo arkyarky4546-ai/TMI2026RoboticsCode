@@ -26,8 +26,8 @@ import org.firstinspires.ftc.teamcode.colorShootFunc;
 
 import java.util.List;
 
-@Autonomous(name = "finalKYSRed", group = "Autonomous")
-public class finalKYSRed extends OpMode {
+@Autonomous(name = "justmove", group = "Autonomous")
+public class justMove extends OpMode {
     private Limelight3A limelight3A;
     AxonRotator smart;
     //int scoonTrack = 0;
@@ -35,14 +35,14 @@ public class finalKYSRed extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(128, -128, Math.toRadians(-47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(90, -92, Math.toRadians(-47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(82, -96, Math.toRadians(-90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(82, -134 , Math.toRadians(-90));
-    private final Pose intakePose2 = new Pose(59, -98, Math.toRadians(-90));
-    private final Pose acIntakePose2 = new Pose(59, -137, Math.toRadians(-90));
-    private final Pose endPose1 = new Pose(65, -97, Math.toRadians(0));
-    private final Pose scorePose3 = new Pose(92, -92, Math.toRadians(-50));
+    private final Pose startPose = new Pose(8,-53, Math.toRadians(90)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(8, -15, Math.toRadians(90)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose intakePose1 = new Pose(88, -52, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(88, -22 , Math.toRadians(90));
+    private final Pose intakePose2 = new Pose(64, -60, Math.toRadians(90));
+    private final Pose acIntakePose2 = new Pose(64, -24, Math.toRadians(90));
+    private final Pose endPose1 = new Pose(65, -48, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(96, -54, Math.toRadians(47));
     int index = 0;
     private Path score1;
     int scoonTrack = 0;
@@ -71,7 +71,7 @@ public class finalKYSRed extends OpMode {
     CRServo spindexRoter;
     ServoRotate smart1;
     public static double TURN_Constant = 0.01;
-    double turTurn = .965;
+    double turTurn = .97;
     boolean reverse = true;
     int Nonetwo = 120;
     int stageProg = 2;
@@ -149,7 +149,7 @@ public class finalKYSRed extends OpMode {
                 hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 0, 400);
                 setPathState(1);
                 break;
-            case 1:
+           /* case 1:
                 if(!follower.isBusy()){
                     Integralsum=0;
                     lasterror=0;
@@ -180,7 +180,7 @@ public class finalKYSRed extends OpMode {
                 }
                 else if ( actionTimer.getElapsedTimeSeconds() > .1){
                     hehe.shootOneBall();
-                }*/
+                }/
                 if(timer123.milliseconds() > 900) {
                     hehe.wall.setPosition(0);
                     hehe.kUp();
@@ -201,7 +201,7 @@ public class finalKYSRed extends OpMode {
             case 3:
                 if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,.35,true);
+                    follower.followPath(acFirstLoad,.32,true);
                     setPathState(4);
                 }
                 break;
@@ -216,7 +216,7 @@ public class finalKYSRed extends OpMode {
                 break;
             case 5:
                 hehe.wall.setPosition(.5);
-                if(actionTimer.getElapsedTimeSeconds() > 1.75) {
+                if(actionTimer.getElapsedTimeSeconds() > .1) {
                     hehe.reset();
                     hehe.resetServ(360);
                     hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
@@ -257,7 +257,7 @@ public class finalKYSRed extends OpMode {
             case 8:
                 if(!follower.isBusy()) {
                     index12 = true;
-                    follower.followPath(acSecondLoad,.35,true);
+                    follower.followPath(acSecondLoad,.32,true);
                     setPathState(9);
                 }
                 break;
@@ -269,7 +269,7 @@ public class finalKYSRed extends OpMode {
                 }
                 break;
             case 10:
-                if(actionTimer.getElapsedTimeSeconds() > 1.75) {
+                if(actionTimer.getElapsedTimeSeconds() > .1) {
                     follower.followPath(scoreLoad2,true);
                     hehe.resetServ(360);
                     hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
@@ -315,7 +315,7 @@ public class finalKYSRed extends OpMode {
                 }
                 break;
             case 14:
-                break;
+                break;*/
         }
     }
     public void setPathState(int pState) {
@@ -334,8 +334,8 @@ public class finalKYSRed extends OpMode {
 
         //double current = shooter2.getVelocity();
         //TargetVelocity = 1300;
-        if (pathState != 7 && pathState != 12) {
-            hood.setPosition(.5);
+        if (pathState != 7 || pathState != 12) {
+            hood.setPosition(.47);
         }
         else{
             hood.setPosition(.55);

@@ -71,7 +71,7 @@ public class finalKYS extends OpMode {
     CRServo spindexRoter;
     ServoRotate smart1;
     public static double TURN_Constant = 0.01;
-    double turTurn = .96;
+    double turTurn = .97;
     boolean reverse = true;
     int Nonetwo = 120;
     int stageProg = 2;
@@ -182,19 +182,18 @@ public class finalKYS extends OpMode {
                     hehe.shootOneBall();
                 }*/
                 if(timer123.milliseconds() > 900) {
+                    hehe.wall.setPosition(0);
                     hehe.kUp();
                     hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 400);
                     timer123.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 5) {
+                if(actionTimer.getElapsedTimeSeconds() > 4.5) {
                     //hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     hehe.zerPos();
-                    wally.setPosition(.5);
+                    hehe.wall.setPosition(.5);
+                    hehe.resetServ(360);
                     follower.followPath(firstLoad,true);
-                    hehe.resetServ();
-                    hehe.servRo.servo.setPosition(0);
-                    hehe.servRo.servo2.setPosition(0);
-                    hehe.reseti();
+
                     stageProg = 2;
                     setPathState(3);
                 }
@@ -202,7 +201,7 @@ public class finalKYS extends OpMode {
             case 3:
                 if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,true);
+                    follower.followPath(acFirstLoad,.32,true);
                     setPathState(4);
                 }
                 break;
@@ -216,10 +215,10 @@ public class finalKYS extends OpMode {
                 }
                 break;
             case 5:
-                wally.setPosition(0.5);
-                if(actionTimer.getElapsedTimeSeconds() > 1.75) {
+                hehe.wall.setPosition(.5);
+                if(actionTimer.getElapsedTimeSeconds() > .1) {
                     hehe.reset();
-                    hehe.resetServ();
+                    hehe.resetServ(360);
                     hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
                     follower.followPath(scoreLoad1,true);
                     setPathState(6);
@@ -237,46 +236,28 @@ public class finalKYS extends OpMode {
                 }
                 break;
             case 7:
-                if ( actionTimer.getElapsedTimeSeconds() > 3.5){
-                    hehe.shootOneBall();
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > 3) {
-                    hehe.zerPos();
-                    if (!index1) {
-                        index1 = true;
-                        hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
-                    }
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > 2){
-                    hehe.shootOneBall();
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
-                    hehe.zerPos();
-                    if (index1) {
-                        index1 = false;
-                        hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
-                    }
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > .5){
-                    hehe.shootOneBall();
+                if(timer123.milliseconds() > 900) {
+                    hehe.wall.setPosition(0);
+                    hehe.kUp();
+                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 400);
+                    timer123.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 4.5) {
-                    wally.setPosition(.5);
-                    follower.followPath(firstLoad,true);
+                    //hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     hehe.zerPos();
-                    hehe.resetServ();
-                    hehe.servRo.servo.setPosition(0);
-                    hehe.servRo.servo2.setPosition(0);
-                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
+                    hehe.wall.setPosition(.5);
+                    follower.followPath(secondLoad,true);
+                    hehe.resetServ(360);
                     hehe.reseti();
                     stageProg = 2;
                     setPathState(8);
                 }
+
                 break;
             case 8:
                 if(!follower.isBusy()) {
                     index12 = true;
-                    follower.followPath(acSecondLoad,true);
+                    follower.followPath(acSecondLoad,.32,true);
                     setPathState(9);
                 }
                 break;
@@ -288,9 +269,9 @@ public class finalKYS extends OpMode {
                 }
                 break;
             case 10:
-                if(actionTimer.getElapsedTimeSeconds() > 1.75) {
+                if(actionTimer.getElapsedTimeSeconds() > .1) {
                     follower.followPath(scoreLoad2,true);
-                    hehe.resetServ();
+                    hehe.resetServ(360);
                     hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
                     setPathState(11);
                     hehe.reset();
@@ -308,34 +289,18 @@ public class finalKYS extends OpMode {
                 }
                 break;
             case 12:
-                if ( actionTimer.getElapsedTimeSeconds() > 3.5){
-                    hehe.shootOneBall();
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > 3) {
-                    hehe.zerPos();
-                    if (!index1) {
-                        index1 = true;
-                        hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
-                    }
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > 2){
-                    hehe.shootOneBall();
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > 1.5){
-                    hehe.zerPos();
-                    if (index1) {
-                        index1 = false;
-                        hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
-                    }
-                }
-                else if ( actionTimer.getElapsedTimeSeconds() > .5){
-                    hehe.shootOneBall();
+                if(timer123.milliseconds() > 900) {
+                    hehe.wall.setPosition(0);
+                    hehe.kUp();
+                    hehe.servRo.startRotate(hehe.servRo.getPosition(), 120, 400);
+                    timer123.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 4.5) {
+                    //hehe.servRo.startRotate(hehe.servRo.servo.getPosition(), 120, 400);
                     hehe.zerPos();
-                    wally.setPosition(.5);
-                    follower.followPath(firstLoad,true);
-                    hehe.resetServ();
+                    hehe.wall.setPosition(.5);
+                    follower.followPath(end,true);
+                    hehe.resetServ(360);
                     hehe.servRo.servo.setPosition(0);
                     hehe.servRo.servo2.setPosition(0);
                     hehe.reseti();
@@ -369,7 +334,12 @@ public class finalKYS extends OpMode {
 
         //double current = shooter2.getVelocity();
         //TargetVelocity = 1300;
-        hood.setPosition(.53);
+        if (pathState != 7 && pathState != 12) {
+            hood.setPosition(.47);
+        }
+        else{
+            hood.setPosition(.55);
+        }
         //shooterPower = PIDControl(TargetVelocity+150, current);
         if (pathState != 12){
             //scoonTrack = 3;
@@ -456,7 +426,7 @@ public class finalKYS extends OpMode {
         //spindexRoter.setPower(0);
         hood.setPosition(hoodPos);
         hehe = new colorShootFunc(hardwareMap, smart1, shooter, shooter2, coloora, intake, intake1, wally, push);
-        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 400);
+        hehe.servRo.startRotate(hehe.servRo.getPosition(), 0, 360);
     }
 
 

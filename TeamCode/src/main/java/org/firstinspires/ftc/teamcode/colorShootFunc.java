@@ -307,7 +307,7 @@ public class colorShootFunc {
         telemetry.addData("color array 3: ", spindexColors[2]);
         telemetry.addData("intakevel ", inta1.getVelocity());
 
-        if( dis < 4 && timer123.milliseconds() > 250){
+        if( dis < 4 && timer123.milliseconds() > 70){
             if (servRo.getPosition() >= .399 * gearOff) {
                 servRo.servo.setPosition(0);
                 servRo.servo2.setPosition(0);
@@ -335,9 +335,8 @@ public class colorShootFunc {
     public double getGoodVel(double dis){
         return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1687.01299;
     }
-    public void resetServ(){
-        servRo.servo.setPosition(0);
-        servRo.servo2.setPosition(0);
+    public void resetServ(double maxAngle){
+        servRo.resetPos(maxAngle);
     }
     public void kUp(){
         artiPush.setPosition(kickUp);

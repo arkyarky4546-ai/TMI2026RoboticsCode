@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -139,13 +141,27 @@ public class ShooterAndIntake {
     }
 
     //some of the stuff was for pedro so i made it an exclusively teleop class
-    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut, boolean colorShootActive, boolean shootGreen, boolean shootPurple, boolean servoReset, Telemetry telemetry){
+    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut, boolean colorShootActive, boolean shootGreen, boolean shootPurple, boolean servoReset, boolean servoSpin, boolean kickSwitch, Telemetry telemetry){
         //new:
+        ColorShootFunc.wall.setPosition(.15);
+        shooterHood.setPosition(.52);
         double intakeDis = distanceSensor.getDistance(DistanceUnit.INCH);
         if(servoReset){
             servRot.servo.setPosition(0);
             servRot.servo2.setPosition(0);
             index1 = false;
+        }
+        if(kickSwitch){
+            if(abs(artifactPush.getPosition() - kickUp)<0.01){
+                artifactPush.setPosition(kickZero);
+            }
+            else if(abs(artifactPush.getPosition() - kickZero)<0.01){
+                artifactPush.setPosition(kickUp);
+            }
+        }
+        if(servoSpin){
+            ColorShootFunc.servRo.startRotate(ColorShootFunc.servRo.getPosition(), 120, 360);
+
         }
         if(intakeActive){
             intake1.setPower(intakePower);
@@ -170,16 +186,16 @@ public class ShooterAndIntake {
             }
             //shoot1.setPower(0);
             //shoot2.setPower(0);
-            shoot1.setVelocity(-0);
-            shoot2.setVelocity(0);
+            shoot1.setVelocity(-900);
+            shoot2.setVelocity(900);
         }
         else if(intakeOut){
             intake1.setPower(-intakePower);
             intake2.setPower(intakePower);
             //shoot1.setPower(0);
             //shoot2.setPower(0);
-            shoot1.setVelocity(-0);
-            shoot2.setVelocity(0);
+            shoot1.setVelocity(-900);
+            shoot2.setVelocity(900);
         }
         else if(shootGreen){
             ColorShootFunc.shootOneGreen();
@@ -233,7 +249,7 @@ public class ShooterAndIntake {
             intake1.setPower(1);
             intake2.setPower(-1);
             //if((shoot2.getVelocity() > (.98*targetVelocity)) && (shoot2.getVelocity()<(1.02*targetVelocity))){
-            if((Math.abs(shoot2.getVelocity()) > (targetVelocity*.85))||(Math.abs(shoot1.getVelocity()) > (targetVelocity*.85))){
+            if((abs(shoot2.getVelocity()) > (targetVelocity*.85))||(abs(shoot1.getVelocity()) > (targetVelocity*.85))){
                 wall.setPosition(0);
                 artifactPush.setPosition(kickUp);
                 telemetry.addData("in loop", 0);
@@ -303,8 +319,8 @@ public class ShooterAndIntake {
             //ColorShootFunc.update(distance, intake1.getPower(), intakeDis, Integralsum, lasterror, 1, telemetry, 0);
             //shoot1.setPower(0);
             //shoot2.setPower(0);
-            shoot1.setVelocity(-0);
-            shoot2.setVelocity(0);
+            shoot1.setVelocity(-900);
+            shoot2.setVelocity(900);
             intake1.setPower(0);
             intake2.setPower(0);
         }
@@ -324,7 +340,7 @@ public class ShooterAndIntake {
 
 
     public double getGoodShootVel(double dis){
-        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1655.01299;
+        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1750.01299;
     }
 
     public void resetPID(){
