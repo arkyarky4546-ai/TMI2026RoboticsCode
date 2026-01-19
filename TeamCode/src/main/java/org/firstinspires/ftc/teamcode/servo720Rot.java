@@ -47,7 +47,9 @@ public class servo720Rot {
         positionHoldShoot = new double[] {0.0500782472613 , 0.200312989045 , 0.350547730829 , 0.500782472613 , 0.651017214397 , 0.801251956182 , 0.951486697966};
         positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
     }
-
+    public double getDisMain(){
+        return mainDis.getDistance(DistanceUnit.CM);
+    }
     //servoSetPosition
     //@twins, if you want to use this, make sure to specify if you are in shoot position or in intake position
     //offset = 1 means shoot psotion so this references posHoldShoot array. offset = 0 means intake position
