@@ -118,18 +118,26 @@ public class Drivetrain {
 
     public void setModeBlue(){
         mode = BLUE;
-        startingPose = new Pose(65, -48, Math.toRadians(47));
+        startingPose = new Pose(65, -48, Math.toRadians(0));
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }
 
-    //TODO: find actual positions (odometry pods are slightly off center)
     public void resetCurrentPose(){
         if(mode == RED){
             follower.setPose(new Pose(8.125, 8.625, Math.toRadians(0))); //far left corner of the field
         }
         else if(mode == BLUE){
             follower.setPose(new Pose(8.125, -135.375, Math.toRadians(0))); //far right corner of the field
+        }
+    }
+
+    public void resetCurrentPoseGoal(){
+        if(mode == RED){
+            follower.setPose(new Pose(128, -128, Math.toRadians(-47))); //far left corner of the field
+        }
+        else if(mode == BLUE){
+            follower.setPose(new Pose(128,-26, Math.toRadians(47)));
         }
     }
 

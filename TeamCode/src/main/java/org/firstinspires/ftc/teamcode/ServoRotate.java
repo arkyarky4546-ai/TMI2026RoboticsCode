@@ -31,6 +31,12 @@ public class ServoRotate {
     public double getPosition(){
         return servo.getPosition();
     }
+    public void resetPos(double maxAngle){
+        maxAngle = (maxAngle)/355 * 2/5 * 20/18;
+        servo.setPosition(0);
+        servo2.setPosition(0);
+        startRotate(0,0,maxAngle);
+    }
     public void startRotate(double position, double angle, double maxAngle) {
         //double position2 = 1 - position;
         maxAngle = (maxAngle)/355 * 2/5 * 20/18;

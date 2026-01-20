@@ -48,6 +48,9 @@ public class redTeleOp extends OpMode {
         if(gamepad1.a){
             drivetrain.resetCurrentPose();
         }
+        if(gamepad1.b){
+            drivetrain.resetCurrentPoseGoal();
+        }
 
         //turret calls - manual is controlled by gamepad2 on the dpad
         // (down = autoaiming on/off, up = set center pos, left/right = manual turning)
@@ -83,7 +86,7 @@ public class redTeleOp extends OpMode {
         }
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, telemetry);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
         /*
         //limelight pattern detection
