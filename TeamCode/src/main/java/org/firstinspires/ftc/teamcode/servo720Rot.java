@@ -64,7 +64,9 @@ public class servo720Rot {
             servo2.setPosition(positionHoldShoot[angle]);
         }
     }
-
+    public double getPos(){
+        return servo2.getPosition();
+    }
     //this method just returns true if there is a ball and false if not.
     private boolean hasBall(int position) {
         return distanceSensors[position].getDistance(DistanceUnit.CM) < ballzCM;
@@ -77,7 +79,23 @@ public class servo720Rot {
         return new int[] {0, 2, 4, 6};
     }
     //this gets the nearest open position so you can easily rotate to it mode is either 1 or 0, 1 for shoot and 0 for intake
-    public int getFree(int currentIndex, int mode, double currentPos) {
+    public int getFree(int mode, double currentPos) {
+
+        int currentIndex;
+        for(int i = 0; i < 6; i++){
+            if(mode == 1){
+                if(positionHoldShoot[i] == currentPos){
+                    currentIndex = i;
+                    break;
+                }
+            }
+            else{
+                if(positionHoldIntake[i] == currentPos){
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
         int[] useInd;
         if(mode == 0){
             useInd = getIntakeIndices();
