@@ -81,7 +81,7 @@ public class servo720Rot {
     //this gets the nearest open position so you can easily rotate to it mode is either 1 or 0, 1 for shoot and 0 for intake
     public int getFree(int mode, double currentPos) {
 
-        int currentIndex;
+        int currentIndex = 0;
         for(int i = 0; i < 6; i++){
             if(mode == 1){
                 if(positionHoldShoot[i] == currentPos){
