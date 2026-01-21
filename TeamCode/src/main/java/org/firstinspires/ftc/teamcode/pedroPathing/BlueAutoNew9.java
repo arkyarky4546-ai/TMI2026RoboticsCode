@@ -278,6 +278,7 @@ public class BlueAutoNew9 extends OpMode {
         hood.setPosition(hoodPos);
         turretLeft.setPosition(turTurn);
         turretRight.setPosition(turTurn);
+        intakeAndShoot.setPos(0,1);
 
 
         buildPaths();
