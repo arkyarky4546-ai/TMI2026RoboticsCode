@@ -40,7 +40,7 @@ public class BlueAutoNew9 extends OpMode {
     //timer
     private ElapsedTime shootTimer = new ElapsedTime();
 
-
+    //custom class that controls shooting and intake
     private intakeShoot intakeAndShoot;
 
     //servos
@@ -52,7 +52,7 @@ public class BlueAutoNew9 extends OpMode {
     int shootPos = 1;
     int intakePos = 0;
     
-    public void buildPaths() {//this is where we build the path stuff
+    public void buildPaths() {//this is where we build the path stuff using our positions
         score1 = new Path(new BezierLine(startPose, scorePose1));
         score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
         firstLoad=follower.pathBuilder()
@@ -234,9 +234,9 @@ public class BlueAutoNew9 extends OpMode {
         hood.setPosition(.47);
 
         follower.update();
-        intakeAndShoot.update(1, pathState, telemetry);
+        intakeAndShoot.update(1, pathState, telemetry); //updating our shooter power and intake power
         try {
-            autonomousPathUpdate();
+            autonomousPathUpdate(); //updating our cases so that we can change paths
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
@@ -252,20 +252,23 @@ public class BlueAutoNew9 extends OpMode {
 
     @Override
     public void init() {
+        //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
 
-        //main thing that controlls a lot
+        //main thing that controls a lot
         intakeAndShoot = new intakeShoot(hardwareMap,"intake", "intake1",
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
                 "dis4", "dis5", "dis6", "dis7", "wally");
 
-
+        //thing that controls the servo that goes up and down allowing balls to shoot
         push = hardwareMap.get(Servo.class, "push");
+
+        //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
 
