@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.servo720Rot;
 
 public class intakeShoot {
@@ -34,6 +35,7 @@ public class intakeShoot {
 
     //ints
     private int shootMode = 1;
+    private int index;
     private int intakeMode = 0;
     private int arrayShootIntakeTrack;
 
@@ -58,26 +60,37 @@ public class intakeShoot {
 
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
-    public void update(double intakePower, int pathstate, Telemetry telemetry){
+    public void update(double intakePower, int pathstate, Telemetry telemetry, boolean intake){
         //pathstate is from the auto and tells us which stage the robot is in and like if it is done or not
-        if(pathstate == 16) {
+        /*if(pathstate == 16) {
             shootPower = 0;
             intakePower = 0;
         }
         else {
             //using PID and a targetVelocity in order to keep the right motor velocity
             TargetVelocity = getGoodVel(distance);
-            shootPower = PIDControl(TargetVelocity,shootMotor2.getVelocity());
+            shootPower = 1;
 
         }
         //setting the power of the shooter and intake here
         shootsetPower(shootPower);
-        intakesetPower(intakePower);
+        intakesetPower(intakePower);*/
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
-        if(spindexer.getDisMain() < 3 && Intaketimer.milliseconds() > 100){
-            spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
+        if((spindexer.getDisMain() < 10 || spindexer.distanceSensors[0].getDistance(DistanceUnit.CM) < 5) && Intaketimer.milliseconds() > 400 && intake){
+            //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
+            spindexer.regRot(spindexer.getPos());
             Intaketimer.reset();
+
+
         }
+        telemetry.addData ( "good index", index);
+        telemetry.addData("disDiss", spindexer.getDisMain());
+        telemetry.addData("dis2", spindexer.distanceSensors[0].getDistance(DistanceUnit.CM));
+        telemetry.addData("dis3", spindexer.distanceSensors[1].getDistance(DistanceUnit.CM));
+        telemetry.addData("dis4", spindexer.distanceSensors[2].getDistance(DistanceUnit.CM));
+        telemetry.addData("dis5", spindexer.distanceSensors[3].getDistance(DistanceUnit.CM));
+        telemetry.addData("dis6", spindexer.distanceSensors[4].getDistance(DistanceUnit.CM));
+        telemetry.addData("dis7", spindexer.distanceSensors[5].getDistance(DistanceUnit.CM));
     }
     public double PIDControl(double reference, double state){
         double error=reference-state;
@@ -98,11 +111,11 @@ public class intakeShoot {
     }
     public void shootsetPower(double power){
         shootMotor1.setPower(-power);
-        shootMotor1.setPower(power);
+        shootMotor2.setPower(power);
     }
     public void intakesetPower(double power){
         intakeMotor1.setPower(power);
-        intakeMotor2.setPower(power);
+        intakeMotor2.setPower(-power);
     }
     public void wallPos(double pos){
         wall.setPosition(pos);
@@ -110,10 +123,17 @@ public class intakeShoot {
 
     //method to shoot balls and rotate from my class
     public void shoot(){
-       spindexer.sSP(spindexer.getFree(1, spindexer.getPos()), 1);
+       index = spindexer.getFree(1, spindexer.getPos());
+       spindexer.sSP(index, 1);
+    }
+    public void simpleShoot(){
+        spindexer.regRot(spindexer.getPos());
     }
     //sets servo positions
     public void setPos(int angle, int offset){
         spindexer.sSP(angle, offset);
+    }
+    public double getVelocity(){
+        return Math.abs(shootMotor1.getVelocity());
     }
 }

@@ -46,7 +46,8 @@ public class BlueAutoNew9 extends OpMode {
     //servos
     Servo push, turretRight, turretLeft, hood;
     
-    
+    //booleans
+    boolean intakeIndex = true;
     //ints
     int index = 0;
     int shootPos = 1;
@@ -91,7 +92,8 @@ public class BlueAutoNew9 extends OpMode {
             case 0:
                 //the follower is now on the score1 path
                 follower.followPath(score1);
-                intakeAndShoot.setPos(0,shootPos);
+                intakeAndShoot.setPos(0,intakePos);
+                intakeIndex = false;
                 //go to the next case
                 setPathState(1);
 
@@ -111,17 +113,19 @@ public class BlueAutoNew9 extends OpMode {
                 if(shootTimer.milliseconds() > 900) {
                     push.setPosition(kickUp);
                     //shooting every 800 milliseconds
-                    intakeAndShoot.shoot();
+                    intakeAndShoot.simpleShoot();
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 4.5) {
                     intakeAndShoot.setPos(0, intakePos);
+
                     follower.followPath(firstLoad,true);
                     //push servo is down now
                     push.setPosition(kickZero);
                     //closed wall position
-                    intakeAndShoot.wallPos(.5);
+                    intakeAndShoot.wallPos(.25);
+                    intakeIndex = true;
                     setPathState(3);
                 }
                 break;
@@ -142,8 +146,9 @@ public class BlueAutoNew9 extends OpMode {
             case 5:
 
                 if(actionTimer.getElapsedTimeSeconds() > .1) {
-                    intakeAndShoot.setPos(0,shootPos);
+                    intakeAndShoot.setPos(0,intakePos);
                     intakeAndShoot.wallPos(0);
+                    intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
                     setPathState(6);
                 }
@@ -166,7 +171,8 @@ public class BlueAutoNew9 extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds() > 4.5) {
                     follower.followPath(secondLoad,true);
                     intakeAndShoot.setPos(0, intakePos);
-                    intakeAndShoot.wallPos(0.5);
+                    intakeIndex = true;
+                    intakeAndShoot.wallPos(0.25);
                     push.setPosition(kickZero);
                     setPathState(8);
                 }
@@ -188,7 +194,8 @@ public class BlueAutoNew9 extends OpMode {
             case 10:
                 if(actionTimer.getElapsedTimeSeconds() > .1) {
                     follower.followPath(scoreLoad2,true);
-                    intakeAndShoot.setPos(0, shootPos);
+                    intakeAndShoot.setPos(0, intakePos);
+                    intakeIndex = false;
                     intakeAndShoot.wallPos(0);
                     setPathState(11);
                 }
@@ -234,7 +241,7 @@ public class BlueAutoNew9 extends OpMode {
         hood.setPosition(.47);
 
         follower.update();
-        intakeAndShoot.update(1, pathState, telemetry); //updating our shooter power and intake power
+        intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
             autonomousPathUpdate(); //updating our cases so that we can change paths
         } catch (InterruptedException e) {

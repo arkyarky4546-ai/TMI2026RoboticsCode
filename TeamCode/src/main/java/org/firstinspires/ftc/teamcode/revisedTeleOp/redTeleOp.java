@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+/*package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -15,7 +15,7 @@ import java.util.List;
 @Configurable
 @TeleOp
 public class redTeleOp extends OpMode {
-    /* newly created classes */
+     newly created classes
     Drivetrain drivetrain; //all driving functionality and pedro pathing
     Turret turret; //autoaiming and manual control
     ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
@@ -107,6 +107,6 @@ public class redTeleOp extends OpMode {
                     }
                 }
             }
-        } */
+        }
     }
-}
+}*/

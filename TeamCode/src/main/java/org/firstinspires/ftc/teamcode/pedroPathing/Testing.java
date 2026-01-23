@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+/*package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -109,7 +109,7 @@ public class Testing extends OpMode {
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 25) {
                     intakeAndShoot.setPos(0, intakePos);
-                    follower.followPath(firstLoad,true);
+                    //follower.followPath(firstLoad,true);
                     //push servo is down now
                     push.setPosition(kickZero);
                     //closed wall position
@@ -214,7 +214,7 @@ public class Testing extends OpMode {
                 }
                 break;
             case 14:
-                break;*/
+                break;
         }
     }
     public void setPathState(int pState) {
@@ -256,7 +256,7 @@ public class Testing extends OpMode {
                 "disDiss", "dis2", "dis3",
                 "dis4", "dis5", "dis6", "dis7", "wally");
 
-
+        hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
@@ -270,7 +270,7 @@ public class Testing extends OpMode {
         hood.setPosition(hoodPos);
         turretLeft.setPosition(turTurn);
         turretRight.setPosition(turTurn);
-        intakeAndShoot.setPos(0,1);
+        intakeAndShoot.setPos(0,0);
 
 
         buildPaths();
@@ -289,4 +289,4 @@ public class Testing extends OpMode {
 
     @Override
     public void stop() {}
-}
+}*/
