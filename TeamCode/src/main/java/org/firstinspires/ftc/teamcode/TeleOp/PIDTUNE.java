@@ -36,6 +36,7 @@ public class PIDTUNE extends OpMode {
     public static double Kd=0;
     public static double Kf=0;
     double TargetVelocity = 1400;
+    private double PIDdistance = 0;
     private double timeBegan;
     private boolean pressShooter;
     boolean sixSeven = false;
@@ -60,11 +61,14 @@ public class PIDTUNE extends OpMode {
     double distance;
     double shooterPower;
     boolean intakeIndex = true;
+    boolean isShooting = false;
+    double lastPos = 0.0;
     double kickZero = 0.85;
     double kickUp = 0.65;
     double Integralsum=0;
     double hoodPos = .4;
-    double turretPos = .48;
+    double turretPos = .96;
+    double recoil = .03;
     public static double TURN_Constant = 0.005;
     private ElapsedTime shootTimer1 = new ElapsedTime();
     double limelightPause = System.currentTimeMillis();
@@ -83,7 +87,8 @@ public class PIDTUNE extends OpMode {
     @Override
     public void loop() {
         follower.update();
-
+        //hoodPos();
+        intakeAndShoot.wallPos(.2);
         double current = Math.abs(intakeAndShoot.getVelocity());
         shooterPower = PIDControl(TargetVelocity, current);
         intakeAndShoot.shootsetPower(shooterPower);
@@ -93,24 +98,28 @@ public class PIDTUNE extends OpMode {
             if (!intakeIndex) {
                 intakeIndex = true;
                 intakeAndShoot.setPos(0, 0);
+                isShooting = false;
+
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-            intakeAndShoot.wallPos(0);
             if(intakeIndex){
                 intakeIndex = false;
+                shootTimer1.reset();
                 intakeAndShoot.setPos(0,0);
+                isShooting = true;
             }
 
             telemetry.addData("hit", 0);
-            if(shootTimer1.milliseconds() > 500){
-
+            if(shootTimer1.milliseconds() > 400){
+                intakeAndShoot.wallPos(0);
+                hood.setPosition(hood.getPosition()-recoil);
                 intakeAndShoot.simpleShoot();
                 shootTimer1.reset();
             }
         }
         else{
-            intakeAndShoot.wallPos(.5);
+            //1intakeAndShoot.wallPos(.5);
         }
         if(gamepad2.aWasPressed()){
             hoodPos-=.01;
@@ -131,10 +140,10 @@ public class PIDTUNE extends OpMode {
             TargetVelocity-=25;
         }
         if(gamepad2.dpadLeftWasPressed()){
-            intakeAndShoot.setPos(0, 0);
+            recoil -=.05;
         }
         if(gamepad2.dpadRightWasPressed()){
-            intakeAndShoot.setPos(0, 1);
+            recoil += .05;
         }
         if(gamepad2.leftBumperWasPressed()){
             push.setPosition(kickZero);
@@ -142,11 +151,11 @@ public class PIDTUNE extends OpMode {
         if(gamepad2.rightBumperWasPressed()){
             push.setPosition(kickUp);
         }
-
+        if(!isShooting) {
+            hood.setPosition(hoodPos);
+        }
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);
-        hood.setPosition(hoodPos);
-
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
        // telemetry.addData("velocity2", );
         telemetry.addData("shootPower", shooterPower);
@@ -156,26 +165,39 @@ public class PIDTUNE extends OpMode {
         telemetry.addData("target", TargetVelocity);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
 
     }
     @Override
     public void init(){
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(0,0,0));
+
+        follower.setPose(new Pose(128,-26, Math.toRadians(47)));
         follower.update();
         intakeAndShoot = new intakeShoot(hardwareMap,"intake", "intake1",
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
                 "dis4", "dis5", "dis6", "dis7", "wally");
-
+        intakeAndShoot.wallPos(.2);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
         intakeAndShoot.setPos(0,0);
 
+    }
+    public void hoodPos(){
+        double hoodPos = Math.pow((Math.pow(144-follower.getPose().getX(),2)+ Math.pow(follower.getPose().getY(),2)), .5);
+        telemetry.addData("hood", hoodPos);
+        hoodPos = 0.000017823 * Math.pow(hoodPos, 3) -0.00459925*Math.pow(hoodPos,2) + 0.387878 * Math.abs(hoodPos) - 10.07645;
+        if(hoodPos > 1){
+            hoodPos = 1;
+        }
+        if( hoodPos < 0){
+            hoodPos = 0;
+        }
+
+        hood.setPosition(hoodPos);
     }
     @Override
     public void start(){

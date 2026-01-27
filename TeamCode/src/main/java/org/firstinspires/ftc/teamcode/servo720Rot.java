@@ -64,10 +64,10 @@ public class servo720Rot {
             servo.setPosition(positionHoldIntake[angle]);
             servo2.setPosition(positionHoldIntake[angle]);
         }
-        if(offset == 1){ // shoot Pos
+        /*if(offset == 1){ // shoot Pos
             servo.setPosition(positionHoldShoot[angle]);
             servo2.setPosition(positionHoldShoot[angle]);
-        }
+        }*/
     }
     //gets current servo positions
     public double getPos(){
@@ -93,13 +93,13 @@ public class servo720Rot {
         //checks to see which position indec we are in
         for(int i = 0; i < 7; i++){
             if(mode == 1){
-                if(positionHoldShoot[i] == currentPos){
+                if(positionHoldShoot[i] <= currentPos * 1.1 && positionHoldShoot[i] > currentPos * .9){
                     currentIndex = i;
                     break;
                 }
             }
             else{
-                if(positionHoldIntake[i] == currentPos){
+                if(positionHoldIntake[i] <= currentPos * 1.1 && positionHoldIntake[i] > currentPos * .9){
                     currentIndex = i;
                     break;
                 }
@@ -165,7 +165,7 @@ public class servo720Rot {
     public void regRot (double Pos){
         int currentIndex = 0;
         for(int i = 0; i < 7; i++){
-                if(positionHoldIntake[i] == Pos){
+                if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
                     currentIndex = i;
                     break;
                 }

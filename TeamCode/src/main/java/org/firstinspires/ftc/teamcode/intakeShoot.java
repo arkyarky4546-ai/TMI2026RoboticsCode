@@ -57,7 +57,7 @@ public class intakeShoot {
 
         //my custom class takes all of these variables
         spindexer = new servo720Rot(hardwareMap, servoName, servoName2, distance1, distance2, distance3, distance4, distance5, distance6, distance7);
-
+        spindexer.sSP(0,0);
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
     public void update(double intakePower, int pathstate, Telemetry telemetry, boolean intake){
@@ -76,9 +76,9 @@ public class intakeShoot {
         shootsetPower(shootPower);
         intakesetPower(intakePower);*/
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
-        if((spindexer.getDisMain() < 10 || spindexer.distanceSensors[0].getDistance(DistanceUnit.CM) < 5) && Intaketimer.milliseconds() > 400 && intake){
-            //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
-            spindexer.regRot(spindexer.getPos());
+        if((spindexer.getDisMain() < 10 || spindexer.distanceSensors[0].getDistance(DistanceUnit.CM) < 5) && Intaketimer.milliseconds() > 800 && intake){
+            spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
+            //spindexer.regRot(spindexer.getPos());
             Intaketimer.reset();
 
 
