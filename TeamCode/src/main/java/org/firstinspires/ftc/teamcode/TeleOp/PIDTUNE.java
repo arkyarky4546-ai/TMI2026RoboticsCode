@@ -90,9 +90,12 @@ public class PIDTUNE extends OpMode {
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  Math.pow(2.0571, -9) * Math.pow(distanceFromGoal, 4) - Math.pow(8.57305, -7) * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
+        return  -Math.pow(2.0571, -9) * Math.pow(distanceFromGoal, 4) - Math.pow(8.57305, -7) * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
     }
-
+    public double getRecoil(){
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return  -Math.pow(5.66719, -9) * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
+    }
     @Override
     public void loop() {
         follower.update();
