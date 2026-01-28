@@ -92,7 +92,7 @@ public class ShooterAndIntakeClean {
         //new:
         double intakeDis = distanceSensor.getDistance(DistanceUnit.INCH);
         if(servoReset){
-            servRot.resetServos();
+            servRot.sSP(0,0);
             index1 = false;
         }
         if(intakeActive){
@@ -100,7 +100,7 @@ public class ShooterAndIntakeClean {
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
             if(intakeDis < 4 && intakeTimer.milliseconds() > 30) {
-                servRot.rotateToNext(0);
+                servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
             shoot1.setVelocity(-0);
@@ -125,7 +125,7 @@ public class ShooterAndIntakeClean {
                 telemetry.addData("in loop", 0);
                 if(intakeTimer.milliseconds() > 300){
                     telemetry.addData("in timer", 0);
-                    servRot.rotateToNext(1);
+                    servRot.regRot(servRot.getPos());
                     intakeTimer.reset();
                 }
             }

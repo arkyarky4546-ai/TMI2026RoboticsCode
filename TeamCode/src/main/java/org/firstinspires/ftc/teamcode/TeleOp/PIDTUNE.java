@@ -104,6 +104,8 @@ public class PIDTUNE extends OpMode {
         double current = Math.abs(intakeAndShoot.getVelocity());
         TargetVelocity = shooterPowerSet();
         shooterPower = PIDControl(TargetVelocity, current);
+        hood.setPosition(hoodPosSet());
+        recoil = getRecoil();
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
         intakeAndShoot.update(1,1,telemetry, intakeIndex);
