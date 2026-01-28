@@ -19,19 +19,19 @@ public class intakeShoot {
 
     private Servo wall;
     //doubles
-        //variable that controls shooting power
-        private double shootPower;
+    //variable that controls shooting power
+    private double shootPower;
 
-        private double TargetVelocity = 0;
-        private double distance;
+    private double TargetVelocity = 0;
+    private double distance;
 
-        //doubles having to do with PID Tuning (If you dont know PID Tuning look it up, its very useful)
-        private double IntegralSum = 0;
-        private double lastError = 0;
-        public static double Kp=0.0047;
-        public static double Ki=0.0004;
-        public static double Kd=0;
-        public static double Kf=0;
+    //doubles having to do with PID Tuning (If you dont know PID Tuning look it up, its very useful)
+    private double IntegralSum = 0;
+    private double lastError = 0;
+    public static double Kp=0.0047;
+    public static double Ki=0.0004;
+    public static double Kd=0;
+    public static double Kf=0;
 
     //ints
     private int shootMode = 1;
@@ -123,8 +123,8 @@ public class intakeShoot {
 
     //method to shoot balls and rotate from my class
     public void shoot(){
-       index = spindexer.getFree(1, spindexer.getPos());
-       spindexer.sSP(index, 1);
+        index = spindexer.getFree(1, spindexer.getPos());
+        spindexer.sSP(index, 1);
     }
     public void simpleShoot(){
         spindexer.regRot(spindexer.getPos());

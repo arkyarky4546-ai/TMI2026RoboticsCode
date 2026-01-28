@@ -165,10 +165,10 @@ public class servo720Rot {
     public void regRot (double Pos){
         int currentIndex = 0;
         for(int i = 0; i < 7; i++){
-                if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
-                    currentIndex = i;
-                    break;
-                }
+            if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+                currentIndex = i;
+                break;
+            }
         }
         currentIndex += 1;
         if(currentIndex == 7){

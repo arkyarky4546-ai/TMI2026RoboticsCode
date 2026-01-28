@@ -168,7 +168,7 @@ public class PIDTUNE extends OpMode {
         turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
         telemetry.addData("hoodrecoil", recoil);
-       // telemetry.addData("velocity2", );
+        // telemetry.addData("velocity2", );
         telemetry.addData("shootPower", shooterPower);
         telemetry.addData("shooterHoodPos",hoodPos);
         telemetry.addData("turretPos",turretPos);
@@ -216,3 +216,7 @@ public class PIDTUNE extends OpMode {
         //opmodeTimer.resetTimer();
     }
 }
+
+
+
+
