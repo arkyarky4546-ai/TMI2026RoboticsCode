@@ -14,7 +14,7 @@ public class servo720Rot {
     private Servo servo2;
 
     //distance sensors
-    private DistanceSensor[] distanceSensors = new DistanceSensor[6];
+    public DistanceSensor[] distanceSensors = new DistanceSensor[6];
     private DistanceSensor mainDis;
 
     //double arrays
@@ -26,7 +26,7 @@ public class servo720Rot {
     private int[] shootPosOpen = new int[] {0 , 0 , 0};
 
     //ints
-    int ballzCM = 3;
+    int ballzCM = 6;
     //bools
 
     //doubles
@@ -49,7 +49,7 @@ public class servo720Rot {
         distanceSensors[5] = hardwareMap.get(DistanceSensor.class, distance7);
 
         //these are the various shoot and intake positions (since the gear ratio is 5/2, I chose the positions in order to have 720 degrees of rotation)
-        positionHoldShoot = new double[] {0.0500782472613 , 0.200312989045 , 0.350547730829 , 0.500782472613 , 0.651017214397 , 0.801251956182 , 0.951486697966};
+        positionHoldShoot = new double[] {0.0740442655936 , 0.222132796781 , 0.370221327968 , 0.518309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
         positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
     }
     public double getDisMain(){
@@ -64,10 +64,10 @@ public class servo720Rot {
             servo.setPosition(positionHoldIntake[angle]);
             servo2.setPosition(positionHoldIntake[angle]);
         }
-        if(offset == 1){ // shoot Pos
+        /*if(offset == 1){ // shoot Pos
             servo.setPosition(positionHoldShoot[angle]);
             servo2.setPosition(positionHoldShoot[angle]);
-        }
+        }*/
     }
     //gets current servo positions
     public double getPos(){
@@ -79,11 +79,11 @@ public class servo720Rot {
     }
     //indices to check for for the array of distance sensors so we dont have to check all of them
     private int[] getIntakeIndices() {
-        return new int[] {1, 3, 5};
+        return new int[] {0, 2, 4};
     }
 
     private int[] getShootIndices() {
-        return new int[] {0, 2, 4, 6};
+        return new int[] {1, 3, 5};
     }
     //this gets the nearest open position so you can easily rotate to it mode is either 1 or 0, 1 for shoot and 0 for intake
     public int getFree(int mode, double currentPos) {
@@ -91,15 +91,15 @@ public class servo720Rot {
         int currentIndex = 0;
 
         //checks to see which position indec we are in
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < 7; i++){
             if(mode == 1){
-                if(positionHoldShoot[i] == currentPos){
+                if(positionHoldShoot[i] <= currentPos * 1.1 && positionHoldShoot[i] > currentPos * .9){
                     currentIndex = i;
                     break;
                 }
             }
             else{
-                if(positionHoldIntake[i] == currentPos){
+                if(positionHoldIntake[i] <= currentPos * 1.1 && positionHoldIntake[i] > currentPos * .9){
                     currentIndex = i;
                     break;
                 }
@@ -162,4 +162,19 @@ public class servo720Rot {
             return close;
         }
     }
+    public void regRot (double Pos){
+        int currentIndex = 0;
+        for(int i = 0; i < 7; i++){
+                if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+                    currentIndex = i;
+                    break;
+                }
+        }
+        currentIndex += 1;
+        if(currentIndex == 7){
+            currentIndex = 0;
+        }
+        sSP(currentIndex, 0);
+    }
 }
+
