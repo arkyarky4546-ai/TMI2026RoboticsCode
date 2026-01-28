@@ -76,6 +76,38 @@ public class PIDTUNE extends OpMode {
     public void loop() {
         double current = shoot1.getVelocity();
         shooterPower = PIDControl(-TargetVelocity, current);
+        if (index == 0) {
+            limelightPause = System.currentTimeMillis();
+            index = 67; // I am an adult
+        }
+        LLResult result = limelight3A.getLatestResult();
+        if (limelightPause + 150 < System.currentTimeMillis()){
+            limelightPause = System.currentTimeMillis();
+            if(result != null && result.isValid()){
+                List<LLResultTypes.FiducialResult> results = result.getFiducialResults();
+                for(LLResultTypes.FiducialResult tag: results){
+                    if(tag.getFiducialId() == 24){
+                        telemetry.addData("here", tag.getFiducialId());
+                        double tx = tag.getTargetXDegrees();
+                        distance = result.getTa();
+                        /*double turnCmd = TURN_Constant;
+                        if (tx<0){
+                            turnCmd = -TURN_Constant;
+                        }
+                        double turn =turretLeft.getPosition() + turnCmd;
+                        /*if(turn<0.005){
+                            turn=0.994;
+                        }
+                        if(turn>0.995){
+                            turn=0.006;
+                        }*/
+
+                        /*if (tx > 10 || tx < -10) {
+                            //turretLeft.setPosition(turn);
+                            turretRight.setPosition(turn);
+                        }*/
+                    }}}}
+
         if (gamepad2.left_trigger > 0.5) {
             Integralsum=0;
             lasterror=0;

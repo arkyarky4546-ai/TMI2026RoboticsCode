@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+/*package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
@@ -105,4 +105,4 @@ public class shootingReg extends OpMode {
         telemetry.addData("currentVelocity",currentVelocity);
         telemetry.update();
     }
-}
+}*/

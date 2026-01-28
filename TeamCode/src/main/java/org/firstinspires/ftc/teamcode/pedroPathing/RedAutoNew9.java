@@ -12,31 +12,32 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "BlueAutoNew9", group = "Autonomous")
-public class BlueAutoNew9 extends OpMode {
+@Autonomous(name = "RedAutoNew9", group = "Autonomous")
+public class RedAutoNew9 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
-    
+
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(88, -52, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(88, -22 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(64, -60, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(64, -24, Math.toRadians(90));
-    private final Pose endPose1 = new Pose(65, -48, Math.toRadians(0));
-    
+    private final Pose startPose = new Pose(128, -128, Math.toRadians(-47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(90, -92, Math.toRadians(-47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose intakePose1 = new Pose(82, -96, Math.toRadians(-90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(82, -134 , Math.toRadians(-90));
+    private final Pose intakePose2 = new Pose(59, -98, Math.toRadians(-90));
+    private final Pose acIntakePose2 = new Pose(59, -137, Math.toRadians(-90));
+    private final Pose endPose1 = new Pose(65, -97, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(92, -92, Math.toRadians(-50));
+
     //paths
     private Path score1;
     private PathChain firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2;
-    
+
     //doubles
     double hoodPos = .25;
     double turTurn = .97;
     double kickZero = 0.85;
     double kickUp = 0.68;
-    
+
     //timer
     private ElapsedTime shootTimer = new ElapsedTime();
 
@@ -45,14 +46,14 @@ public class BlueAutoNew9 extends OpMode {
 
     //servos
     Servo push, turretRight, turretLeft, hood;
-    
+
     //booleans
     boolean intakeIndex = true;
     //ints
     int index = 0;
     int shootPos = 1;
     int intakePos = 0;
-    
+
     public void buildPaths() {//this is where we build the path stuff using our positions
         score1 = new Path(new BezierLine(startPose, scorePose1));
         score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
