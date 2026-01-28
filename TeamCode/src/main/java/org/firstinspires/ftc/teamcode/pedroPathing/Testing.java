@@ -109,7 +109,7 @@ public class Testing extends OpMode {
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 25) {
                     intakeAndShoot.setPos(0, intakePos);
-                    follower.followPath(firstLoad,true);
+                    //follower.followPath(firstLoad,true);
                     //push servo is down now
                     push.setPosition(kickZero);
                     //closed wall position

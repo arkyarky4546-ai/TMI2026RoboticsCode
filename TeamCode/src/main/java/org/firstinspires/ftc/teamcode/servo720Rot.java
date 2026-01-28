@@ -52,6 +52,12 @@ public class servo720Rot {
         positionHoldShoot = new double[] {0.0500782472613 , 0.200312989045 , 0.350547730829 , 0.500782472613 , 0.651017214397 , 0.801251956182 , 0.951486697966};
         positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
     }
+
+    public void resetServos() {
+        servo.setPosition(0);
+        servo2.setPosition(0);
+    }
+
     public double getDisMain(){
         return mainDis.getDistance(DistanceUnit.CM);
     }
@@ -161,5 +167,10 @@ public class servo720Rot {
 
             return close;
         }
+    }
+
+    public void rotateToNext(int mode) { // 0 = intake, 1 = shoot
+        int nextIndex = getFree(mode, getPos());
+        sSP(nextIndex, mode);
     }
 }

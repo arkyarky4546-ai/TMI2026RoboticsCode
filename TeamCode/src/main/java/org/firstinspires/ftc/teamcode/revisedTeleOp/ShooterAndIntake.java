@@ -117,7 +117,7 @@ public class ShooterAndIntake {
         //, DcMotorEx
     }
 
-    public void setPattern(int pat){
+    /*public void setPattern(int pat){
         if(pat == 1){ //23
             pattern[0] = PURPLE;
             pattern[1] = PURPLE;
@@ -133,10 +133,10 @@ public class ShooterAndIntake {
             pattern[1] = PURPLE;
             pattern[2] = PURPLE;
         }
-    }
-    public int[] getPattern(){
+    }*/
+    /*public int[] getPattern(){
         return pattern;
-    }
+    }*/
 
     //some of the stuff was for pedro so i made it an exclusively teleop class
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut, boolean colorShootActive, boolean shootGreen, boolean shootPurple, boolean servoReset, Telemetry telemetry){

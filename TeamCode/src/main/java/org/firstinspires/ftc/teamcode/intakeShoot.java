@@ -67,7 +67,8 @@ public class intakeShoot {
         else {
             //using PID and a targetVelocity in order to keep the right motor velocity
             TargetVelocity = getGoodVel(distance);
-            shootPower = PIDControl(TargetVelocity,shootMotor2.getVelocity());
+            //shootPower = PIDControl(TargetVelocity,shootMotor2.getVelocity());\
+            shootPower = 1;
 
         }
         //setting the power of the shooter and intake here

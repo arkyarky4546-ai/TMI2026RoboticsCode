@@ -18,7 +18,8 @@ public class blueTeleOp extends OpMode {
     /* newly created classes */
     Drivetrain drivetrain; //all driving functionality and pedro pathing
     Turret turret; //autoaiming and manual control
-    ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
+    ShooterAndIntakeClean shooterAndIntake;
+    //ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
 
     Limelight3A limelight3A; //for pattern recognition
     boolean patternDetected = false;
@@ -36,7 +37,8 @@ public class blueTeleOp extends OpMode {
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
 
-        shooterAndIntake = new ShooterAndIntake(hardwareMap);
+        shooterAndIntake = new ShooterAndIntakeClean(hardwareMap);
+        //shooterAndIntake = new ShooterAndIntake(hardwareMap);
 
     }
 
@@ -86,7 +88,8 @@ public class blueTeleOp extends OpMode {
         }
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,rightTrigger, gamepad2.left_bumper, gamepad1.dpadUpWasPressed(),telemetry);
+        //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
         /*
         //limelight pattern detection
