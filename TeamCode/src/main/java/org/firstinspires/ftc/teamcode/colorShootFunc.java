@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.pedropathing.util.Timer;
+//import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -58,7 +58,7 @@ public class colorShootFunc {
     DistanceSensor dis;
     //AxonRotator smart2;
     CRServo slave;
-    Timer limelightTimer;
+    //Timer limelightTimer;
     boolean turretToLeft;
     boolean turretToRight;
     int actPattern;
