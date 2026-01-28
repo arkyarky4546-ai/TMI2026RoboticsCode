@@ -82,14 +82,24 @@ public class PIDTUNE extends OpMode {
         timer.reset();
 
         double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
-        return output/6;
+        return output/6.2;
     }
+    public double shooterPowerSet(){
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1975.07059;
+    }
+    public double hoodPosSet(){
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return  Math.pow(2.0571, -9) * Math.pow(distanceFromGoal, 4) - Math.pow(8.57305, -7) * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
+    }
+
     @Override
     public void loop() {
         follower.update();
         //hoodPos();
         intakeAndShoot.wallPos(.2);
         double current = Math.abs(intakeAndShoot.getVelocity());
+        TargetVelocity = shooterPowerSet();
         shooterPower = PIDControl(TargetVelocity, current);
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
@@ -113,8 +123,8 @@ public class PIDTUNE extends OpMode {
             telemetry.addData("hit", 0);
             if(shootTimer1.milliseconds() > 400){
                 intakeAndShoot.wallPos(0);
-                hood.setPosition(hood.getPosition()-recoil);
                 intakeAndShoot.simpleShoot();
+                hood.setPosition(hood.getPosition()-recoil);
                 shootTimer1.reset();
             }
         }
@@ -140,10 +150,10 @@ public class PIDTUNE extends OpMode {
             TargetVelocity-=25;
         }
         if(gamepad2.dpadLeftWasPressed()){
-            recoil -=.05;
+            recoil -=.005;
         }
         if(gamepad2.dpadRightWasPressed()){
-            recoil += .05;
+            recoil += .005;
         }
         if(gamepad2.leftBumperWasPressed()){
             push.setPosition(kickZero);
@@ -157,6 +167,7 @@ public class PIDTUNE extends OpMode {
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
+        telemetry.addData("hoodrecoil", recoil);
        // telemetry.addData("velocity2", );
         telemetry.addData("shootPower", shooterPower);
         telemetry.addData("shooterHoodPos",hoodPos);
