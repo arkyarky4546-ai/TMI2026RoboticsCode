@@ -36,9 +36,19 @@ public class BlueAutoNew9 extends OpMode {
     double turTurn = .97;
     double kickZero = 0.85;
     double kickUp = 0.68;
+    double TargetVelocity = 1200;
+    double shooterPower = 0;
+    double recoil = 0;
+    private double IntegralSum = 0;
+    private double lastError = 0;
+    public static double Kp=0.0047;
+    public static double Ki=0.0004;
+    public static double Kd=0;
+    public static double Kf=0;
     
     //timer
     private ElapsedTime shootTimer = new ElapsedTime();
+    ElapsedTime PIDtimer=new ElapsedTime();
 
     //custom class that controls shooting and intake
     private intakeShoot intakeAndShoot;
@@ -48,11 +58,22 @@ public class BlueAutoNew9 extends OpMode {
     
     //booleans
     boolean intakeIndex = true;
+    boolean isShoot = false;
+    boolean go = false;
     //ints
     int index = 0;
     int shootPos = 1;
     int intakePos = 0;
-    
+
+    public double PIDControl(double reference, double state){
+        double error=reference-state;
+        double dt = PIDtimer.seconds();
+        IntegralSum+=error*dt;
+        double derivative=(error-lastError)/dt;
+        lastError=error;
+        PIDtimer.reset();
+        return (error*Kp)+(derivative*Kd)+(IntegralSum*Ki)+(reference*Kf);
+    }
     public void buildPaths() {//this is where we build the path stuff using our positions
         score1 = new Path(new BezierLine(startPose, scorePose1));
         score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
@@ -91,7 +112,7 @@ public class BlueAutoNew9 extends OpMode {
 
             case 0:
                 //the follower is now on the score1 path
-                follower.followPath(score1);
+                follower.holdPoint(startPose);
                 intakeAndShoot.setPos(0,intakePos);
                 intakeIndex = false;
                 //go to the next case
@@ -107,19 +128,27 @@ public class BlueAutoNew9 extends OpMode {
                     //open wall position
                     intakeAndShoot.wallPos(0);
                     shootTimer.reset();
+                    push.setPosition(kickUp);
+
                     setPathState(2);}
                 break;
             case 2:
-                if(shootTimer.milliseconds() > 900) {
+                if(actionTimer.getElapsedTimeSeconds() > 2){
+                    go = true;
+                }
+                if(shootTimer.milliseconds() > 400 && go) {
                     push.setPosition(kickUp);
+
+                   isShoot = true;
                     //shooting every 800 milliseconds
                     intakeAndShoot.simpleShoot();
+                    hood.setPosition(hood.getPosition()-recoil);
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 4.5) {
+                if(actionTimer.getElapsedTimeSeconds() > 5.5) {
                     intakeAndShoot.setPos(0, intakePos);
-
+                    isShoot = false;
                     follower.followPath(firstLoad,true);
                     //push servo is down now
                     push.setPosition(kickZero);
@@ -150,6 +179,8 @@ public class BlueAutoNew9 extends OpMode {
                     intakeAndShoot.wallPos(0);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
+                    IntegralSum = 0;
+                    lastError = 0;
                     setPathState(6);
                 }
                 break;
@@ -159,17 +190,21 @@ public class BlueAutoNew9 extends OpMode {
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
+                    push.setPosition(kickUp);
                     setPathState(7);
                 }
                 break;
             case 7:
-                if(shootTimer.milliseconds() > 900) {
+                if(shootTimer.milliseconds() > 400) {
                     push.setPosition(kickUp);
-                    intakeAndShoot.shoot();
+                    isShoot = true;
+                    intakeAndShoot.simpleShoot();
+                    hood.setPosition(hood.getPosition()-recoil);
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 4.5) {
                     follower.followPath(secondLoad,true);
+                    isShoot = false;
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = true;
                     intakeAndShoot.wallPos(0.25);
@@ -205,13 +240,19 @@ public class BlueAutoNew9 extends OpMode {
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
+                    push.setPosition(kickUp);
+                    IntegralSum = 0;
+                    lastError = 0;
                     setPathState(12);
                 }
                 break;
             case 12:
                 if(shootTimer.milliseconds() > 900) {
                     push.setPosition(kickUp);
-                    intakeAndShoot.shoot();
+
+                    isShoot = true;
+                    intakeAndShoot.simpleShoot();
+                    hood.setPosition(hood.getPosition()-recoil);
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 4.5) {
@@ -236,12 +277,37 @@ public class BlueAutoNew9 extends OpMode {
         pathState = pState;
         pathTimer.resetTimer();
     }
+    public double shooterPowerSet(){
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2020.07059;
+    }
+    public double hoodPosSet(){
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
+    }
+    public double getRecoil(){
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
+    }
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
-        hood.setPosition(.47);
 
         follower.update();
-        intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
+        intakeAndShoot.update(1,1, intakeIndex);
+        intakeAndShoot.wallPos(.2);
+        double current = Math.abs(intakeAndShoot.getVelocity());
+        TargetVelocity = shooterPowerSet();
+        shooterPower = PIDControl(TargetVelocity, current);
+        if(!isShoot) {
+
+            hood.setPosition(hoodPosSet());
+        }
+        telemetry.addData("hoodPos", hoodPosSet());
+        recoil = getRecoil();
+        intakeAndShoot.shootsetPower(shooterPower);
+        intakeAndShoot.intakesetPower(1);
+
+        //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
             autonomousPathUpdate(); //updating our cases so that we can change paths
         } catch (InterruptedException e) {

@@ -31,10 +31,10 @@ public class PIDTUNE extends OpMode {
 
     private Follower follower;
     private double lastError = 0;
-    public static double Kp=0.0047;
-    public static double Ki=0.0004;
-    public static double Kd=0;
-    public static double Kf=0;
+    public static double Kp=0.0012;
+    public static double Ki=0.0000;
+    public static double Kd=0.0001;
+    public static double Kf=.0006;
     double TargetVelocity = 1400;
     private double PIDdistance = 0;
     private double timeBegan;
@@ -82,7 +82,7 @@ public class PIDTUNE extends OpMode {
         timer.reset();
 
         double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
-        return output/6.2;
+        return output;
     }
     public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
@@ -90,11 +90,11 @@ public class PIDTUNE extends OpMode {
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(2.0571, -9) * Math.pow(distanceFromGoal, 4) - Math.pow(8.57305, -7) * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
+        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
     }
     public double getRecoil(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(5.66719, -9) * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
+        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
     }
     @Override
     public void loop() {
@@ -104,11 +104,13 @@ public class PIDTUNE extends OpMode {
         double current = Math.abs(intakeAndShoot.getVelocity());
         TargetVelocity = shooterPowerSet();
         shooterPower = PIDControl(TargetVelocity, current);
+
         hood.setPosition(hoodPosSet());
+        telemetry.addData("hoodPos", hoodPosSet());
         recoil = getRecoil();
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
-        intakeAndShoot.update(1,1,telemetry, intakeIndex);
+        intakeAndShoot.update(1,1, intakeIndex);
         if (gamepad2.left_trigger > 0.5) {
             if (!intakeIndex) {
                 intakeIndex = true;
@@ -169,6 +171,30 @@ public class PIDTUNE extends OpMode {
         if(!isShooting) {
             hood.setPosition(hoodPos);
         }
+        if(gamepad1.dpadUpWasPressed()){
+            Kp+=.001;
+        }
+        if(gamepad1.dpadDownWasPressed()){
+            Kp-=.001;
+        }
+        if(gamepad1.dpadRightWasPressed()){
+            Kd+=.0001;
+        }
+        if(gamepad1.dpadLeftWasPressed()){
+            Kd-=.0001;
+        }
+        if(gamepad1.yWasPressed()){
+            Ki+=.00001;
+        }
+        if(gamepad1.aWasPressed()){
+            Ki-=.00001;
+        }
+        if(gamepad1.xWasPressed()){
+            Kf-=.00005;
+        }
+        if(gamepad1.bWasPressed()){
+            Kf+=.00005;
+        }
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
@@ -181,6 +207,10 @@ public class PIDTUNE extends OpMode {
         telemetry.addData("target", TargetVelocity);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("p", Kp);
+        telemetry.addData("d", Kd);
+        telemetry.addData("i", Ki);
+        telemetry.addData("f", Kf);
 
     }
     @Override

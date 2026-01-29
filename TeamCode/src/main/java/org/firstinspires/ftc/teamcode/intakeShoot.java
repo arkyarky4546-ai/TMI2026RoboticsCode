@@ -60,7 +60,7 @@ public class intakeShoot {
         spindexer.sSP(0,0);
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
-    public void update(double intakePower, int pathstate, Telemetry telemetry, boolean intake){
+    public void update(double intakePower, int pathstate, boolean intake){
         //pathstate is from the auto and tells us which stage the robot is in and like if it is done or not
         /*if(pathstate == 16) {
             shootPower = 0;
@@ -76,21 +76,14 @@ public class intakeShoot {
         shootsetPower(shootPower);
         intakesetPower(intakePower);*/
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
-        if((spindexer.getDisMain() < 10 || spindexer.distanceSensors[0].getDistance(DistanceUnit.CM) < 5) && Intaketimer.milliseconds() > 800 && intake){
+        if((spindexer.getDisMain() < 10 || spindexer.distanceSensors[0].getDistance(DistanceUnit.CM) < 5) && Intaketimer.milliseconds() > 300 && intake){
             //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
             simpleShoot();
             Intaketimer.reset();
 
 
         }
-        telemetry.addData ( "good index", index);
-        telemetry.addData("disDiss", spindexer.getDisMain());
-        telemetry.addData("dis2", spindexer.distanceSensors[0].getDistance(DistanceUnit.CM));
-        telemetry.addData("dis3", spindexer.distanceSensors[1].getDistance(DistanceUnit.CM));
-        telemetry.addData("dis4", spindexer.distanceSensors[2].getDistance(DistanceUnit.CM));
-        telemetry.addData("dis5", spindexer.distanceSensors[3].getDistance(DistanceUnit.CM));
-        telemetry.addData("dis6", spindexer.distanceSensors[4].getDistance(DistanceUnit.CM));
-        telemetry.addData("dis7", spindexer.distanceSensors[5].getDistance(DistanceUnit.CM));
+
     }
     public double PIDControl(double reference, double state){
         double error=reference-state;

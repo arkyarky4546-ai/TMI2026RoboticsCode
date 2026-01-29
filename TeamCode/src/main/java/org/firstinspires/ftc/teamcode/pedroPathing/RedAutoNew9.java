@@ -242,7 +242,7 @@ public class RedAutoNew9 extends OpMode {
         hood.setPosition(.47);
 
         follower.update();
-        intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
+        intakeAndShoot.update(1, pathState, intakeIndex); //updating our shooter power and intake power
         try {
             autonomousPathUpdate(); //updating our cases so that we can change paths
         } catch (InterruptedException e) {
