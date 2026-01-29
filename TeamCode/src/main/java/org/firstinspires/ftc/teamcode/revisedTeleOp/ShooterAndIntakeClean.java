@@ -37,10 +37,10 @@ public class ShooterAndIntakeClean {
     private final double TURRET_START = 0.96;
 
     double Integralsum = 0;
-    public static double Kp=0.0047;
-    public static double Ki=0.0004;
-    public static double Kd=0;
-    public static double Kf=0;
+    public static double Kp=0.0012;
+    public static double Ki=0.0000;
+    public static double Kd=0.0001;
+    public static double Kf=.0006;
     boolean index1 = false;
     double lasterror = 0;
     ElapsedTime PIDTimer = new ElapsedTime();
@@ -63,7 +63,7 @@ public class ShooterAndIntakeClean {
 
         artifactPush = hardwareMap.get(Servo.class, "push");
 
-        servRot = new servo720Rot(hardwareMap,"servo", "servo2","distance1","distance2","distance3","distance4","distance5","distance6","distance7");
+        servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave","dis1","dis2","dis3","dis4","dis5","dis6","dis7");
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
@@ -160,9 +160,14 @@ public class ShooterAndIntakeClean {
         PIDTimer.reset();
         return (error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
     }
-
-    public double getGoodShootVel(double dis){
-        return 0.0000189394*(dis*dis*dis*dis) - 0.00598485*(dis*dis*dis) + 0.70947*(dis*dis) - 34.90476*(dis) + 1655.01299;
+    public double getGoodShootVel(double distanceFromGoal){
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2020.07059;
+    }
+    public double hoodPosSet(double distanceFromGoal){
+        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
+    }
+    public double getRecoil(double distanceFromGoal){
+        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
     }
 
     public void resetPID(){
