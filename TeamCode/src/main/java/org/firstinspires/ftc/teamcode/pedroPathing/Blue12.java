@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "BlueAutoNew9", group = "Autonomous")
-public class BlueAutoNew9 extends OpMode {
+@Autonomous(name = "Blue12", group = "Autonomous")
+public class Blue12 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
@@ -146,7 +146,7 @@ public class BlueAutoNew9 extends OpMode {
                 break;
             case 2:
                 if(!go){
-                    savePosition = hood.getPosition() + .08;
+                    savePosition = hood.getPosition() + .06;
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .5){
                     go = true;
@@ -159,7 +159,7 @@ public class BlueAutoNew9 extends OpMode {
                     intakeAndShoot.simpleShoot();
 
                     hood.setPosition( savePosition);
-                    savePosition -=recoil;
+                    savePosition -= recoil;
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
@@ -276,7 +276,7 @@ public class BlueAutoNew9 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.7) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(thirdLoad,true);
@@ -378,7 +378,7 @@ public class BlueAutoNew9 extends OpMode {
             hood.setPosition(hoodPosSet());
         }
         telemetry.addData("hoodPos", hoodPosSet());
-        recoil = getRecoil();
+        recoil = getRecoil() + .005;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
 
