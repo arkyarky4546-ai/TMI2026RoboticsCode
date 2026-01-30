@@ -19,8 +19,8 @@ public class Blue12 extends OpMode {
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose startPose = new Pose(128,-26, Math.toRadians(46)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(46)); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(88, -48, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(88, -22 , Math.toRadians(90));
     private final Pose intakePose2 = new Pose(63, -48, Math.toRadians(90));
@@ -126,7 +126,7 @@ public class Blue12 extends OpMode {
                 follower.followPath(score1);
                 intakeAndShoot.setPos(0,intakePos);
                 intakeIndex = false;
-                intakeAndShoot.wallPos(0);
+                intakeAndShoot.wallPos(0.1);
                 //go to the next case
                 setPathState(1);
 
@@ -138,7 +138,7 @@ public class Blue12 extends OpMode {
                     //method to hold a position
                     follower.holdPoint(scorePose1);
                     //open wall position
-                    intakeAndShoot.wallPos(0);
+                    intakeAndShoot.wallPos(0.1);
                     shootTimer.reset();
                     push.setPosition(kickUp);
 
@@ -146,14 +146,14 @@ public class Blue12 extends OpMode {
                 break;
             case 2:
                 if(!go){
-                    savePosition = hood.getPosition() + .06;
+                    savePosition = hood.getPosition() + .065;
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5){
+                if(actionTimer.getElapsedTimeSeconds() > .3){
                     go = true;
                     isShoot = true;
 
                 }
-                if(shootTimer.milliseconds() > 400 && go) {
+                if(shootTimer.milliseconds() > 380 && go) {
                     push.setPosition(kickUp);
                     //shooting every 800 milliseconds
                     intakeAndShoot.simpleShoot();
@@ -163,7 +163,7 @@ public class Blue12 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2.0) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(firstLoad,true);
@@ -179,7 +179,7 @@ public class Blue12 extends OpMode {
             case 3:
                 if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,.33,true);
+                    follower.followPath(acFirstLoad,.335,true);
                     setPathState(4);
                 }
                 break;
@@ -194,7 +194,7 @@ public class Blue12 extends OpMode {
 
                 if(actionTimer.getElapsedTimeSeconds() > .1) {
                     intakeAndShoot.setPos(0,intakePos);
-                    intakeAndShoot.wallPos(0);
+                    intakeAndShoot.wallPos(0.1);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
                     IntegralSum = 0;
@@ -213,14 +213,14 @@ public class Blue12 extends OpMode {
                 }
                 break;
             case 7:
-                if(shootTimer.milliseconds() > 400) {
+                if(shootTimer.milliseconds() > 380) {
                     push.setPosition(kickUp);
                     isShoot = true;
                     intakeAndShoot.simpleShoot();
                     hood.setPosition(hood.getPosition()-recoil);
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.7) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.6) {
                     follower.followPath(secondLoad,true);
                     isShoot = false;
                     intakeAndShoot.setPos(0, intakePos);
@@ -233,7 +233,7 @@ public class Blue12 extends OpMode {
                 break;
             case 8:
                 if(!follower.isBusy()) {
-                    follower.followPath(acSecondLoad,.33,true);
+                    follower.followPath(acSecondLoad,.335,true);
                     setPathState(9);
                 }
                 break;
@@ -249,7 +249,7 @@ public class Blue12 extends OpMode {
                     follower.followPath(scoreLoad2,true);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
-                    intakeAndShoot.wallPos(0);
+                    intakeAndShoot.wallPos(0.1);
                     setPathState(11);
                 }
                 break;
@@ -265,7 +265,7 @@ public class Blue12 extends OpMode {
                 }
                 break;
             case 12:
-                if(shootTimer.milliseconds() > 400) {
+                if(shootTimer.milliseconds() > 380) {
                     push.setPosition(kickUp);
 
                     isShoot = true;
@@ -276,7 +276,7 @@ public class Blue12 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.7) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.6) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(thirdLoad,true);
@@ -291,7 +291,7 @@ public class Blue12 extends OpMode {
                 break;
             case 13:
                 if(!follower.isBusy()) {
-                    follower.followPath(acThirdLoad,.33,true);
+                    follower.followPath(acThirdLoad,.335,true);
                     setPathState(14);
                 }
                 break;
@@ -307,7 +307,7 @@ public class Blue12 extends OpMode {
                     follower.followPath(scoreLoad2,true);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
-                    intakeAndShoot.wallPos(0);
+                    intakeAndShoot.wallPos(0.1);
                     setPathState(16);
                 }
                 break;
@@ -322,7 +322,7 @@ public class Blue12 extends OpMode {
                 }
                 break;
             case 17:
-                if(shootTimer.milliseconds() > 400) {
+                if(shootTimer.milliseconds() > 380) {
                     push.setPosition(kickUp);
 
                     isShoot = true;
@@ -377,8 +377,7 @@ public class Blue12 extends OpMode {
 
             hood.setPosition(hoodPosSet());
         }
-        telemetry.addData("hoodPos", hoodPosSet());
-        recoil = getRecoil() + .005;
+        recoil = getRecoil() + .0075;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
 
