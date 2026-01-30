@@ -47,7 +47,8 @@ public class BlueAutoNew9 extends OpMode {
     public static double Ki=0.0004;
     public static double Kd=0;
     public static double Kf=0;
-    
+    double savePosition = 0.0;
+
     //timer
     private ElapsedTime shootTimer = new ElapsedTime();
     ElapsedTime PIDtimer=new ElapsedTime();
@@ -144,18 +145,21 @@ public class BlueAutoNew9 extends OpMode {
                     setPathState(2);}
                 break;
             case 2:
+                if(!go){
+                    savePosition = hood.getPosition() + .06;
+                }
                 if(actionTimer.getElapsedTimeSeconds() > .5){
                     go = true;
                     isShoot = true;
+
                 }
                 if(shootTimer.milliseconds() > 400 && go) {
                     push.setPosition(kickUp);
-
-
-
                     //shooting every 800 milliseconds
                     intakeAndShoot.simpleShoot();
-                    hood.setPosition(hood.getPosition() - recoil);
+
+                    hood.setPosition( savePosition);
+                    savePosition -=recoil;
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
@@ -354,7 +358,7 @@ public class BlueAutoNew9 extends OpMode {
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.9;
+        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
     }
     public double getRecoil(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
