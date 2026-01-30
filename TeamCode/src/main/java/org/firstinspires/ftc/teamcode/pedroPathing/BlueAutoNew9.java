@@ -21,11 +21,11 @@ public class BlueAutoNew9 extends OpMode {
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
     private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(88, -52, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose intakePose1 = new Pose(88, -48, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(88, -22 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(63, -60, Math.toRadians(90));
+    private final Pose intakePose2 = new Pose(63, -48, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(63, -24, Math.toRadians(90));
-    private final Pose intakePose3 = new Pose(40, -60, Math.toRadians(90));
+    private final Pose intakePose3 = new Pose(40, -48, Math.toRadians(90));
     private final Pose acIntakePose3 = new Pose(40, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(65, -48, Math.toRadians(0));
     
@@ -146,7 +146,7 @@ public class BlueAutoNew9 extends OpMode {
                 break;
             case 2:
                 if(!go){
-                    savePosition = hood.getPosition() + .06;
+                    savePosition = hood.getPosition() + .08;
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .5){
                     go = true;
@@ -179,7 +179,7 @@ public class BlueAutoNew9 extends OpMode {
             case 3:
                 if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,.38,true);
+                    follower.followPath(acFirstLoad,.33,true);
                     setPathState(4);
                 }
                 break;
@@ -233,7 +233,7 @@ public class BlueAutoNew9 extends OpMode {
                 break;
             case 8:
                 if(!follower.isBusy()) {
-                    follower.followPath(acSecondLoad,.38,true);
+                    follower.followPath(acSecondLoad,.33,true);
                     setPathState(9);
                 }
                 break;
@@ -276,7 +276,7 @@ public class BlueAutoNew9 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.6) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(thirdLoad,true);
@@ -291,7 +291,7 @@ public class BlueAutoNew9 extends OpMode {
                 break;
             case 13:
                 if(!follower.isBusy()) {
-                    follower.followPath(acThirdLoad,.40,true);
+                    follower.followPath(acThirdLoad,.33,true);
                     setPathState(14);
                 }
                 break;
@@ -354,7 +354,7 @@ public class BlueAutoNew9 extends OpMode {
     }
     public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2050.07059;
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2070.07059;
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
@@ -362,7 +362,7 @@ public class BlueAutoNew9 extends OpMode {
     }
     public double getRecoil(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
+        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.221045;
     }
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
