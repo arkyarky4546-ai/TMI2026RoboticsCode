@@ -51,7 +51,6 @@ public class ShooterAndIntakeClean {
 
     ElapsedTime intakeTimer = new ElapsedTime();
     final double intakePower = 0.75; //TODO: find actual power
-    DistanceSensor distanceSensor;
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
 
@@ -88,7 +87,7 @@ public class ShooterAndIntakeClean {
     //some of the stuff was for pedro so i made it an exclusively teleop class
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry){
         //new:
-        double intakeDis = distanceSensor.getDistance(DistanceUnit.INCH);
+        double intakeDis = servRot.getDisMain();
         if(servoReset){
             servRot.sSP(0,0);
             index1 = false;
@@ -97,7 +96,7 @@ public class ShooterAndIntakeClean {
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 4 && intakeTimer.milliseconds() > 30) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 30) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
