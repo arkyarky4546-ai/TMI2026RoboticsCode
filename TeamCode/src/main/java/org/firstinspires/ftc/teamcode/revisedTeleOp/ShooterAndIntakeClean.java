@@ -63,7 +63,7 @@ public class ShooterAndIntakeClean {
 
         artifactPush = hardwareMap.get(Servo.class, "push");
 
-        servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave","dis1","dis2","dis3","dis4","dis5","dis6","dis7");
+        servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave","disDiss","dis2","dis3","dis4","dis5","dis6","dis7");
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
@@ -79,8 +79,6 @@ public class ShooterAndIntakeClean {
         shooterHood = hardwareMap.get(Servo.class, "shooterHood");
         shooterHood.setPosition(0.4);
         artifactPush.setPosition(kickZero);
-
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "disDiss");
 
         PIDTimer.reset();
         shootTimer.reset();
