@@ -9,11 +9,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.TeleOp.PIDTUNE;
 import org.firstinspires.ftc.teamcode.servo720Rot;
 
 //Organized by Johnson
 
-public class ShooterAndIntakeClean {
+public class FinalTeleOp {
     //intake
     DcMotorEx intake1;
     DcMotorEx intake2;
@@ -41,7 +42,9 @@ public class ShooterAndIntakeClean {
     public static double Ki=0.0000;
     public static double Kd=0.0001;
     public static double Kf=.0006;
+    double power = 0.0;
     boolean index1 = false;
+    boolean isShoot = false;
     double lasterror = 0;
     ElapsedTime PIDTimer = new ElapsedTime();
     double TargetVelocity;
@@ -54,7 +57,7 @@ public class ShooterAndIntakeClean {
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
 
-    public ShooterAndIntakeClean(HardwareMap hardwareMap){
+    public FinalTeleOp(HardwareMap hardwareMap){
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
         intake2 = hardwareMap.get(DcMotorEx.class, "intake1");
         intakeGate = hardwareMap.get(Servo.class, "intakeGate");
@@ -92,58 +95,49 @@ public class ShooterAndIntakeClean {
             servRot.sSP(0,0);
             index1 = false;
         }
+        currentVelocity=shoot2.getVelocity();
+        targetVelocity=getGoodShootVel(distance);
+        power= shooterPIDControl(targetVelocity, currentVelocity);
+        isShoot = true;
+        shoot1.setPower(-power);
+        shoot2.setPower(power);
         if(intakeActive){
+            artifactPush.setPosition(kickZero);
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 10 && intakeTimer.milliseconds() > 150) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 200) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
-            shoot1.setVelocity(-0);
-            shoot2.setVelocity(0);
+
         }
         else if(intakeOut) {
             intake1.setPower(-intakePower);
             intake2.setPower(intakePower);
-            shoot1.setVelocity(-0);
-            shoot2.setVelocity(0);
+            artifactPush.setPosition(kickZero);
         }
         else if(shootActive){
-            currentVelocity=shoot2.getVelocity();
-            targetVelocity=getGoodShootVel(distance);
-            shoot1.setVelocity(-targetVelocity);
-            shoot2.setVelocity(targetVelocity);
             intake1.setPower(1);
             intake2.setPower(-1);
-            if((Math.abs(shoot2.getVelocity()) > (targetVelocity*.85))||(Math.abs(shoot1.getVelocity()) > (targetVelocity*.85))){
-                wall.setPosition(0);
-                artifactPush.setPosition(kickUp);
-                telemetry.addData("in loop", 0);
-                if(intakeTimer.milliseconds() > 300){
-                    telemetry.addData("in timer", 0);
-                    servRot.regRot(servRot.getPos());
-                    intakeTimer.reset();
-                }
-            }
-            else {
-                telemetry.addData("in else", 0);
-                wall.setPosition(.3);
-                artifactPush.setPosition(kickZero);
+            wall.setPosition(0);
+            artifactPush.setPosition(kickUp);
+            if(intakeTimer.milliseconds() > 300){
+                telemetry.addData("in timer", 0);
+                servRot.regRot(servRot.getPos());
+                intakeTimer.reset();
             }
             telemetry.addData("distance",distance);
             telemetry.addData("targetVelocity",targetVelocity);
             telemetry.addData("currentVelocity",currentVelocity);
             telemetry.addData("shootingVelocity",shootPower);
-            telemetry.addData("servo1 pos", servRot.getPos());
-            telemetry.addData("servo2 pos", servRot.getPos());
             telemetry.update();
         }
         else{
-            shoot1.setVelocity(-0);
-            shoot2.setVelocity(0);
             intake1.setPower(0);
+            isShoot = false;
             intake2.setPower(0);
+            artifactPush.setPosition(kickUp);
         }
     }
 

@@ -18,7 +18,7 @@ public class redTeleOp extends OpMode {
      //newly created classes.
     Drivetrain drivetrain; //all driving functionality and pedro pathing
     Turret turret; //autoaiming and manual control
-    ShooterAndIntakeClean shooterAndIntake;//new clean version of code by Johnson
+    FinalTeleOp shooterAndIntake;//new clean version of code by Johnson
     //ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
 
     Limelight3A limelight3A; //for pattern recognition
@@ -37,7 +37,7 @@ public class redTeleOp extends OpMode {
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
 
-        shooterAndIntake = new ShooterAndIntakeClean(hardwareMap);
+        shooterAndIntake = new FinalTeleOp(hardwareMap);
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
 
     }
