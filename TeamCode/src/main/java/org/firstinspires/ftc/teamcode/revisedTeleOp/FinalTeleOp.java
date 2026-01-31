@@ -97,7 +97,7 @@ public class FinalTeleOp {
         }
         currentVelocity=shoot2.getVelocity();
         targetVelocity=getGoodShootVel(distance);
-        power= shooterPIDControl(targetVelocity, currentVelocity);
+        power = shooterPIDControl(targetVelocity, currentVelocity)/2;
         isShoot = true;
         shoot1.setPower(-power);
         shoot2.setPower(power);
@@ -121,12 +121,23 @@ public class FinalTeleOp {
             intake1.setPower(1);
             intake2.setPower(-1);
             wall.setPosition(0);
-            artifactPush.setPosition(kickUp);
             if(intakeTimer.milliseconds() > 300){
                 telemetry.addData("in timer", 0);
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
+            currentVelocity=shoot2.getVelocity();
+            targetVelocity=getGoodShootVel(distance);
+            power = shooterPIDControl(targetVelocity, currentVelocity);
+            shoot1.setPower(-power);
+            shoot2.setPower(power);
+            if(shoot1.getVelocity() < 0.8 * power){
+                artifactPush.setPosition(kickZero);
+            }
+            else{
+                artifactPush.setPosition(kickUp);
+            }
+
             telemetry.addData("distance",distance);
             telemetry.addData("targetVelocity",targetVelocity);
             telemetry.addData("currentVelocity",currentVelocity);
