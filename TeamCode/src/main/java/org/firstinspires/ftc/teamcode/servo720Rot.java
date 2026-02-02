@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import static java.lang.Double.min;
+
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -54,6 +56,9 @@ public class servo720Rot {
     }
     public double getDisMain(){
         return mainDis.getDistance(DistanceUnit.CM);
+    }
+    public double getDis23(){
+        return min(distanceSensors[0].getDistance(DistanceUnit.CM), distanceSensors[1].getDistance(DistanceUnit.CM));
     }
     //servoSetPosition
     //@twins, if you want to use this, make sure to specify if you are in shoot position or in intake position

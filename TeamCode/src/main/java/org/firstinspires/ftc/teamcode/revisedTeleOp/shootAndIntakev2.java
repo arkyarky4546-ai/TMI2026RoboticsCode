@@ -48,11 +48,14 @@ public class shootAndIntakev2 {
     ElapsedTime shootTimer = new ElapsedTime();
     double currentVelocity,targetVelocity;
     double shootPower;
-
+    double recoil;
     ElapsedTime intakeTimer = new ElapsedTime();
+    ElapsedTime updateTimer = new ElapsedTime();
+    ElapsedTime intakeUpdate = new ElapsedTime();
     final double intakePower = 0.75; //TODO: find actual power
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
+    double intakeDis = 0.0;
 
     public shootAndIntakev2(HardwareMap hardwareMap){
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
@@ -87,23 +90,32 @@ public class shootAndIntakev2 {
     //some of the stuff was for pedro so i made it an exclusively teleop class
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry){
         //new:
-        double intakeDis = servRot.getDisMain();
         if(servoReset){
             servRot.sSP(0,0);
             index1 = false;
         }
-        currentVelocity=shoot2.getVelocity();
-        targetVelocity=getGoodShootVel(distance);
-        power = shooterPIDControl(targetVelocity, currentVelocity)/2;
-        isShoot = true;
-        shoot1.setPower(-power);
-        shoot2.setPower(power);
+        if(updateTimer.milliseconds() > 120) {
+            currentVelocity = shoot2.getVelocity();
+            targetVelocity = getGoodShootVel(distance);
+            power = shooterPIDControl(targetVelocity, currentVelocity) / 2;
+            shoot1.setPower(-power);
+            shoot2.setPower(power);
+            recoil = getRecoil(distance);
+            if (!isShoot) {
+                shooterHood.setPosition(hoodPosSet(distance));
+            }
+            updateTimer.reset();
+        }
         if(intakeActive){
+            if(intakeUpdate.milliseconds() > 100) {
+                intakeDis = servRot.getDis23();
+            }
+            isShoot = false;
             artifactPush.setPosition(kickZero);
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 10 && intakeTimer.milliseconds() > 250) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 300 && !isShoot) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
@@ -115,11 +127,13 @@ public class shootAndIntakev2 {
             artifactPush.setPosition(kickZero);
         }
         else if(shootActive){
+            isShoot = true;
             intake1.setPower(1);
             intake2.setPower(-1);
             wall.setPosition(0);
             if(shootTimer.milliseconds() > 400){
                 servRot.regRot(servRot.getPos());
+                shooterHood.setPosition(shooterHood.getPosition() - recoil);
                 shootTimer.reset();
             }
             currentVelocity=shoot2.getVelocity();
