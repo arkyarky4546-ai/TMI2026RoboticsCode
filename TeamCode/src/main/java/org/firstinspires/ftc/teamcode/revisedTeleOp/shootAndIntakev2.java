@@ -2,19 +2,16 @@ package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.TeleOp.PIDTUNE;
 import org.firstinspires.ftc.teamcode.servo720Rot;
 
 //Organized by Johnson
 
-public class FinalTeleOp {
+public class shootAndIntakev2 {
     //intake
     DcMotorEx intake1;
     DcMotorEx intake2;
@@ -38,10 +35,10 @@ public class FinalTeleOp {
     private final double TURRET_START = 0.96;
 
     double Integralsum = 0;
-    public static double Kp=0.0012;
-    public static double Ki=0.0000;
-    public static double Kd=0.0001;
-    public static double Kf=.0006;
+    public static double Kp=0.0121;
+    public static double Ki=0.00014;
+    public static double Kd=0.0000;
+    public static double Kf=.0000;
     double power = 0.0;
     boolean index1 = false;
     boolean isShoot = false;
@@ -57,7 +54,7 @@ public class FinalTeleOp {
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
 
-    public FinalTeleOp(HardwareMap hardwareMap){
+    public shootAndIntakev2(HardwareMap hardwareMap){
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
         intake2 = hardwareMap.get(DcMotorEx.class, "intake1");
         intakeGate = hardwareMap.get(Servo.class, "intakeGate");
@@ -106,7 +103,7 @@ public class FinalTeleOp {
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 10 && intakeTimer.milliseconds() > 200) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 250) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
@@ -121,34 +118,30 @@ public class FinalTeleOp {
             intake1.setPower(1);
             intake2.setPower(-1);
             wall.setPosition(0);
-            if(intakeTimer.milliseconds() > 300){
-                telemetry.addData("in timer", 0);
+            if(shootTimer.milliseconds() > 400){
                 servRot.regRot(servRot.getPos());
-                intakeTimer.reset();
+                shootTimer.reset();
             }
             currentVelocity=shoot2.getVelocity();
             targetVelocity=getGoodShootVel(distance);
             power = shooterPIDControl(targetVelocity, currentVelocity);
             shoot1.setPower(-power);
             shoot2.setPower(power);
-            if(shoot1.getVelocity() < 0.8 * power){
+            if(Math.abs(shoot1.getPower()) < 0.78 * power){
                 artifactPush.setPosition(kickZero);
             }
             else{
                 artifactPush.setPosition(kickUp);
             }
 
-            telemetry.addData("distance",distance);
-            telemetry.addData("targetVelocity",targetVelocity);
-            telemetry.addData("currentVelocity",currentVelocity);
-            telemetry.addData("shootingVelocity",shootPower);
-            telemetry.update();
         }
         else{
             intake1.setPower(0);
             isShoot = false;
             intake2.setPower(0);
             artifactPush.setPosition(kickUp);
+            //servRot.sSP(0,0);
+            shootTimer.reset();
         }
     }
 
@@ -163,10 +156,10 @@ public class FinalTeleOp {
         return (error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
     }
     public double getGoodShootVel(double distanceFromGoal){
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2020.07059;
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2000.07059;
     }
     public double hoodPosSet(double distanceFromGoal){
-        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
+        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.93;
     }
     public double getRecoil(double distanceFromGoal){
         return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;

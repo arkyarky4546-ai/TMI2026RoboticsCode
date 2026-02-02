@@ -31,10 +31,10 @@ public class PIDTUNE extends OpMode {
 
     private Follower follower;
     private double lastError = 0;
-    public static double Kp=0.0012;
-    public static double Ki=0.0000;
-    public static double Kd=0.0001;
-    public static double Kf=.0006;
+    public static double Kp=0.0121;
+    public static double Ki=0.00014;
+    public static double Kd=0.0000;
+    public static double Kf=.0000;
     double TargetVelocity = 1400;
     private double PIDdistance = 0;
     private double timeBegan;

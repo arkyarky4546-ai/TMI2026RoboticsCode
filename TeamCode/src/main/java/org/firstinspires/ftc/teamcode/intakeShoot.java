@@ -28,10 +28,10 @@ public class intakeShoot {
     //doubles having to do with PID Tuning (If you dont know PID Tuning look it up, its very useful)
     private double IntegralSum = 0;
     private double lastError = 0;
-    public static double Kp=0.0047;
-    public static double Ki=0.0004;
-    public static double Kd=0;
-    public static double Kf=0;
+    public static double Kp=0.0121;
+    public static double Ki=0.00014;
+    public static double Kd=0.0000;
+    public static double Kf=.0000;
 
     //ints
     private int shootMode = 1;
@@ -76,7 +76,7 @@ public class intakeShoot {
         shootsetPower(shootPower);
         intakesetPower(intakePower);*/
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
-        if((spindexer.getDisMain() < 10 || spindexer.distanceSensors[0].getDistance(DistanceUnit.CM) < 5) && Intaketimer.milliseconds() > 230 && intake){
+        if((spindexer.getDisMain() < 10) && Intaketimer.milliseconds() > 400 && intake){
             //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
             simpleShoot();
             Intaketimer.reset();

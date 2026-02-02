@@ -1,16 +1,9 @@
 package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.revisedTeleOp.Turret;
-import org.firstinspires.ftc.teamcode.revisedTeleOp.Drivetrain;
-
-import java.util.List;
 
 @Configurable
 @TeleOp
@@ -18,7 +11,7 @@ public class redTeleOp extends OpMode {
      //newly created classes.
     Drivetrain drivetrain; //all driving functionality and pedro pathing
     Turret turret; //autoaiming and manual control
-    FinalTeleOp shooterAndIntake;//new clean version of code by Johnson
+    shootAndIntakev2 shooterAndIntake;//new clean version of code by Johnson
     //ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
 
     Limelight3A limelight3A; //for pattern recognition
@@ -37,7 +30,7 @@ public class redTeleOp extends OpMode {
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
 
-        shooterAndIntake = new FinalTeleOp(hardwareMap);
+        shooterAndIntake = new shootAndIntakev2(hardwareMap);
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
 
     }
