@@ -105,4 +105,8 @@ public class blueTeleOp extends OpMode {
             }
         } */
     }
+    @Override
+    public void stop(){
+        shooterAndIntake.stopT();
+    }
 }

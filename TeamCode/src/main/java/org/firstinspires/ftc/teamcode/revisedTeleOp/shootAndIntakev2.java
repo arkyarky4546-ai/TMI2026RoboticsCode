@@ -39,6 +39,11 @@ public class shootAndIntakev2 {
     public static double Ki=0.00014;
     public static double Kd=0.0000;
     public static double Kf=.0000;
+    private double currentVelocity;
+    private double targetVelocity;
+
+    private double recoil;
+    private double intakeDis;
     double power = 0.0;
     boolean index1 = false;
     boolean isShoot = false;
@@ -46,16 +51,15 @@ public class shootAndIntakev2 {
     ElapsedTime PIDTimer = new ElapsedTime();
     double TargetVelocity;
     ElapsedTime shootTimer = new ElapsedTime();
-    double currentVelocity,targetVelocity;
     double shootPower;
-    double recoil;
     ElapsedTime intakeTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
     ElapsedTime intakeUpdate = new ElapsedTime();
     final double intakePower = 0.75; //TODO: find actual power
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
-    double intakeDis = 0.0;
+    private regressCalc regression;
+    private sensCalc sensors;
 
     public shootAndIntakev2(HardwareMap hardwareMap){
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
@@ -81,12 +85,17 @@ public class shootAndIntakev2 {
         shooterHood = hardwareMap.get(Servo.class, "shooterHood");
         shooterHood.setPosition(0.4);
         artifactPush.setPosition(kickZero);
-
+        regression = new regressCalc();
+        sensors = new sensCalc(servRot);
         PIDTimer.reset();
         shootTimer.reset();
-        intakeTimer.reset();
+        regression.start();
+        sensors.start();
     }
-
+    public void stopT(){
+        sensors.stopThread();
+        regression.stopThread();
+    }
     //some of the stuff was for pedro so i made it an exclusively teleop class
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry){
         //new:
@@ -94,22 +103,21 @@ public class shootAndIntakev2 {
             servRot.sSP(0,0);
             index1 = false;
         }
-        if(updateTimer.milliseconds() > 120) {
+        if(updateTimer.milliseconds() > 50) {
+            regression.setDis(distance);
             currentVelocity = shoot2.getVelocity();
-            targetVelocity = getGoodShootVel(distance);
+            targetVelocity = regression.vel();
             power = shooterPIDControl(targetVelocity, currentVelocity) / 2;
             shoot1.setPower(-power);
             shoot2.setPower(power);
-            recoil = getRecoil(distance);
+            recoil = regression.rec();
             if (!isShoot) {
-                shooterHood.setPosition(hoodPosSet(distance));
+                shooterHood.setPosition(regression.hoo());
             }
             updateTimer.reset();
         }
         if(intakeActive){
-            if(intakeUpdate.milliseconds() > 100) {
-                intakeDis = servRot.getDis23();
-            }
+            intakeDis = sensors.getIntakeDistance();
             isShoot = false;
             artifactPush.setPosition(kickZero);
             intake1.setPower(intakePower);
@@ -136,8 +144,8 @@ public class shootAndIntakev2 {
                 shooterHood.setPosition(shooterHood.getPosition() - recoil);
                 shootTimer.reset();
             }
-            currentVelocity=shoot2.getVelocity();
-            targetVelocity=getGoodShootVel(distance);
+            currentVelocity =
+            targetVelocity =
             power = shooterPIDControl(targetVelocity, currentVelocity);
             shoot1.setPower(-power);
             shoot2.setPower(power);
@@ -169,15 +177,7 @@ public class shootAndIntakev2 {
         PIDTimer.reset();
         return (error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
     }
-    public double getGoodShootVel(double distanceFromGoal){
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2000.07059;
-    }
-    public double hoodPosSet(double distanceFromGoal){
-        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.93;
-    }
-    public double getRecoil(double distanceFromGoal){
-        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
-    }
+
 
     public void resetPID(){
         Integralsum=0;
