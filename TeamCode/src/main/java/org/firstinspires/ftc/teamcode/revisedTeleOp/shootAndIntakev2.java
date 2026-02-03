@@ -22,7 +22,7 @@ public class shootAndIntakev2 {
     private final double kickZero = 0.85;
     private final double kickUp = 0.70;
 
-    //axonRotator
+    //servo720Rot
     servo720Rot servRot;
 
     //shooter
@@ -43,19 +43,17 @@ public class shootAndIntakev2 {
     private double targetVelocity;
 
     private double recoil;
-    private double intakeDis;
+    private double intakeDis = 0.0;
     double power = 0.0;
     boolean index1 = false;
     boolean isShoot = false;
     double lasterror = 0;
     ElapsedTime PIDTimer = new ElapsedTime();
-    double TargetVelocity;
     ElapsedTime shootTimer = new ElapsedTime();
-    double shootPower;
     ElapsedTime intakeTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
     ElapsedTime intakeUpdate = new ElapsedTime();
-    final double intakePower = 0.75; //TODO: find actual power
+    final double intakePower = 1.0; //TODO: find actual power
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
     private regressCalc regression;
@@ -98,7 +96,6 @@ public class shootAndIntakev2 {
     }
     //some of the stuff was for pedro so i made it an exclusively teleop class
     public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry){
-        //new:
         if(servoReset){
             servRot.sSP(0,0);
             index1 = false;

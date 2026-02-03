@@ -105,4 +105,8 @@ public class redTeleOp extends OpMode {
             }
         }*/
     }
+    @Override
+    public void start(){
+        shooterAndIntake.stopT();
+    }
 }
