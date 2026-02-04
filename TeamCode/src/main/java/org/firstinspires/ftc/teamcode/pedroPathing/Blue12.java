@@ -476,5 +476,7 @@ public class Blue12 extends OpMode {
     }
 
     @Override
-    public void stop() {}
+    public void stop() {
+        intakeAndShoot.stopT();
+    }
 }

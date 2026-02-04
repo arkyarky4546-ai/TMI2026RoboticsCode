@@ -100,7 +100,7 @@ public class shootAndIntakev2 {
             servRot.sSP(0,0);
             index1 = false;
         }
-        if(updateTimer.milliseconds() > 50) {
+        if(updateTimer.milliseconds() > 30) {
             regression.setDis(distance);
             currentVelocity = shoot2.getVelocity();
             targetVelocity = regression.vel();
@@ -120,7 +120,7 @@ public class shootAndIntakev2 {
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 10 && intakeTimer.milliseconds() > 300 && !isShoot) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 290 && !isShoot) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }

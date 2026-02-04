@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.revisedTeleOp.sensCalc;
 import org.firstinspires.ftc.teamcode.servo720Rot;
 
 public class intakeShoot {
@@ -42,6 +43,7 @@ public class intakeShoot {
     //various timers for delaying stuff (super useful in a lot of scenarios)
     private ElapsedTime PIDtimer = new ElapsedTime();
     private ElapsedTime Intaketimer = new ElapsedTime();
+    private sensCalc sensors;
 
     public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7, String wallName) {
         //constructor this is where everything is initialized
@@ -58,6 +60,8 @@ public class intakeShoot {
         //my custom class takes all of these variables
         spindexer = new servo720Rot(hardwareMap, servoName, servoName2, distance1, distance2, distance3, distance4, distance5, distance6, distance7);
         spindexer.sSP(0,0);
+        sensors = new sensCalc(spindexer);
+        sensors.start();
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
     public void update(double intakePower, int pathstate, boolean intake){
@@ -76,7 +80,8 @@ public class intakeShoot {
         shootsetPower(shootPower);
         intakesetPower(intakePower);*/
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
-        if((spindexer.getDisMain() < 10) && Intaketimer.milliseconds() > 400 && intake){
+        distance = sensors.getIntakeDistance();
+        if((distance < 10) && Intaketimer.milliseconds() > 300 && intake){
             //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
             simpleShoot();
             Intaketimer.reset();
@@ -128,5 +133,8 @@ public class intakeShoot {
     }
     public double getVelocity(){
         return Math.abs(shootMotor1.getVelocity());
+    }
+    public void stopT(){
+        sensors.stopThread();
     }
 }
