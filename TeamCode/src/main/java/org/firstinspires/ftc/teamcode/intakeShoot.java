@@ -81,7 +81,7 @@ public class intakeShoot {
         intakesetPower(intakePower);*/
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
         distance = sensors.getIntakeDistance();
-        if((distance < 10) && Intaketimer.milliseconds() > 300 && intake){
+        if((distance < 10) && Intaketimer.milliseconds() > 250 && intake){
             //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
             simpleShoot();
             Intaketimer.reset();
