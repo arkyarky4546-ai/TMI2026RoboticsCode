@@ -99,19 +99,26 @@ public class Drivetrain {
     }
 
     public Pose altitudeExist(Pose currentPose){
-        double value = Math.abs(Math.abs(currentPose.getX()) + Math.abs(currentPose.getY()))/2;
+        /*double value = Math.abs(Math.abs(currentPose.getX()) + Math.abs(currentPose.getY()))/2;
         if(mode == RED) {
             return new Pose(value, -value, Math.toRadians(-47));
         }
         else if(mode == BLUE){
             return new Pose(value, -(144-value), Math.toRadians(47));
         }
+        return new Pose(0, 0, Math.toRadians(0));*/
+        if(mode == RED) {
+            return new Pose(97, -97, Math.toRadians(-45));
+        }
+        else if(mode == BLUE){
+            return new Pose(97, -53, Math.toRadians(47));
+        }
         return new Pose(0, 0, Math.toRadians(0));
     }
 
     public void setModeRed(){
         mode = RED;
-        startingPose = new Pose(65, -97, Math.toRadians(0));
+        startingPose = new Pose(80, -126, Math.toRadians(0));
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }

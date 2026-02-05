@@ -385,7 +385,7 @@ public class Blue12 extends OpMode {
     }
     public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2050.07059;
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2070.07059;
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
@@ -406,9 +406,9 @@ public class Blue12 extends OpMode {
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
 
-            hood.setPosition(hoodPosSet());
+            hood.setPosition(hoodPosSet() +.01);
         }
-        recoil = getRecoil() + .014;
+        recoil = getRecoil() + .02;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
 

@@ -20,7 +20,7 @@ public class Red12 extends OpMode {
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose hitPose = new Pose(80, -137 , Math.toRadians(-90));
+    private final Pose hitPose = new Pose(80, -138 , Math.toRadians(-90));
     private final Pose backPose = new Pose(84, -123, Math.toRadians(-90));
     private final Pose intakePose3 = new Pose(38, -114, Math.toRadians(-90));
     private final Pose acIntakePose3 = new Pose(38, -134, Math.toRadians(-90));
@@ -30,7 +30,7 @@ public class Red12 extends OpMode {
     private final Pose acIntakePose1 = new Pose(86, -134 , Math.toRadians(-90));
     private final Pose intakePose2 = new Pose(61, -114, Math.toRadians(-90));
     private final Pose acIntakePose2 = new Pose(61, -137, Math.toRadians(-90));
-    private final Pose endPose1 = new Pose(80, -120, Math.toRadians(0));
+    private final Pose endPose1 = new Pose(80, -126, Math.toRadians(0));
     private final Pose scorePose3 = new Pose(92, -120, Math.toRadians(-50));
 
     //paths
@@ -387,7 +387,7 @@ public class Red12 extends OpMode {
     }
     public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2050.07059;
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2070.07059;
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144+ follower.getPose().getY()),2)) , .5);
@@ -408,9 +408,9 @@ public class Red12 extends OpMode {
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
 
-            hood.setPosition(hoodPosSet());
+            hood.setPosition(hoodPosSet() + .01);
         }
-        recoil = getRecoil() + .015;
+        recoil = getRecoil() + .02;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
 
