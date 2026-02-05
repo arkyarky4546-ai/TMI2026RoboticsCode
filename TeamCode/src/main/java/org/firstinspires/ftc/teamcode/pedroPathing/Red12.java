@@ -12,24 +12,26 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "Blue12", group = "Autonomous")
-public class Blue12 extends OpMode {
+@Autonomous(name = "Red12", group = "Autonomous")
+public class Red12 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(88, -47, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(88, -21 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(63, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(80, -21 , Math.toRadians(90));
-    private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(63, -24, Math.toRadians(90));
-    private final Pose intakePose3 = new Pose(40, -46, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(40, -24, Math.toRadians(90));
-    private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
+
+    private final Pose hitPose = new Pose(80, -137 , Math.toRadians(-90));
+    private final Pose backPose = new Pose(84, -123, Math.toRadians(-90));
+    private final Pose intakePose3 = new Pose(38, -114, Math.toRadians(-90));
+    private final Pose acIntakePose3 = new Pose(38, -134, Math.toRadians(-90));
+    private final Pose startPose = new Pose(128, -128, Math.toRadians(-45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(97, -97, Math.toRadians(-45)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose intakePose1 = new Pose(86, -110, Math.toRadians(-90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(86, -134 , Math.toRadians(-90));
+    private final Pose intakePose2 = new Pose(61, -114, Math.toRadians(-90));
+    private final Pose acIntakePose2 = new Pose(61, -137, Math.toRadians(-90));
+    private final Pose endPose1 = new Pose(80, -120, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(92, -120, Math.toRadians(-50));
 
     //paths
     private Path score1;
@@ -160,9 +162,9 @@ public class Blue12 extends OpMode {
                 break;
             case 2:
                 if(!go){
-                    savePosition = hood.getPosition();
+                    savePosition = hood.getPosition() - .1;
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .3){
+                if(actionTimer.getElapsedTimeSeconds() > .35){
                     go = true;
                     isShoot = true;
 
@@ -218,11 +220,11 @@ public class Blue12 extends OpMode {
                 break;
             case 6:
 
-               if(!follower.isBusy()){
-                   follower.followPath(hitLoad,true);
-                   actionTimer.resetTimer();
-                   setPathState(7);
-               }
+                if(!follower.isBusy()){
+                    follower.followPath(hitLoad,true);
+                    actionTimer.resetTimer();
+                    setPathState(7);
+                }
 
                 break;
             case 7:
@@ -384,15 +386,15 @@ public class Blue12 extends OpMode {
         pathTimer.resetTimer();
     }
     public double shooterPowerSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2050.07059;
     }
     public double hoodPosSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144+ follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.88;
     }
     public double getRecoil(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.1900;
     }
     @Override
@@ -408,7 +410,7 @@ public class Blue12 extends OpMode {
 
             hood.setPosition(hoodPosSet());
         }
-        recoil = getRecoil() + .014;
+        recoil = getRecoil() + .015;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
 

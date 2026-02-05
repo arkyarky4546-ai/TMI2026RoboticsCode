@@ -52,12 +52,14 @@ public class shootAndIntakev2 {
     ElapsedTime shootTimer = new ElapsedTime();
     ElapsedTime intakeTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
+    ElapsedTime shootingTimer = new ElapsedTime();
     ElapsedTime intakeUpdate = new ElapsedTime();
     final double intakePower = 1.0; //TODO: find actual power
     double offset  = 400/360*2/5 * 360/355 * 20/18;
     double gearOff = 360/355 * 20/18;
     private regressCalc regression;
     private sensCalc sensors;
+    private boolean shooting = false;
 
     public shootAndIntakev2(HardwareMap hardwareMap){
         intake1 = hardwareMap.get(DcMotorEx.class, "intake");
@@ -115,6 +117,7 @@ public class shootAndIntakev2 {
         }
         if(intakeActive){
             intakeDis = sensors.getIntakeDistance();
+            shooting = false;
             isShoot = false;
             artifactPush.setPosition(kickZero);
             intake1.setPower(intakePower);
@@ -132,15 +135,23 @@ public class shootAndIntakev2 {
             artifactPush.setPosition(kickZero);
         }
         else if(shootActive){
-            artifactPush.setPosition(kickUp);
-            isShoot = true;
-            intake1.setPower(1);
-            intake2.setPower(-1);
-            wall.setPosition(0);
-            if(shootTimer.milliseconds() > 400){
-                servRot.regRot(servRot.getPos());
-                shooterHood.setPosition(shooterHood.getPosition() - recoil);
-                shootTimer.reset();
+            if (!shooting){
+                shooting = true;
+                isShoot = true;
+                shootingTimer.reset();
+                wall.setPosition(0);
+            }
+            if(shootingTimer.milliseconds() > 500 ) {
+                artifactPush.setPosition(kickUp);
+
+                intake1.setPower(1);
+                intake2.setPower(-1);
+
+                if (shootTimer.milliseconds() > 400) {
+                    servRot.regRot(servRot.getPos());
+                    shooterHood.setPosition(shooterHood.getPosition() - recoil);
+                    shootTimer.reset();
+                }
             }
             power = shooterPIDControl(targetVelocity, currentVelocity);
             shoot1.setPower(-power);
@@ -152,6 +163,7 @@ public class shootAndIntakev2 {
             isShoot = false;
             intake2.setPower(0);
             artifactPush.setPosition(kickZero);
+            shooting = false;
             //servRot.sSP(0,0);
             shootTimer.reset();
         }
