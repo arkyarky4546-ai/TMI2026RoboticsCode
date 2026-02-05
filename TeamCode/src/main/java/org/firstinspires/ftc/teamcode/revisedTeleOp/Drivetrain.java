@@ -118,7 +118,7 @@ public class Drivetrain {
 
     public void setModeBlue(){
         mode = BLUE;
-        startingPose = new Pose(65, -48, Math.toRadians(8));
+        startingPose = new Pose(80, -30, Math.toRadians(-4));
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }

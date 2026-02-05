@@ -53,13 +53,13 @@ public class blueTeleOp extends OpMode {
         if(gamepad2.dpadDownWasPressed()){
             turret.switchMode();
         }
-        if(gamepad2.dpad_up){
+        if(gamepad1.dpad_up){
             turret.setTurretCenter();
         }
-        else if(!turret.isAutoAiming() && gamepad2.dpad_left){
+        else if(!turret.isAutoAiming() && gamepad1.dpad_left){
             turret.manualLeft();
         }
-        else if(!turret.isAutoAiming() && gamepad2.dpad_right){
+        else if(!turret.isAutoAiming() && gamepad1.dpad_right){
             turret.manualRight();
         }
 
@@ -81,7 +81,7 @@ public class blueTeleOp extends OpMode {
         }
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,rightTrigger, gamepad2.left_bumper, gamepad1.dpadUpWasPressed(),telemetry);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,rightTrigger, gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry);
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
         /*

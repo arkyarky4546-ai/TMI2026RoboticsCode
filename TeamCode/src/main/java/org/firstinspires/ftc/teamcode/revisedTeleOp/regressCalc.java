@@ -9,16 +9,14 @@ public class regressCalc extends Thread {
     private volatile double targetRecoil = 0.0;
     private volatile double distance = 0.0;
     private ElapsedTime regTimer = new ElapsedTime();
-    private final int updateTime = 20;
+    private final int updateTime = 10;
 
     @Override //ts is good practice to comment that you are overriding the thread class stuff. You need to in order to run stuff and you need to call (variable that is a thread).start() to start running the thread
     public void run(){
         while (running){
-            if (regTimer.milliseconds() > updateTime){
-                targetVel = getGoodShootVel(distance);
-                targetHood = hoodPosSet(distance);
-                targetRecoil = getRecoil(distance);
-            }
+            targetVel = getGoodShootVel(distance);
+            targetHood = hoodPosSet(distance);
+            targetRecoil = getRecoil(distance);
             try {
                 Thread.sleep(10); //something called cpu spinning
             } catch (InterruptedException e) {
@@ -30,7 +28,7 @@ public class regressCalc extends Thread {
         return targetVel;
     }
     public double hoo(){
-        return targetHood + .07;
+        return targetHood + .01;
     }
     public double rec(){
         return targetRecoil - .005;

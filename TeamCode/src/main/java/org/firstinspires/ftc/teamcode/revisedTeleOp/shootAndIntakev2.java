@@ -132,6 +132,7 @@ public class shootAndIntakev2 {
             artifactPush.setPosition(kickZero);
         }
         else if(shootActive){
+            artifactPush.setPosition(kickUp);
             isShoot = true;
             intake1.setPower(1);
             intake2.setPower(-1);
@@ -141,24 +142,16 @@ public class shootAndIntakev2 {
                 shooterHood.setPosition(shooterHood.getPosition() - recoil);
                 shootTimer.reset();
             }
-            currentVelocity =
-            targetVelocity =
             power = shooterPIDControl(targetVelocity, currentVelocity);
             shoot1.setPower(-power);
             shoot2.setPower(power);
-            if(Math.abs(shoot1.getPower()) < 0.78 * power){
-                artifactPush.setPosition(kickZero);
-            }
-            else{
-                artifactPush.setPosition(kickUp);
-            }
 
         }
         else{
             intake1.setPower(0);
             isShoot = false;
             intake2.setPower(0);
-            artifactPush.setPosition(kickUp);
+            artifactPush.setPosition(kickZero);
             //servRot.sSP(0,0);
             shootTimer.reset();
         }
