@@ -29,6 +29,7 @@ public class redTeleOp extends OpMode {
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
+        limelight3A.start();
 
         shooterAndIntake = new shootAndIntakev2(hardwareMap);
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
@@ -81,6 +82,8 @@ public class redTeleOp extends OpMode {
         }
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
+        telemetry.addData("drivetrain.getDistanceFromGoal()", drivetrain.getDistanceFromGoal());
+        telemetry.addData("hood", shooterAndIntake.shooterHood.getPosition());
         shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,rightTrigger, gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry);
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
