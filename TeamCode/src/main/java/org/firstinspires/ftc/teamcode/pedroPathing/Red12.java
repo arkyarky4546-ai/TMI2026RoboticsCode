@@ -20,7 +20,7 @@ public class Red12 extends OpMode {
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose hitPose = new Pose(80, -138 , Math.toRadians(-90));
+    private final Pose hitPose = new Pose(80, -137.5 , Math.toRadians(-90));
     private final Pose backPose = new Pose(84, -123, Math.toRadians(-90));
     private final Pose intakePose3 = new Pose(38, -114, Math.toRadians(-90));
     private final Pose acIntakePose3 = new Pose(38, -134, Math.toRadians(-90));
@@ -196,7 +196,7 @@ public class Red12 extends OpMode {
             case 3:
                 if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,.50,true);
+                    follower.followPath(acFirstLoad,.49,true);
                     setPathState(4);
                 }
                 break;
@@ -265,7 +265,7 @@ public class Red12 extends OpMode {
                 break;
             case 10:
                 if(!follower.isBusy()) {
-                    follower.followPath(acSecondLoad,.50,true);
+                    follower.followPath(acSecondLoad,.49,true);
                     setPathState(11);
                 }
                 break;
@@ -323,7 +323,7 @@ public class Red12 extends OpMode {
                 break;
             case 15:
                 if(!follower.isBusy()) {
-                    follower.followPath(acThirdLoad,.50,true);
+                    follower.followPath(acThirdLoad,.49,true);
                     setPathState(16);
                 }
                 break;
@@ -408,7 +408,7 @@ public class Red12 extends OpMode {
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
 
-            hood.setPosition(hoodPosSet() + .01);
+            hood.setPosition(hoodPosSet() + .013);
         }
         recoil = getRecoil() + .02;
         intakeAndShoot.shootsetPower(shooterPower);

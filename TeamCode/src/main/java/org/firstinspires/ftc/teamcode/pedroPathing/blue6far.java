@@ -20,17 +20,20 @@ public class blue6far extends OpMode {
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
     private final Pose startPose = new Pose(8,-48, Math.toRadians(90)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose intakePose1 = new Pose(8, -12, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(8, -9.7 , Math.toRadians(90));
-    private final Pose endPose1 = new Pose(65, -48, Math.toRadians(0));
+    private final Pose intakePose1 = new Pose(18.5, -11.5, Math.toRadians(160));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(9.1, -9.1 , Math.toRadians(180));
+    private final Pose out = new Pose(13, -12 , Math.toRadians(90));
+    private final Pose intakePose2 = new Pose(9, -15, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose2 = new Pose(9, -11 , Math.toRadians(90));
+    private final Pose endPose1 = new Pose(14, -18, Math.toRadians(0));
 
     //paths
     private Path score1;
-    private PathChain firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2, thirdLoad, acThirdLoad, scoreLoad3, backLoad1, hitLoad;
+    private PathChain outPush, firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2, thirdLoad, acThirdLoad, scoreLoad3, backLoad1, hitLoad;
 
     //doubles
     double hoodPos = .45;
-    double turTurn = .05;
+    double turTurn = .03;
     double kickZero = 0.85;
     double kickUp = 0.68;
     double TargetVelocity = 1200;
@@ -47,6 +50,7 @@ public class blue6far extends OpMode {
     //timer
     private ElapsedTime shootTimer = new ElapsedTime();
     ElapsedTime PIDtimer=new ElapsedTime();
+    ElapsedTime Endtimer=new ElapsedTime();
 
     //custom class that controls shooting and intake
     private intakeShoot intakeAndShoot;
@@ -81,9 +85,25 @@ public class blue6far extends OpMode {
                 .addPath(new BezierLine(intakePose1, acIntakePose1))
                 .setLinearHeadingInterpolation(intakePose1.getHeading(), acIntakePose1.getHeading())
                 .build();
+        outPush = follower.pathBuilder()
+                .addPath(new BezierLine(acIntakePose1, out))
+                .setLinearHeadingInterpolation(acIntakePose1.getHeading(), out.getHeading())
+                .build();
         scoreLoad1= follower.pathBuilder()
-                .addPath(new BezierLine(acIntakePose1, startPose))
-                .setLinearHeadingInterpolation(acIntakePose1.getHeading(), startPose.getHeading())
+                .addPath(new BezierLine(out, startPose))
+                .setLinearHeadingInterpolation(out.getHeading(), startPose.getHeading())
+                .build();
+        secondLoad=follower.pathBuilder()
+                .addPath(new BezierLine(startPose, intakePose2))
+                .setLinearHeadingInterpolation(startPose.getHeading(), intakePose2.getHeading())
+                .build();
+        acSecondLoad=follower.pathBuilder()
+                .addPath(new BezierLine(intakePose2, acIntakePose2))
+                .setLinearHeadingInterpolation(intakePose2.getHeading(), acIntakePose2.getHeading())
+                .build();
+        scoreLoad2= follower.pathBuilder()
+                .addPath(new BezierLine(acIntakePose2, startPose))
+                .setLinearHeadingInterpolation(acIntakePose2.getHeading(), startPose.getHeading())
                 .build();
         end= follower.pathBuilder()
                 .addPath(new BezierLine(startPose,endPose1))
@@ -133,7 +153,7 @@ public class blue6far extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 7) {
+                if(actionTimer.getElapsedTimeSeconds() > 5.5) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(firstLoad,true);
@@ -151,47 +171,58 @@ public class blue6far extends OpMode {
                 if(!follower.isBusy()) {
 
                     follower.followPath(acFirstLoad,.40,true);
+                    Endtimer.reset();
                     setPathState(4);
                 }
                 break;
             case 4:
-                if(!follower.isBusy()) {
+                if(!follower.isBusy() || Endtimer.milliseconds() > 1500) {
                     follower.holdPoint(acIntakePose1);
                     actionTimer.resetTimer();
                     setPathState(5);
                 }
                 break;
             case 5:
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
 
-                if(actionTimer.getElapsedTimeSeconds() > 3) {
+                    follower.followPath(outPush);
                     intakeAndShoot.setPos(0,intakePos);
-                    intakeAndShoot.wallPos(0.1);
-                    intakeIndex = false;
-                    follower.followPath(scoreLoad1,true);
-                    IntegralSum = 0;
-                    lastError = 0;
+                    actionTimer.resetTimer();
                     setPathState(6);
                 }
                 break;
             case 6:
-                actionTimer.resetTimer();
-                follower.holdPoint(startPose);
-                //open wall position
-                intakeAndShoot.wallPos(0.1);
-                shootTimer.reset();
-                push.setPosition(kickUp);
-                go = false;
 
-                setPathState(7);
+                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                    intakeAndShoot.setPos(0,intakePos);
+                    //intakeAndShoot.wallPos(0.1);
+                    intakeIndex = false;
+                    follower.followPath(scoreLoad1,true);
+                    IntegralSum = 0;
+                    lastError = 0;
+                    setPathState(7);
+                }
                 break;
             case 7:
+                actionTimer.resetTimer();
+                intakeAndShoot.wallPos(.1);
+                follower.holdPoint(startPose);
+                //open wall position
+
+                shootTimer.reset();
+                go = false;
+
+                setPathState(8);
+                break;
+            case 8:
                 if(!go){
                     savePosition = hood.getPosition();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2.0){
+                if(actionTimer.getElapsedTimeSeconds() > 2.5){
                     go = true;
                     isShoot = true;
-
+                    push.setPosition(kickUp);
+                    intakeAndShoot.wallPos(0.1);
                 }
                 if(shootTimer.milliseconds() > 1000 && go) {
                     push.setPosition(kickUp);
@@ -204,51 +235,51 @@ public class blue6far extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 5) {
+                if(actionTimer.getElapsedTimeSeconds() > 6) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
-                    follower.followPath(firstLoad,true);
+                    follower.followPath(secondLoad,true);
 
                     //push servo is down now
                     push.setPosition(kickZero);
                     //closed wall position
                     intakeAndShoot.wallPos(.4);
                     intakeIndex = true;
-                    setPathState(8);
-                }
-                break;
-            case 8:
-                if(!follower.isBusy()) {
-
-                    follower.followPath(acFirstLoad,.40,true);
                     setPathState(9);
                 }
                 break;
             case 9:
                 if(!follower.isBusy()) {
-                    follower.holdPoint(acIntakePose1);
-                    actionTimer.resetTimer();
+
+                    follower.followPath(acSecondLoad,.40,true);
                     setPathState(10);
                 }
                 break;
             case 10:
+                if(!follower.isBusy()) {
+                    follower.holdPoint(acIntakePose2);
+                    actionTimer.resetTimer();
+                    setPathState(11);
+                }
+                break;
+            case 11:
 
                 if(actionTimer.getElapsedTimeSeconds() > 2) {
                     intakeAndShoot.setPos(0,intakePos);
                     intakeAndShoot.wallPos(0.1);
                     intakeIndex = false;
-                    follower.followPath(scoreLoad1,true);
+                    follower.followPath(scoreLoad2,true);
                     IntegralSum = 0;
                     lastError = 0;
-                    if(opmodeTimer.getElapsedTimeSeconds() > 25){
-                        setPathState(11);
+                    if(opmodeTimer.getElapsedTimeSeconds() > 24){
+                        setPathState(12);
                     }
                     else {
-                        setPathState(6);
+                        setPathState(7);
                     }
                 }
                 break;
-            case 11:
+            case 12:
                 if(!follower.isBusy()) {
                     follower.followPath(end);
                 }
@@ -278,11 +309,11 @@ public class blue6far extends OpMode {
         intakeAndShoot.update(1,1, intakeIndex);
         //intakeAndShoot.wallPos(.2);
         double current = Math.abs(intakeAndShoot.getVelocity());
-        TargetVelocity = 1600;
+        TargetVelocity = 1620;
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
 
-            hood.setPosition(.45);
+            hood.setPosition(.49);
         }
         recoil = .00;
         intakeAndShoot.shootsetPower(shooterPower);

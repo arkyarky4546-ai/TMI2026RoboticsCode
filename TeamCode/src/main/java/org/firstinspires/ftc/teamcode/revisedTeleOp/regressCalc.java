@@ -10,7 +10,10 @@ public class regressCalc extends Thread {
     private volatile double distance = 0.0;
     private ElapsedTime regTimer = new ElapsedTime();
     private final int updateTime = 10;
-
+    private volatile int color = 0;
+    private int red = 0;
+    private int blue = 1;
+    private int off = 0;
     @Override //ts is good practice to comment that you are overriding the thread class stuff. You need to in order to run stuff and you need to call (variable that is a thread).start() to start running the thread
     public void run(){
         while (running){
