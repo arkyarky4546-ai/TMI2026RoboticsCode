@@ -123,7 +123,7 @@ public class shootAndIntakev2 {
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 10 && intakeTimer.milliseconds() > 290 && !isShoot) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 265 && !isShoot) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
