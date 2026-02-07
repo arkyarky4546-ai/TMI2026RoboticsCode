@@ -84,30 +84,15 @@ public class PIDTUNE extends OpMode {
         double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
         return output;
     }
-    public double shooterPowerSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1975.07059;
-    }
-    public double hoodPosSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.862228;
-    }
-    public double getRecoil(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.233045;
-    }
+
     @Override
     public void loop() {
         follower.update();
         //hoodPos();
         intakeAndShoot.wallPos(.2);
         double current = Math.abs(intakeAndShoot.getVelocity());
-        TargetVelocity = shooterPowerSet();
-        shooterPower = PIDControl(TargetVelocity, current);
 
-        hood.setPosition(hoodPosSet());
-        telemetry.addData("hoodPos", hoodPosSet());
-        recoil = getRecoil();
+        shooterPower = PIDControl(TargetVelocity, current);
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
         intakeAndShoot.update(1,1, intakeIndex);
@@ -232,19 +217,7 @@ public class PIDTUNE extends OpMode {
         intakeAndShoot.setPos(0,0);
 
     }
-    public void hoodPos(){
-        double hoodPos = Math.pow((Math.pow(144-follower.getPose().getX(),2)+ Math.pow(follower.getPose().getY(),2)), .5);
-        telemetry.addData("hood", hoodPos);
-        hoodPos = 0.000017823 * Math.pow(hoodPos, 3) -0.00459925*Math.pow(hoodPos,2) + 0.387878 * Math.abs(hoodPos) - 10.07645;
-        if(hoodPos > 1){
-            hoodPos = 1;
-        }
-        if( hoodPos < 0){
-            hoodPos = 0;
-        }
 
-        hood.setPosition(hoodPos);
-    }
     @Override
     public void start(){
 

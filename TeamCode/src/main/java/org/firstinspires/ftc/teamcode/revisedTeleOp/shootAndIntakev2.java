@@ -40,9 +40,9 @@ public class shootAndIntakev2 {
     public static double Kd=0.0000;
     public static double Kf=.0000;
     private double currentVelocity;
-    private double targetVelocity;
+    public double targetVelocity;
 
-    private double recoil;
+    public double recoil;
     private double intakeDis = 0.0;
     double power = 0.0;
     boolean index1 = false;
@@ -167,6 +167,7 @@ public class shootAndIntakev2 {
             //servRot.sSP(0,0);
             shootTimer.reset();
         }
+
     }
 
     public double shooterPIDControl(double reference, double state){ //current velocity, target velocity

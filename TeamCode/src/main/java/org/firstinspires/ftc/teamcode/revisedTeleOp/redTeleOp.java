@@ -51,16 +51,16 @@ public class redTeleOp extends OpMode {
         //turret calls - manual is controlled by gamepad2 on the dpad
         // (down = autoaiming on/off, up = set center pos, left/right = manual turning)
         turret.update(drivetrain.getFollower(), telemetry);
-        if(gamepad2.dpadDownWasPressed()){
+        if(gamepad1.dpadDownWasPressed()){
             turret.switchMode();
         }
-        if(gamepad2.dpad_up){
+        if(gamepad1.dpad_up){
             turret.setTurretCenter();
         }
-        else if(!turret.isAutoAiming() && gamepad2.dpad_left){
+        else if(!turret.isAutoAiming() && gamepad1.dpad_left){
             turret.manualLeft();
         }
-        else if(!turret.isAutoAiming() && gamepad2.dpad_right){
+        else if(!turret.isAutoAiming() && gamepad1.dpad_right){
             turret.manualRight();
         }
 
@@ -76,13 +76,16 @@ public class redTeleOp extends OpMode {
             }
             rightTrigger = true;
             shootFirst = false;
+            drivetrain.setHoldMode(true);
         }
         else{
             shootFirst = true;
+            drivetrain.setHoldMode(false);
         }
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
         shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,rightTrigger, gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry);
+
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
         /*

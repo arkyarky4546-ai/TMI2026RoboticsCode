@@ -25,6 +25,7 @@ public class Drivetrain {
     private int mode;
     private final int RED = 1;
     private final int BLUE = 2;
+    private boolean holdPos;
 
     public Drivetrain(HardwareMap hardwareMap) {
         mode = 0;
@@ -41,6 +42,8 @@ public class Drivetrain {
                 .build();
 
         follower.startTeleopDrive();
+
+        holdPos = false;
     }
 
     public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed){
@@ -68,7 +71,12 @@ public class Drivetrain {
         }
 
         //Automated PathFollowing
-        if (xWasPressed) {
+        if(holdPos){
+            automatedDrive = true;
+            Pose targetPose = follower.getPose();
+            follower.holdPoint(targetPose);
+        }
+        else if (xWasPressed) {
             Pose targetPose = altitudeExist(follower.getPose());
             /*telemetry.addData("x: ", follower.getPose().getX());
             telemetry.addData("y: ", follower.getPose().getY());
@@ -83,7 +91,7 @@ public class Drivetrain {
         }
 
         //Stop automated following if the follower is done
-        if (automatedDrive && (bWasPressed || !follower.isBusy())) {
+        if (automatedDrive && (bWasPressed || !follower.isBusy()) && !holdPos) {
             follower.startTeleopDrive();
             automatedDrive = false;
         }
@@ -161,5 +169,8 @@ public class Drivetrain {
             return 0;
         }
     }
+   public void setHoldMode(boolean hold){
+        holdPos = hold;
+   }
 
 }
