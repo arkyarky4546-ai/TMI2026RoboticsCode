@@ -116,33 +116,33 @@ public class Drivetrain {
         }
         return new Pose(0, 0, Math.toRadians(0));*/
         if(mode == RED) {
-            return new Pose(97, -97, Math.toRadians(-45));
+            return new Pose(97, -97, Math.toRadians(-90));
         }
         else if(mode == BLUE){
-            return new Pose(97, -53, Math.toRadians(47));
+            return new Pose(97, -53, Math.toRadians(90));
         }
         return new Pose(0, 0, Math.toRadians(0));
     }
 
     public void setModeRed(){
         mode = RED;
-        startingPose = new Pose(80, -126, Math.toRadians(0));
+        startingPose = new Pose(80, -126, Math.toRadians(30));
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }
 
     public void setModeBlue(){
         mode = BLUE;
-        startingPose = new Pose(80, -30, Math.toRadians(-4));
+        startingPose = new Pose(80, -30, Math.toRadians(7));
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }
 
     public void resetCurrentPose(){
-        if(mode == RED){
+        if(mode == BLUE){
             follower.setPose(new Pose(8.125, 8.625, Math.toRadians(0))); //far left corner of the field
         }
-        else if(mode == BLUE){
+        else if(mode == RED){
             follower.setPose(new Pose(8.125, -135.375, Math.toRadians(0))); //far right corner of the field
         }
     }
@@ -170,7 +170,7 @@ public class Drivetrain {
         }
     }
    public void setHoldMode(boolean hold){
-        holdPos = hold;
+        holdPos = false;
    }
 
 }

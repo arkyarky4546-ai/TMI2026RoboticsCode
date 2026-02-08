@@ -12,28 +12,28 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "blue6far", group = "Autonomous")
-public class blue6far extends OpMode {
+@Autonomous(name = "red6far", group = "Autonomous")
+public class red6far extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(8,-48, Math.toRadians(90)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose intakePose1 = new Pose(18.5, -11.5, Math.toRadians(160));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(9.1, -9.1 , Math.toRadians(180));
-    private final Pose out = new Pose(13, -12 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(9, -15, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose2 = new Pose(9, -11 , Math.toRadians(90));
-    private final Pose endPose1 = new Pose(14, -18, Math.toRadians(0));
+    private final Pose startPose = new Pose(8,-96, Math.toRadians(-90)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose intakePose1 = new Pose(18.5, -132.5, Math.toRadians(-160));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(9.1, -134.9 , Math.toRadians(180));
+    private final Pose out = new Pose(13, -132 , Math.toRadians(-90));
+    private final Pose intakePose2 = new Pose(9, -129, Math.toRadians(-90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose2 = new Pose(9, -134 , Math.toRadians(-90));
+    private final Pose endPose1 = new Pose(14, -124, Math.toRadians(0));
 
     //paths
     private Path score1;
     private PathChain outPush, firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2, thirdLoad, acThirdLoad, scoreLoad3, backLoad1, hitLoad;
 
     //doubles
-    double hoodPos = .37;
-    double turTurn = .01;
+    double hoodPos = .45;
+    double turTurn = .75;
     double kickZero = 0.85;
     double kickUp = 0.68;
     double TargetVelocity = 1200;
@@ -124,14 +124,14 @@ public class blue6far extends OpMode {
 
                 break;
             case 1:
-                    actionTimer.resetTimer();
-                    follower.holdPoint(startPose);
-                    //open wall position
-                    intakeAndShoot.wallPos(0.1);
-                    shootTimer.reset();
-                    push.setPosition(kickUp);
+                actionTimer.resetTimer();
+                follower.holdPoint(startPose);
+                //open wall position
+                intakeAndShoot.wallPos(0.1);
+                shootTimer.reset();
+                push.setPosition(kickUp);
 
-                    setPathState(2);
+                setPathState(2);
                 break;
             case 2:
                 if(!go){
@@ -235,7 +235,7 @@ public class blue6far extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 7) {
+                if(actionTimer.getElapsedTimeSeconds() > 6) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(secondLoad,true);

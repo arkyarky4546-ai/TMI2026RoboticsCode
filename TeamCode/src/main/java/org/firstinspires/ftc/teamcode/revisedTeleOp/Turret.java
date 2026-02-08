@@ -17,7 +17,7 @@ public class Turret {
     private Servo servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 361.0;
-    private static final double CENTER_POSITION = 0.96;
+    private static double CENTER_POSITION = 0.924;
 
 
     private double targetX = 0.0;
@@ -42,7 +42,7 @@ public class Turret {
 
     public void update(Follower follower, Telemetry telemetry){
         if(autoAiming){
-            this.updateAuto(follower, telemetry);
+           // this.updateAuto(follower, telemetry);
         }
     }
 
@@ -64,7 +64,7 @@ public class Turret {
         double relativeAngleRad = angleToTargetRad - robotHeadingRad;
         relativeAngleRad = AngleUnit.normalizeRadians(relativeAngleRad);
         double relativeAngleDeg = Math.toDegrees(relativeAngleRad);
-        double servoAngleNeeded = relativeAngleDeg * gearRatio/360;
+        double servoAngleNeeded = relativeAngleDeg * gearRatio/356; //360
         double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
 
         if(targetPos < 0){
@@ -119,10 +119,12 @@ public class Turret {
     public void setModeRed(){
         targetX = 144.0;
         targetY = -144.0;
+        CENTER_POSITION = .63;
     }
 
     public void setModeBlue(){
         targetX = 144.0;
         targetY = 0.0;
+        CENTER_POSITION = .89;
     }
 }

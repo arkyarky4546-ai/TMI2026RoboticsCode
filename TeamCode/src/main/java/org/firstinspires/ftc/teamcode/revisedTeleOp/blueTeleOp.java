@@ -84,11 +84,15 @@ public class blueTeleOp extends OpMode {
 
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
-        telemetry.addData("power", shooterAndIntake.targetVelocity);
+        telemetry.addData("target velocity", shooterAndIntake.targetVelocity);
+        telemetry.addData("shooter1 velocity", shooterAndIntake.shoot1.getVelocity());
+        telemetry.addData("shooter2 velocity", shooterAndIntake.shoot2.getVelocity());
+
         telemetry.addData("recoil", shooterAndIntake.recoil);
         telemetry.addData("hood", shooterAndIntake.shooterHood.getPosition());
+        telemetry.addData("distance", drivetrain.getDistanceFromGoal());
        // telemetry.update();
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,rightTrigger, gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper);
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
         /*

@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
@@ -12,23 +13,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "Blue12", group = "Autonomous")
-public class Blue12 extends OpMode {
+@Autonomous(name = "safe12Blue", group = "Autonomous")
+public class safe12Blue extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-
-    private final Pose startPose = new Pose(129,-25, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(92)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose startPose = new Pose(128,-26, Math.toRadians(47)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(97, -53, Math.toRadians(47)); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(88, -47, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(88, -21 , Math.toRadians(90));
     private final Pose intakePose2 = new Pose(63, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(80, -21.5 , Math.toRadians(90));
+    private final Pose hitPose = new Pose(80, -21 , Math.toRadians(90));
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(63, -24, Math.toRadians(90));
-    private final Pose intakePose3 = new Pose(40, -47, Math.toRadians(90));
+    private final Pose intakePose3 = new Pose(40, -46, Math.toRadians(90));
     private final Pose acIntakePose3 = new Pose(40, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
 
@@ -37,13 +37,13 @@ public class Blue12 extends OpMode {
     private PathChain firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2, thirdLoad, acThirdLoad, scoreLoad3, backLoad1, hitLoad;
 
     //doubles
-    double hoodPos = .25;
-    double turTurn = 0.867;
+    double hoodPos = .4296;
+    double turTurn = .925;
     double kickZero = 0.85;
     double kickUp = 0.68;
-    double TargetVelocity = 1200;
+    double TargetVelocity = 1520;
     double shooterPower = 0;
-    double recoil = 0;
+    double recoil = 0.0357;
     private double IntegralSum = 0;
     private double lastError = 0;
     public static double Kp=0.0121;
@@ -161,9 +161,9 @@ public class Blue12 extends OpMode {
                 break;
             case 2:
                 if(!go){
-                    savePosition = hood.getPosition() -.04;
+                    savePosition = hood.getPosition();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .35){
+                if(actionTimer.getElapsedTimeSeconds() > .3){
                     go = true;
                     isShoot = true;
 
@@ -187,7 +187,7 @@ public class Blue12 extends OpMode {
                     //push servo is down now
                     push.setPosition(kickZero);
                     //closed wall position
-                    intakeAndShoot.wallPos(.45);
+                    intakeAndShoot.wallPos(.35);
                     intakeIndex = true;
                     setPathState(3);
                 }
@@ -195,7 +195,7 @@ public class Blue12 extends OpMode {
             case 3:
                 if(!follower.isBusy()) {
 
-                    follower.followPath(acFirstLoad,.49,true);
+                    follower.followPath(acFirstLoad,.50,true);
                     setPathState(4);
                 }
                 break;
@@ -227,7 +227,7 @@ public class Blue12 extends OpMode {
 
                 break;
             case 7:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .35){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .3){
                     follower.followPath(scoreLoad1,true);
                     setPathState(8);
                 }
@@ -256,7 +256,7 @@ public class Blue12 extends OpMode {
                     isShoot = false;
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = true;
-                    intakeAndShoot.wallPos(0.45);
+                    intakeAndShoot.wallPos(0.35);
                     push.setPosition(kickZero);
                     setPathState(10);
                 }
@@ -264,7 +264,7 @@ public class Blue12 extends OpMode {
                 break;
             case 10:
                 if(!follower.isBusy()) {
-                    follower.followPath(acSecondLoad,.49,true);
+                    follower.followPath(acSecondLoad,.50,true);
                     setPathState(11);
                 }
                 break;
@@ -322,7 +322,7 @@ public class Blue12 extends OpMode {
                 break;
             case 15:
                 if(!follower.isBusy()) {
-                    follower.followPath(acThirdLoad,.49,true);
+                    follower.followPath(acThirdLoad,.50,true);
                     setPathState(16);
                 }
                 break;
@@ -385,15 +385,15 @@ public class Blue12 extends OpMode {
         pathTimer.resetTimer();
     }
     public double shooterPowerSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1930.07059;
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 2250.07059;
     }
     public double hoodPosSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144+ follower.getPose().getY()),2)) , .5);
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.88;
     }
     public double getRecoil(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
+        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.1900;
     }
     @Override
@@ -403,13 +403,13 @@ public class Blue12 extends OpMode {
         intakeAndShoot.update(1,1, intakeIndex);
         //intakeAndShoot.wallPos(.2);
         double current = Math.abs(intakeAndShoot.getVelocity());
-        TargetVelocity = shooterPowerSet();
+       // TargetVelocity = shooterPowerSet();
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
 
-            hood.setPosition(hoodPosSet() + .052);
+            hood.setPosition(hoodPos);
         }
-        recoil = getRecoil() -.02;
+        //recoil = getRecoil() + .02;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
 

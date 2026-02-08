@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -97,14 +99,14 @@ public class shootAndIntakev2 {
         regression.stopThread();
     }
     //some of the stuff was for pedro so i made it an exclusively teleop class
-    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry){
+    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry, boolean shoot1300){
         if(servoReset){
             servRot.sSP(0,0);
             index1 = false;
         }
         if(updateTimer.milliseconds() > 30) {
             regression.setDis(distance);
-            currentVelocity = shoot2.getVelocity();
+            currentVelocity = abs(shoot1.getVelocity());
             targetVelocity = regression.vel();
             power = shooterPIDControl(targetVelocity, currentVelocity) / 2;
             shoot1.setPower(-power);
@@ -123,7 +125,7 @@ public class shootAndIntakev2 {
             intake1.setPower(intakePower);
             intake2.setPower(-intakePower);
             wall.setPosition(.5);
-            if(intakeDis < 10 && intakeTimer.milliseconds() > 265 && !isShoot) {
+            if(intakeDis < 10 && intakeTimer.milliseconds() > 271 && !isShoot) {
                 servRot.regRot(servRot.getPos());
                 intakeTimer.reset();
             }
@@ -152,6 +154,9 @@ public class shootAndIntakev2 {
                     shooterHood.setPosition(shooterHood.getPosition() - recoil);
                     shootTimer.reset();
                 }
+            }
+            if(shoot1300){
+                targetVelocity = 1300;
             }
             power = shooterPIDControl(targetVelocity, currentVelocity);
             shoot1.setPower(-power);
