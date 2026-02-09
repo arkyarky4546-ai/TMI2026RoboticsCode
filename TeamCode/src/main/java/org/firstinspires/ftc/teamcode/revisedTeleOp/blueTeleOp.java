@@ -7,28 +7,27 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Configurable
 @TeleOp
-public class redTeleOp extends OpMode {
-     //newly created classes.
+public class blueTeleOp extends OpMode {
+    /* newly created classes */
     Drivetrain drivetrain; //all driving functionality and pedro pathing
     Turret turret; //autoaiming and manual control
-    shootAndIntakev2 shooterAndIntake;//new clean version of code by Johnson
+    shootAndIntakev2 shooterAndIntake;
     //ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
 
     Limelight3A limelight3A; //for pattern recognition
-    //boolean patternDetected = false;
+    boolean patternDetected = false;
     boolean shootFirst = true;
 
     @Override
     public void init() {
         drivetrain = new Drivetrain(hardwareMap);
-        drivetrain.setModeRed();
+        drivetrain.setModeBlue();
 
         turret = new Turret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeRed();
+        turret.setModeBlue();
 
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.pipelineSwitch(6);
-        limelight3A.start();
         limelight3A.start();
 
         shooterAndIntake = new shootAndIntakev2(hardwareMap);
@@ -82,15 +81,18 @@ public class redTeleOp extends OpMode {
             shootFirst = true;
             drivetrain.setHoldMode(false);
         }
+
         telemetry.addData("rightTrigger", rightTrigger);
         telemetry.addData("shootfirst", shootFirst);
         telemetry.addData("target velocity", shooterAndIntake.targetVelocity);
-        telemetry.addData("shooter velocity", shooterAndIntake.shoot1.getVelocity());
+        telemetry.addData("shooter1 velocity", shooterAndIntake.shoot1.getVelocity());
+        telemetry.addData("shooter2 velocity", shooterAndIntake.shoot2.getVelocity());
+
         telemetry.addData("recoil", shooterAndIntake.recoil);
         telemetry.addData("hood", shooterAndIntake.shooterHood.getPosition());
         telemetry.addData("distance", drivetrain.getDistanceFromGoal());
+       // telemetry.update();
         shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper);
-
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
         /*
@@ -112,7 +114,7 @@ public class redTeleOp extends OpMode {
                     }
                 }
             }
-        }*/
+        } */
     }
     @Override
     public void stop(){

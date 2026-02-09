@@ -17,12 +17,14 @@ public class Turret {
     private Servo servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 361.0;
-    private static final double CENTER_POSITION = 0.5;
+    private static double CENTER_POSITION = 0.924;
+
 
     private double targetX = 0.0;
     private double targetY = 0.0;
 
     private double currentServoPosition = CENTER_POSITION;
+    private final double gearRatio =  1.0055911*1.11111111;//input / output 1.0055911
 
     private boolean autoAiming;
     private Timer lastManual = new Timer();
@@ -40,7 +42,7 @@ public class Turret {
 
     public void update(Follower follower, Telemetry telemetry){
         if(autoAiming){
-            this.updateAuto(follower, telemetry);
+           // this.updateAuto(follower, telemetry);
         }
     }
 
@@ -50,24 +52,28 @@ public class Turret {
         double robotX = robotPose.getX();
         double robotY = robotPose.getY();
         double robotHeadingRad = robotPose.getHeading();
-        telemetry.addData("x = ", robotX);
-        telemetry.addData("y = ", robotY);
-        telemetry.addData("head = ", Math.toDegrees(robotHeadingRad));
+        robotX += (-Math.cos(robotHeadingRad) - 3*Math.sin(robotHeadingRad)); //compensate for turret offset on the robot
+        robotY += (3*Math.cos(robotHeadingRad) - Math.sin(robotHeadingRad)); //estimated at 1 inch down, 3 inch left from center
+        telemetry.addData("robotX",robotX);
+        telemetry.addData("robotY",robotY);
+        telemetry.addData("Turret X", robotX);
+        telemetry.addData("Turret Y", robotY);
+        telemetry.addData("Turret Head", Math.toDegrees(robotHeadingRad));
         double angleToTargetRad = Math.atan2(targetY - robotY, targetX - robotX);
 
         double relativeAngleRad = angleToTargetRad - robotHeadingRad;
-
         relativeAngleRad = AngleUnit.normalizeRadians(relativeAngleRad);
-
         double relativeAngleDeg = Math.toDegrees(relativeAngleRad);
+        double servoAngleNeeded = relativeAngleDeg * gearRatio/356; //360
+        double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
 
-        double targetPos = (relativeAngleDeg / SERVO_RANGE_DEGREES) + CENTER_POSITION;
+        if(targetPos < 0){
+            targetPos += 360/355*1.111111111;
 
+        }
         targetPos = Range.clip(targetPos, 0.0, 1.0);
-
-        servoLeft.setPosition(1-targetPos);
-        servoRight.setPosition(1-targetPos);
-
+        servoLeft.setPosition(1 - targetPos);
+        servoRight.setPosition(1 - targetPos);
         currentServoPosition = targetPos;
     }
 
@@ -102,8 +108,8 @@ public class Turret {
     //TODO: confirm center values
     public void setTurretCenter(){
         autoAiming = false;
-        servoLeft.setPosition(0.0);
-        servoRight.setPosition(0.0);
+        servoLeft.setPosition(CENTER_POSITION);
+        servoRight.setPosition(CENTER_POSITION);
     }
 
     public boolean isAutoAiming(){
@@ -113,10 +119,12 @@ public class Turret {
     public void setModeRed(){
         targetX = 144.0;
         targetY = -144.0;
+        CENTER_POSITION = .63;
     }
 
     public void setModeBlue(){
         targetX = 144.0;
         targetY = 0.0;
+        CENTER_POSITION = .89;
     }
 }

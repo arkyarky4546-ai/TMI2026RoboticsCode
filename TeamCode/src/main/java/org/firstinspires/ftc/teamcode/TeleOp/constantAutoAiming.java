@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.List;
 
 @Configurable
-@TeleOp
+//@TeleOp
 public class constantAutoAiming extends OpMode {
     Limelight3A limelight3A;
     Drivetrain drivetrain;
