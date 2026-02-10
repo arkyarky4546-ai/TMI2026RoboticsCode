@@ -26,6 +26,7 @@ public class Drivetrain {
     private final int RED = 1;
     private final int BLUE = 2;
     private boolean holdPos;
+    private boolean field = false;
 
     public Drivetrain(HardwareMap hardwareMap) {
         mode = 0;
@@ -46,7 +47,7 @@ public class Drivetrain {
         holdPos = false;
     }
 
-    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed){
+    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed){
         follower.update();
 
         if (!automatedDrive) {
@@ -54,7 +55,7 @@ public class Drivetrain {
             //In case the drivers want to use a "slowMode" you can scale the vectors
 
             //This is the normal version to use in the TeleOp
-            if (!slowMode) follower.setTeleOpDrive(
+            if (!slowMode && !field) follower.setTeleOpDrive(
                     -left_stick_y,
                     -left_stick_x,
                     -right_stick_x,
@@ -63,10 +64,10 @@ public class Drivetrain {
 
                 //This is how it looks with slowMode on
             else follower.setTeleOpDrive(
-                    -left_stick_y * slowModeMultiplier,
-                    -left_stick_x * slowModeMultiplier,
-                    -right_stick_x * slowModeMultiplier,
-                    true // Robot Centric
+                    -left_stick_y,
+                    -left_stick_x ,
+                    -right_stick_x,
+                    false // Robot Centric
             );
         }
 
@@ -88,6 +89,9 @@ public class Drivetrain {
                     .build();
             follower.followPath(twoPointsOrSmthn);
             automatedDrive = true;
+        }
+        else if(yWasPressed){
+            field = !field;
         }
 
         //Stop automated following if the follower is done

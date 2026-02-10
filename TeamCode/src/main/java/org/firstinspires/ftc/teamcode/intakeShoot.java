@@ -23,7 +23,7 @@ public class intakeShoot {
     //doubles
     //variable that controls shooting power
     private double shootPower;
-
+    private double ticksPerRev = 28;
     private double TargetVelocity = 0;
     private double distance;
 
@@ -46,7 +46,7 @@ public class intakeShoot {
     private ElapsedTime Intaketimer = new ElapsedTime();
     private sensCalc1 sensors;
 
-    public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7, String wallName) {
+    public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7, String wallName, String colorS1, String colorS2) {
         //constructor this is where everything is initialized
         intakeMotor1 = hardwareMap.get(DcMotorEx.class, intake1);
         intakeMotor2 = hardwareMap.get(DcMotorEx.class, intake2);
@@ -59,7 +59,7 @@ public class intakeShoot {
         Intaketimer.reset();
 
         //my custom class takes all of these variables
-        spindexer = new servo720Rot(hardwareMap, servoName, servoName2, distance1, distance2, distance3, distance4, distance5, distance6, distance7);
+        spindexer = new servo720Rot(hardwareMap, servoName, servoName2, distance1, distance2, distance3, distance4, distance5, distance6, distance7, colorS1, colorS2);
         spindexer.sSP(0,0);
         sensors = new sensCalc1(spindexer);
         sensors.start();
@@ -112,6 +112,10 @@ public class intakeShoot {
         shootMotor1.setPower(-power);
         shootMotor2.setPower(power);
     }
+    public double shootGetRPM(double power){
+        return Math.max(Math.abs(shootMotor1.getVelocity()),Math.abs(shootMotor2.getVelocity())) * 60 / ticksPerRev;
+
+    }
     public void intakesetPower(double power){
         intakeMotor1.setPower(power);
         intakeMotor2.setPower(-power);
@@ -122,7 +126,7 @@ public class intakeShoot {
 
     //method to shoot balls and rotate from my class
     public void shoot(){
-        index = spindexer.getFree(1, spindexer.getPos());
+        //index = spindexer.getFree(1, spindexer.getPos());
         spindexer.sSP(index, 1);
     }
     public void simpleShoot(){
@@ -137,5 +141,14 @@ public class intakeShoot {
     }
     public void stopT(){
         sensors.stopThread();
+    }
+    public double targetToProjSpeed(double targetVel) {
+        double motorRPM = (Math.abs(shootMotor1.getVelocity()) * 60.0) / ticksPerRev;
+        double gearRatio = 1;
+        double flywheelRPM = motorRPM * gearRatio;
+        double circumference = Math.PI * 96;//flywheel dia mm
+        double surfaceSpeed = (circumference * flywheelRPM) / 60.0;
+
+        return surfaceSpeed * .75;//compression
     }
 }

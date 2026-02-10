@@ -442,7 +442,7 @@ public class Blue12 extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally");
+                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2");
 
         //thing that controls the servo that goes up and down allowing balls to shoot
         push = hardwareMap.get(Servo.class, "push");
@@ -480,5 +480,43 @@ public class Blue12 extends OpMode {
     @Override
     public void stop() {
         intakeAndShoot.stopT();
+    }
+
+    public double inchesToTicks(){
+        double vel = follower.getVelocity().getMagnitude();
+
+    }
+    public double getCompensatedTurretAngle() { //put this into Turret Class  Turn this into thread
+        double robX = follower.getPose().getX();
+        double robY = follower.getPose().getY();
+        double robHead = follower.getPose().getHeading();
+        double robVelX = follower.getVelocity().getXComponent();
+        double robVelY = follower.getVelocity().getYComponent();
+        double x = 144 - robX;
+        double y = 0 - robY;
+        double distance = Math.sqrt(x * x + y * y);
+
+        double shooterTicks = shooterPowerSet() - ; //should be in rpm
+
+        double projectileSpeed = intakeAndShoot.targetToProjSpeed(shooterTicks);
+
+        double targetVelX = (x / distance) * projectileSpeed;
+        double targetVelY = (y / distance) * projectileSpeed;
+
+        double compVelX = targetVelX - robVelX;
+        double compVelY = targetVelY - robVelY;
+
+        double fieldAimAngle = Math.atan2(compVelY, compVelX);
+
+        double robotCentricAngle = fieldAimAngle - robHead;
+
+        while (robotCentricAngle > Math.PI) {
+            robotCentricAngle -= 2 * Math.PI; //smart way to get it between 180 and -180
+        }
+        while (robotCentricAngle < -Math.PI){
+            robotCentricAngle += 2 * Math.PI;
+        }
+
+        return robotCentricAngle;
     }
 }

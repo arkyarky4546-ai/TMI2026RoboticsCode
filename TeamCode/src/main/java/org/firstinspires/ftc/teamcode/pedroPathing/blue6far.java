@@ -348,7 +348,7 @@ public class blue6far extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally");
+                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2");
 
         //thing that controls the servo that goes up and down allowing balls to shoot
         push = hardwareMap.get(Servo.class, "push");
