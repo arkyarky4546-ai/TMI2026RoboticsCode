@@ -12,26 +12,25 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "Red12", group = "Autonomous")
-public class Red12 extends OpMode {
+@Autonomous(name = "MoveShoot15", group = "Autonomous")
+public class MoveShoot15 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose hitPose = new Pose(80, -138 , Math.toRadians(-90));
-    private final Pose backPose = new Pose(84, -131, Math.toRadians(-90));
-    private final Pose intakePose3 = new Pose(38, -114, Math.toRadians(-90));
-    private final Pose acIntakePose3 = new Pose(38, -134, Math.toRadians(-90));
-    private final Pose startPose = new Pose(129, -129, Math.toRadians(-45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(97, -97, Math.toRadians(-90)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(86, -110, Math.toRadians(-90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(86, -134 , Math.toRadians(-90));
-    private final Pose intakePose2 = new Pose(61, -114.2, Math.toRadians(-90));
-    private final Pose acIntakePose2 = new Pose(61, -137, Math.toRadians(-90));
-    private final Pose endPose1 = new Pose(80, -126, Math.toRadians(0));
-    private final Pose scorePose3 = new Pose(92, -120, Math.toRadians(-50));
+    private final Pose startPose = new Pose(119,-25, Math.toRadians(45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(87, -56, Math.toRadians(135)); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose intakePose1 = new Pose(59, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(59, -12 , Math.toRadians(90));
+    private final Pose intakePose2 = new Pose(63, -47, Math.toRadians(90));
+    private final Pose hitPose = new Pose(58, -16 , Math.toRadians(30));
+    private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
+    private final Pose acIntakePose2 = new Pose(63, -24, Math.toRadians(90));
+    private final Pose intakePose3 = new Pose(40, -47, Math.toRadians(90));
+    private final Pose acIntakePose3 = new Pose(40, -24, Math.toRadians(90));
+    private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
 
     //paths
     private Path score1;
@@ -39,7 +38,7 @@ public class Red12 extends OpMode {
 
     //doubles
     double hoodPos = .25;
-    double turTurn = .614;//.87
+    double turTurn = 0.867;
     double kickZero = 0.85;
     double kickUp = 0.68;
     double TargetVelocity = 1200;
@@ -162,7 +161,7 @@ public class Red12 extends OpMode {
                 break;
             case 2:
                 if(!go){
-                    savePosition = hood.getPosition() + .03;
+                    savePosition = hood.getPosition() -.04;
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .35){
                     go = true;
@@ -180,7 +179,7 @@ public class Red12 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.85) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(firstLoad,true);
@@ -188,7 +187,7 @@ public class Red12 extends OpMode {
                     //push servo is down now
                     push.setPosition(kickZero);
                     //closed wall position
-                    intakeAndShoot.wallPos(.35);
+                    intakeAndShoot.wallPos(.45);
                     intakeIndex = true;
                     setPathState(3);
                 }
@@ -257,7 +256,7 @@ public class Red12 extends OpMode {
                     isShoot = false;
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = true;
-                    intakeAndShoot.wallPos(0.35);
+                    intakeAndShoot.wallPos(0.45);
                     push.setPosition(kickZero);
                     setPathState(10);
                 }
@@ -366,7 +365,7 @@ public class Red12 extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds() > 1.8) {
                     push.setPosition(kickZero);
                     intakeAndShoot.setPos(0, intakePos);
-                    intakeAndShoot.wallPos(0.35);
+                    intakeAndShoot.wallPos(0.5);
                     follower.followPath(end,true);
                     setPathState(20);
                 }
@@ -387,7 +386,7 @@ public class Red12 extends OpMode {
     }
     public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1950.07059;
+        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1930.07059;
     }
     public double hoodPosSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144+ follower.getPose().getY()),2)) , .5);
@@ -408,7 +407,7 @@ public class Red12 extends OpMode {
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
 
-            hood.setPosition(hoodPosSet() + .16);
+            hood.setPosition(hoodPosSet() + .052);
         }
         recoil = getRecoil() -.02;
         intakeAndShoot.shootsetPower(shooterPower);
@@ -443,7 +442,7 @@ public class Red12 extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally" , "color1", "color2", "shooterHood");
+                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2", "shooterHood");
 
         //thing that controls the servo that goes up and down allowing balls to shoot
         push = hardwareMap.get(Servo.class, "push");
@@ -482,4 +481,5 @@ public class Red12 extends OpMode {
     public void stop() {
         intakeAndShoot.stopT();
     }
+
 }

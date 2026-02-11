@@ -11,7 +11,10 @@ import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.intakeShoot;
+import org.firstinspires.ftc.teamcode.revisedTeleOp.Turret;
+
 @Autonomous(name = "Blue12", group = "Autonomous")
 public class Blue12 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
@@ -43,6 +46,7 @@ public class Blue12 extends OpMode {
     double kickUp = 0.68;
     double TargetVelocity = 1200;
     double shooterPower = 0;
+    AutoTurret turret;
     double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
@@ -173,8 +177,6 @@ public class Blue12 extends OpMode {
                     //shooting every 800 milliseconds
                     intakeAndShoot.simpleShoot();
 
-                    hood.setPosition( savePosition);
-                    savePosition -=recoil;
 
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
@@ -248,7 +250,6 @@ public class Blue12 extends OpMode {
                     push.setPosition(kickUp);
                     isShoot = true;
                     intakeAndShoot.simpleShoot();
-                    hood.setPosition(hood.getPosition()-recoil);
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 1.8) {
@@ -303,7 +304,6 @@ public class Blue12 extends OpMode {
 
                     //shooting every 800 milliseconds
                     intakeAndShoot.simpleShoot();
-                    hood.setPosition(hood.getPosition() - recoil);
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
@@ -359,7 +359,6 @@ public class Blue12 extends OpMode {
 
                     isShoot = true;
                     intakeAndShoot.simpleShoot();
-                    hood.setPosition(hood.getPosition()-recoil);
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 1.8) {
@@ -384,7 +383,7 @@ public class Blue12 extends OpMode {
         pathState = pState;
         pathTimer.resetTimer();
     }
-    public double shooterPowerSet(){
+    /*public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1930.07059;
     }
@@ -395,22 +394,14 @@ public class Blue12 extends OpMode {
     public double getRecoil(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.1900;
-    }
+    }*/
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        intakeAndShoot.update(1,1, intakeIndex);
-        //intakeAndShoot.wallPos(.2);
-        double current = Math.abs(intakeAndShoot.getVelocity());
-        TargetVelocity = shooterPowerSet();
-        shooterPower = PIDControl(TargetVelocity, current);
-        if(!isShoot) {
+        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle());
 
-            hood.setPosition(hoodPosSet() + .052);
-        }
-        recoil = getRecoil() -.02;
-        intakeAndShoot.shootsetPower(shooterPower);
+        intakeAndShoot.update(1,1, intakeIndex);
         intakeAndShoot.intakesetPower(1);
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
@@ -431,6 +422,8 @@ public class Blue12 extends OpMode {
 
     @Override
     public void init() {
+        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
@@ -442,7 +435,7 @@ public class Blue12 extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2");
+                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2", "shooterHood");
 
         //thing that controls the servo that goes up and down allowing balls to shoot
         push = hardwareMap.get(Servo.class, "push");
@@ -480,43 +473,5 @@ public class Blue12 extends OpMode {
     @Override
     public void stop() {
         intakeAndShoot.stopT();
-    }
-
-    public double inchesToTicks(){
-        double vel = follower.getVelocity().getMagnitude();
-
-    }
-    public double getCompensatedTurretAngle() { //put this into Turret Class  Turn this into thread
-        double robX = follower.getPose().getX();
-        double robY = follower.getPose().getY();
-        double robHead = follower.getPose().getHeading();
-        double robVelX = follower.getVelocity().getXComponent();
-        double robVelY = follower.getVelocity().getYComponent();
-        double x = 144 - robX;
-        double y = 0 - robY;
-        double distance = Math.sqrt(x * x + y * y);
-
-        double shooterTicks = shooterPowerSet() - ; //should be in rpm
-
-        double projectileSpeed = intakeAndShoot.targetToProjSpeed(shooterTicks);
-
-        double targetVelX = (x / distance) * projectileSpeed;
-        double targetVelY = (y / distance) * projectileSpeed;
-
-        double compVelX = targetVelX - robVelX;
-        double compVelY = targetVelY - robVelY;
-
-        double fieldAimAngle = Math.atan2(compVelY, compVelX);
-
-        double robotCentricAngle = fieldAimAngle - robHead;
-
-        while (robotCentricAngle > Math.PI) {
-            robotCentricAngle -= 2 * Math.PI; //smart way to get it between 180 and -180
-        }
-        while (robotCentricAngle < -Math.PI){
-            robotCentricAngle += 2 * Math.PI;
-        }
-
-        return robotCentricAngle;
     }
 }
