@@ -247,5 +247,19 @@ public class servo720Rot {
         }
         sSP(currentIndex, 0);
     }
+    public void fastRot (double Pos){
+        int currentIndex = 0;
+        for(int i = 0; i < 7; i++){
+            if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+                currentIndex = i;
+                break;
+            }
+        }
+        currentIndex += 3;
+        if(currentIndex <= 7){
+            currentIndex = 0;
+        }
+        sSP(currentIndex, 0);
+    }
 }
 

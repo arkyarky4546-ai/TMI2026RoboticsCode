@@ -149,4 +149,7 @@ public class intakeShoot {
     public double turretAngle(){
         return Values.getTurretPos();
     }
+    public void fastShoot(){
+        spindexer.fastRot(spindexer.getPos());
+    }
 }
