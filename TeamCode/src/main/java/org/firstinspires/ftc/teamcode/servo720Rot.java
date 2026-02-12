@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Double.min;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -17,6 +19,7 @@ public class servo720Rot {
 
     //distance sensors
     public DistanceSensor[] distanceSensors = new DistanceSensor[6];
+    public NormalizedColorSensor[] colorSensors = new NormalizedColorSensor[3];
     private DistanceSensor mainDis;
 
     //double arrays
@@ -33,9 +36,11 @@ public class servo720Rot {
 
     //doubles
     double distanceCM = 0.0;
+    private int green = 1;
+    private int purple = 2;
 
 
-    public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7){
+    public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7, String color1, String color2){
 
         //constructor to initialize everything
         servo = hardwareMap.get(Servo.class, servoName);
@@ -49,7 +54,8 @@ public class servo720Rot {
         distanceSensors[3] = hardwareMap.get(DistanceSensor.class, distance5);
         distanceSensors[4] = hardwareMap.get(DistanceSensor.class, distance6);
         distanceSensors[5] = hardwareMap.get(DistanceSensor.class, distance7);
-
+        colorSensors[0] = hardwareMap.get(NormalizedColorSensor.class, color1);
+        colorSensors[1] = hardwareMap.get(NormalizedColorSensor.class, color2);
         //these are the various shoot and intake positions (since the gear ratio is 5/2, I chose the positions in order to have 720 degrees of rotation)
         positionHoldShoot = new double[] {0.0740442655936 , 0.222132796781 , 0.370221327968 , 0.518309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
         positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
@@ -90,8 +96,68 @@ public class servo720Rot {
     private int[] getShootIndices() {
         return new int[] {1, 3, 5};
     }
+    public int getColors(){
+
+        NormalizedRGBA colors1 = colorSensors[0].getNormalizedColors();
+        NormalizedRGBA colors2 = colorSensors[1].getNormalizedColors();
+        int finalColor = 0;
+        int color1 = 0;
+        int color2 = 0;
+        //if(colors1.red + colors1.blue + colors1.green > colors2.red + colors2.blue + colors2.green) {
+        if (colors1.red <= .001 && colors1.green <= .001 && colors1.blue <= .001) {
+                color1 = 0;
+        } else if (colors1.green > colors1.blue && colors1.green > .001) {
+                color1 = green;
+
+        } else if (colors1.blue > colors1.green && colors1.blue > .001) {
+                color1 = purple;
+        }
+        if (colors2.red <= .001 && colors2.green <= .001 && colors2.blue <= .001) {
+            color2 = 0;
+        } else if (colors2.green > colors2.blue && colors2.green > .001) {
+            color2 = green;
+
+        } else if (colors2.blue > colors2.green && colors2.blue > .001) {
+            color2 = purple;
+        }
+        if(color1 == color2){
+            finalColor = color1;
+        }
+        else{
+            if(colors1.red + colors1.blue + colors1.green > colors2.red + colors2.blue + colors2.green){
+                finalColor = color1;
+            }
+            else {
+                finalColor = color2;
+            }
+        }
+
+
+        return finalColor;
+    }
+    public void sort ( double position, int[] pattern){ //up to the other thing prob intake and shoot to rotate and then get color and then store the position that the green ball is in
+        int arrayGreenPos = 0;
+        int greenPos = 0;
+        for(int i = 0; i < 3; i++){
+            if(pattern[i] == 1){
+                arrayGreenPos = i;
+                break;
+            }
+        }
+        for(int i = 0; i < 7; i++){
+            if(positionHoldIntake[i] <= position * 1.1 && positionHoldIntake[i] > position * .9){
+                greenPos = i;
+                break;
+            }
+        }
+        greenPos = (arrayGreenPos - greenPos);
+        if(greenPos < 0){
+            greenPos = 3 + greenPos;
+        }
+        sSP(greenPos,0);
+    }
     //this gets the nearest open position so you can easily rotate to it mode is either 1 or 0, 1 for shoot and 0 for intake
-    public int getFree(int mode, double currentPos) {
+    /*public int getFree(int mode, double currentPos) {
 
         int currentIndex = 0;
 
@@ -166,7 +232,7 @@ public class servo720Rot {
 
             return close;
         }
-    }
+    }*/
     public void regRot (double Pos){
         int currentIndex = 0;
         for(int i = 0; i < 7; i++){
@@ -177,6 +243,20 @@ public class servo720Rot {
         }
         currentIndex += 1;
         if(currentIndex == 7){
+            currentIndex = 0;
+        }
+        sSP(currentIndex, 0);
+    }
+    public void fastRot (double Pos){
+        int currentIndex = 0;
+        for(int i = 0; i < 7; i++){
+            if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+                currentIndex = i;
+                break;
+            }
+        }
+        currentIndex += 3;
+        if(currentIndex <= 7){
             currentIndex = 0;
         }
         sSP(currentIndex, 0);

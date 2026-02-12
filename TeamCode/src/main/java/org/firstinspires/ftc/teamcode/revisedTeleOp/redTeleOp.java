@@ -40,7 +40,7 @@ public class redTeleOp extends OpMode {
     public void loop() {
         //drivetrain calls - all controlled by gamepad1
         // (a = reset pedro pose, x = altitudes exist, b = abort pedro path)
-        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad1.bWasPressed());
+        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad1.bWasPressed(), gamepad1.yWasPressed());
         if(gamepad1.a){
             drivetrain.resetCurrentPose();
         }
