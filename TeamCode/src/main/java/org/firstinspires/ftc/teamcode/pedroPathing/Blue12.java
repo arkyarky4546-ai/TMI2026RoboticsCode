@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.AutoTurret;
+import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 import org.firstinspires.ftc.teamcode.revisedTeleOp.Turret;
 
@@ -74,6 +75,12 @@ public class Blue12 extends OpMode {
     int index = 0;
     int shootPos = 1;
     int intakePos = 0;
+    LimeLight Lime;
+    int[] pattern = {1,2,2};
+    int[] ppg = {2,2,1};
+    int[] pgp = {2,1,2};
+    int[] gpp = {1,2,2};
+
 
     public double PIDControl(double reference, double state){
         double error=reference-state;
@@ -278,13 +285,30 @@ public class Blue12 extends OpMode {
 
                 break;
             case 10:
+                if(Lime.getPatternFromLimelight() == 0){
+                    pattern = gpp;
+
+                }
+                if(Lime.getPatternFromLimelight() == 1){
+                    pattern = pgp;
+
+                }
+            if(Lime.getPatternFromLimelight() == 2){
+                pattern = ppg;
+
+            }
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .35) {
+                    intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
                     setPathState(11);
                 }
                 break;
             case 11:
                 intakeAndShoot.wallPos(0.1);
+                if(intakeAndShoot.findGreen() != 0.0){
+                    intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
+
+                }
                 if(!follower.isBusy()) {
 
                     actionTimer.resetTimer();
@@ -329,6 +353,7 @@ public class Blue12 extends OpMode {
                 break;
             case 15:
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
+                    intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad2,true);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
@@ -337,6 +362,10 @@ public class Blue12 extends OpMode {
                 break;
             case 16:
                 intakeAndShoot.wallPos(0.1);
+                if(intakeAndShoot.findGreen() != 0.0){
+                    intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
+
+                }
                 if(!follower.isBusy()) {
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -383,7 +412,9 @@ public class Blue12 extends OpMode {
                 }
                 break;
             case 20:
+
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
+                    intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad3,true);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
@@ -392,6 +423,10 @@ public class Blue12 extends OpMode {
                 }
                 break;
             case 21:
+                if(intakeAndShoot.findGreen() != 0.0){
+                    intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
+
+                }
                 if(!follower.isBusy()) {
 
                     actionTimer.resetTimer();
@@ -492,6 +527,7 @@ public class Blue12 extends OpMode {
         //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+        Lime = new LimeLight(hardwareMap);
 
 
         follower = Constants.createFollower(hardwareMap);

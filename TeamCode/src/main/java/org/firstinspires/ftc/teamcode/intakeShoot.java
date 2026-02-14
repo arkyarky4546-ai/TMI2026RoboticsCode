@@ -152,4 +152,14 @@ public class intakeShoot {
     public void fastShoot(){
         spindexer.fastRot(spindexer.getPos());
     }
+    public double findGreen(){
+        if (spindexer.getColors() == 1){
+            return spindexer.getPos();
+        }
+        simpleShoot();
+        return 0.0;
+    }
+    public void colorSort(double Position, int[]Pattern){
+        spindexer.sort(Position, Pattern);
+    }
 }
