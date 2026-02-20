@@ -295,11 +295,11 @@ public class Blue12 extends OpMode {
                     pattern = gpp;
 
                 }
-                if(Lime.getPatternFromLimelight() == 1){
+                else if(Lime.getPatternFromLimelight() == 1){
                     pattern = pgp;
 
                 }
-                if(Lime.getPatternFromLimelight() == 2){
+                else if(Lime.getPatternFromLimelight() == 2){
                     pattern = ppg;
 
                 }

@@ -176,7 +176,7 @@ public class shootAndIntakev2 {
     }
 
     //override update thingy for the blue for right now
-    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry, boolean shoot1300, double speed, double hoodAngle){
+    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry, boolean shoot1300, double speed, double hoodAngle, boolean xPress, int[] pattern){
         if(servoReset){
             servRot.sSP(0,0);
             index1 = false;
@@ -201,6 +201,14 @@ public class shootAndIntakev2 {
             intake1.setPower(-intakePower);
             intake2.setPower(intakePower);
             artifactPush.setPosition(kickZero);
+        }
+        else if (xPress) {
+            if (servRot.getColors() == 1){
+                servRot.sort(servRot.getPos(),pattern);
+            }
+            else{
+                servRot.regRot(servRot.getPos());
+            }
         }
         else if(shootActive){
             if (!shooting){

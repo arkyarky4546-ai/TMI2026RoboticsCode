@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.AutoTurret;
+import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.ShooterConstants;
 import org.firstinspires.ftc.teamcode.shooterThread;
 
@@ -23,12 +24,17 @@ public class blueTeleOp extends OpMode {
     boolean shootFirst = true;
     boolean aim = true;
     shooterThread shootThing;
+    LimeLight Lime;
+    int[] pattern = {1,2,2};
+    int[] ppg = {2,2,1};
+    int[] pgp = {2,1,2};
+    int[] gpp = {1,2,2};
 
     @Override
     public void init() {
         drivetrain = new Drivetrain(hardwareMap);
         drivetrain.setModeBlue();
-
+        Lime = new LimeLight(hardwareMap);
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
         turret.setModeBlue();
 
@@ -36,6 +42,7 @@ public class blueTeleOp extends OpMode {
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
         shootThing = new shooterThread();
+        shootThing.start();
         shooterAndIntake = new shootAndIntakev2(hardwareMap);
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
 
@@ -58,6 +65,18 @@ public class blueTeleOp extends OpMode {
         turret.updateAuto(drivetrain.getFollower(), telemetry, shootThing.getTurretPos(),aim);
         if(gamepad1.dpadDownWasPressed()){
             aim = !aim;
+            if(Lime.getPatternFromLimelight() == 0){
+                pattern = gpp;
+
+            }
+            else if(Lime.getPatternFromLimelight() == 1){
+                pattern = pgp;
+
+            }
+            else if(Lime.getPatternFromLimelight() == 2){
+                pattern = ppg;
+
+            }
         }
         else if(!aim && gamepad1.dpad_left){
             turret.manualLeft();
@@ -80,6 +99,7 @@ public class blueTeleOp extends OpMode {
             shootFirst = false;
             drivetrain.setHoldMode(true);
         }
+
         else{
             shootFirst = true;
             drivetrain.setHoldMode(false);
@@ -95,32 +115,13 @@ public class blueTeleOp extends OpMode {
         telemetry.addData("hood", shooterAndIntake.shooterHood.getPosition());
         telemetry.addData("distance", drivetrain.getDistanceFromGoal());
        // telemetry.update();
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper, shootThing.getSpeed(), shootThing.getHoodPos());
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper, shootThing.getSpeed(), shootThing.getHoodPos(), gamepad2.xWasPressed(), pattern);
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
-        /*
-        //limelight pattern detection
-        if(!patternDetected) {
-            LLResult result = limelight3A.getLatestResult();
-            if (result != null && result.isValid()){
-                List<LLResultTypes.FiducialResult> results = result.getFiducialResults();
-                for (LLResultTypes.FiducialResult tag : results) {
-                    if (tag.getFiducialId() == 23) {
-                        shooterAndIntake.setPattern(1);
-                        patternDetected = true;
-                    } else if (tag.getFiducialId() == 22) {
-                        shooterAndIntake.setPattern(2);
-                        patternDetected = true;
-                    } else if (tag.getFiducialId() == 21) {
-                        shooterAndIntake.setPattern(3);
-                        patternDetected = true;
-                    }
-                }
-            }
-        } */
     }
     @Override
     public void stop(){
         shooterAndIntake.stopT();
+        shootThing.stopThread();
     }
 }
