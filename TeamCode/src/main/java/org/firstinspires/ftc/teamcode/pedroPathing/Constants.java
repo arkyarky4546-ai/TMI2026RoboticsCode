@@ -33,13 +33,13 @@ import java.util.List;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(10.433) //chassis in kg
+            /*.mass(10.433) //chassis in kg
             .forwardZeroPowerAcceleration(-46.63)
             .lateralZeroPowerAcceleration(-85.2)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.15, 0, 0.01, 0))
             .headingPIDFCoefficients(new PIDFCoefficients(.75, 0, 0, 0))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0.0,0.00001,0.6,0))
-            .centripetalScaling(0.000499999)
+            .centripetalScaling(0.000499999)*/
     ;
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .2, 1);
 
@@ -53,8 +53,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(72)
-            .yVelocity(60)
+            //.xVelocity(72)
+            //.yVelocity(60)
             ;
 
     public static Follower createFollower(HardwareMap hardwareMap) {

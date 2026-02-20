@@ -175,6 +175,72 @@ public class shootAndIntakev2 {
 
     }
 
+    //override update thingy for the blue for right now
+    public void update(double distance, boolean intakeActive, boolean shootActive, boolean intakeOut,boolean servoReset, Telemetry telemetry, boolean shoot1300, double speed, double hoodAngle){
+        if(servoReset){
+            servRot.sSP(0,0);
+            index1 = false;
+        }
+        if(updateTimer.milliseconds() > 30) {
+            shoot1.setVelocity(-speed);
+            shoot2.setVelocity(speed);
+            shooterHood.setPosition(hoodAngle);
+            updateTimer.reset();
+        }
+        if(intakeActive){
+            intakeDis = sensors.getIntakeDistance();
+            shooting = false;
+            isShoot = false;
+            artifactPush.setPosition(kickZero);
+            intake1.setPower(intakePower);
+            intake2.setPower(-intakePower);
+            wall.setPosition(.5);
+
+        }
+        else if(intakeOut) {
+            intake1.setPower(-intakePower);
+            intake2.setPower(intakePower);
+            artifactPush.setPosition(kickZero);
+        }
+        else if(shootActive){
+            if (!shooting){
+                shooting = true;
+                isShoot = true;
+                shootingTimer.reset();
+                wall.setPosition(0);
+            }
+            if(shootingTimer.milliseconds() > 500 ) {
+                artifactPush.setPosition(kickUp);
+
+                intake1.setPower(1);
+                intake2.setPower(-1);
+
+                if (shootTimer.milliseconds() > 400) {
+                    servRot.fastRot(servRot.getPos());
+                    shooterHood.setPosition(shooterHood.getPosition() - recoil);
+                    shootTimer.reset();
+                }
+            }
+            if(shoot1300){
+                targetVelocity = 1300;
+            }
+            power = shooterPIDControl(targetVelocity, currentVelocity);
+            shoot1.setPower(-power);
+            shoot2.setPower(power);
+
+        }
+        else{
+            intake1.setPower(0);
+            isShoot = false;
+            intake2.setPower(0);
+            artifactPush.setPosition(kickZero);
+            shooting = false;
+            //servRot.sSP(0,0);
+            shootTimer.reset();
+        }
+
+    }
+
     public double shooterPIDControl(double reference, double state){ //current velocity, target velocity
         //Hey guys, the real PID is actually target velocity - current velocity
         double error=reference-state;

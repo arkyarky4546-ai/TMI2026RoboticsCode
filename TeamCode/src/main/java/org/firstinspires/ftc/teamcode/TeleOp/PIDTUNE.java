@@ -17,7 +17,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
@@ -43,8 +45,8 @@ public class PIDTUNE extends OpMode {
     ElapsedTime timer=new ElapsedTime();
     //ElapsedTime pidTimer = new ElapsedTime();
     double lasterror=0;
-    Servo turretRight; //launchservo
-    Servo turretLeft; //launchservo
+    ServoImplEx turretRight; //launchservo
+    ServoImplEx turretLeft; //launchservo
     CRServo artifactSpinner;
     Servo artifactPush;
     DcMotor intake;
@@ -208,12 +210,14 @@ public class PIDTUNE extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally");
+                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2", "shooterHood");
         intakeAndShoot.wallPos(.2);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
-        turretRight = hardwareMap.get(Servo.class, "turretRight");
-        turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+        turretRight = hardwareMap.get(ServoImplEx.class, "turretRight");
+        turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretLeft = hardwareMap.get(ServoImplEx.class, "turretLeft");
+        turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeAndShoot.setPos(0,0);
 
     }

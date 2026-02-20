@@ -71,6 +71,7 @@ public class Blue12 extends OpMode {
     boolean intakeIndex = true;
     boolean isShoot = false;
     boolean go = false;
+    private Boolean scan = true;
     //ints
     int index = 0;
     int shootPos = 1;
@@ -285,6 +286,11 @@ public class Blue12 extends OpMode {
 
                 break;
             case 10:
+                /*if(scan){
+                    scan = false;
+                    turretLeft.setPosition();
+                    turretRight.setPosition();
+                }*/
                 if(Lime.getPatternFromLimelight() == 0){
                     pattern = gpp;
 
@@ -293,13 +299,14 @@ public class Blue12 extends OpMode {
                     pattern = pgp;
 
                 }
-            if(Lime.getPatternFromLimelight() == 2){
-                pattern = ppg;
+                if(Lime.getPatternFromLimelight() == 2){
+                    pattern = ppg;
 
-            }
+                }
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .35) {
                     intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
+                    scan = true;
                     setPathState(11);
                 }
                 break;
@@ -483,7 +490,7 @@ public class Blue12 extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle());
+        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
 
         intakeAndShoot.update(1,1, intakeIndex);
         intakeAndShoot.intakesetPower(1);
@@ -527,6 +534,7 @@ public class Blue12 extends OpMode {
         //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+
         Lime = new LimeLight(hardwareMap);
 
 
