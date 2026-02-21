@@ -48,6 +48,7 @@ public class shootAndIntakev2 {
     private double intakeDis = 0.0;
     double power = 0.0;
     boolean index1 = false;
+    boolean sorted = false;
     boolean isShoot = false;
     double lasterror = 0;
     ElapsedTime PIDTimer = new ElapsedTime();
@@ -205,8 +206,9 @@ public class shootAndIntakev2 {
         else if (xPress) {
             if (servRot.getColors() == 1){
                 servRot.sort(servRot.getPos(),pattern);
+                sorted = true;
             }
-            else{
+            else if (!sorted){
                 servRot.regRot(servRot.getPos());
             }
         }

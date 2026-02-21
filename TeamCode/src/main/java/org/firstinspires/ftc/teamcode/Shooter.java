@@ -42,14 +42,14 @@ public class Shooter {
 
         //velocity compensation variable
         double v2 = flywheelSpeed * Math.sin(hoodAngle);
-        double time = x / flywheelSpeed * Math.cos(hoodAngle);
+        double time = x / (flywheelSpeed * Math.cos(hoodAngle));
         double ivr = x / time + parallelComponent;
-        double nvr = Math.sqrt(ivr * ivr + perpendicularComponent * parallelComponent);
+        double nvr = Math.sqrt(ivr * ivr + perpendicularComponent * perpendicularComponent);
         double ndr = nvr * time; //distance
 
         //recalc launch components
         hoodAngle = MathFunctions.clamp(Math.atan(v2 / nvr), ShooterConstants.Hood_Max_Angle, ShooterConstants.Hood_Min_Angle);
-        flywheelSpeed = Math.sqrt(g * ndr * ndr / (2 * Math.pow(Math.cos(hoodAngle), 2) * (ndr * ( Math.tan(hoodAngle) -y))));
+        flywheelSpeed = Math.sqrt(g * ndr * ndr / (2 * Math.pow(Math.cos(hoodAngle), 2) * (ndr * Math.tan(hoodAngle) -y)));
         //update turret
         double turretVelCompOffset = Math.atan(perpendicularComponent / ivr);
         double turretAngle = Math.toDegrees(robotHeading - robotToGoalVector.getTheta() + turretVelCompOffset);
