@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+/*package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -13,10 +13,10 @@ import org.firstinspires.ftc.teamcode.shooterThread;
 @Configurable
 @TeleOp
 public class blueTeleOp extends OpMode {
-    /* newly created classes */
+    /* newly created classes
     Drivetrain drivetrain; //all driving functionality and pedro pathing
     AutoTurret turret; //autoaiming and manual control
-    shootAndIntakev2 shooterAndIntake;
+    //shootAndIntakev2 shooterAndIntake;
     //ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
 
     Limelight3A limelight3A; //for pattern recognition
@@ -124,4 +124,4 @@ public class blueTeleOp extends OpMode {
         shooterAndIntake.stopT();
         shootThing.stopThread();
     }
-}
+}*/

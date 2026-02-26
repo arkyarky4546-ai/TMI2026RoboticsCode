@@ -14,13 +14,19 @@ public class shooterThread extends Thread {
     private volatile double hood;
     private volatile Pose goal;
     private volatile Shooter shooter;
+    private volatile Shooter.ShotParameters params;
 
-
+    public shooterThread(Shooter shooter, Follower follower, Pose goalPose, double robotHeading) {
+        this.shooter = shooter;
+        this.follow = follower;
+        this.goal = goalPose;
+        this.robHead = robotHeading;
+    }
     @Override
     //ts is good practice to comment that you are overriding the thread class stuff. You need to in order to run stuff and you need to call (variable that is a thread).start() to start running the thread
     public void run() {
         while (running) {
-            Shooter.ShotParameters params = shooter.calculateShotVectorAndUpdateTurret(robHead, goal, follow);
+            params = shooter.calculateShotVectorAndUpdateTurret(robHead, goal, follow);
             hood = ShooterConstants.hoodDegreesToServoTicks(params.hoodAngle);
             Speed =ShooterConstants.getFlyWheelTicksFromVelocity(params.flywheelSpeed);
             turret = params.turretAngle;

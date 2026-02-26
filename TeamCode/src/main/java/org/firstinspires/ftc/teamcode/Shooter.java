@@ -8,9 +8,9 @@ import com.pedropathing.math.Vector;
 
 public class Shooter {
     public static class ShotParameters {
-        public double hoodAngle;
-        public double flywheelSpeed;
-        public double turretAngle;
+        public volatile double hoodAngle;
+        public volatile double flywheelSpeed;
+        public volatile double turretAngle;
 
         public ShotParameters(double hoodAngle, double flywheelSpeed, double turretAngle) {
             this.hoodAngle = hoodAngle;

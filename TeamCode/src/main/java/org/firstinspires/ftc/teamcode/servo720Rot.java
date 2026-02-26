@@ -40,20 +40,12 @@ public class servo720Rot {
     private int purple = 2;
 
 
-    public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7, String color1, String color2){
+    public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String color1, String color2){
 
         //constructor to initialize everything
         servo = hardwareMap.get(Servo.class, servoName);
         servo2 = hardwareMap.get(Servo.class, servoName2);
 
-        //main distance sensor and all the other distance sensors
-        mainDis = hardwareMap.get(DistanceSensor.class, distance1);
-        distanceSensors[0] = hardwareMap.get(DistanceSensor.class, distance2);
-        distanceSensors[1] = hardwareMap.get(DistanceSensor.class, distance3);
-        distanceSensors[2] = hardwareMap.get(DistanceSensor.class, distance4);
-        distanceSensors[3] = hardwareMap.get(DistanceSensor.class, distance5);
-        distanceSensors[4] = hardwareMap.get(DistanceSensor.class, distance6);
-        distanceSensors[5] = hardwareMap.get(DistanceSensor.class, distance7);
         colorSensors[0] = hardwareMap.get(NormalizedColorSensor.class, color1);
         colorSensors[1] = hardwareMap.get(NormalizedColorSensor.class, color2);
         //these are the various shoot and intake positions (since the gear ratio is 5/2, I chose the positions in order to have 720 degrees of rotation)

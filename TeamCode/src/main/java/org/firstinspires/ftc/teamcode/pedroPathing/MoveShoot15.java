@@ -22,8 +22,8 @@ public class MoveShoot15 extends OpMode {
 
     private final Pose startPose = new Pose(119,-25, Math.toRadians(45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(87, -56, Math.toRadians(135)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(59, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(59, -12 , Math.toRadians(90));
+    private final Pose intakePose1 = new Pose(58, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(58, -24 , Math.toRadians(90));
     private final Pose intakePose2 = new Pose(63, -47, Math.toRadians(90));
     private final Pose hitPose = new Pose(58, -16 , Math.toRadians(30));
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
@@ -92,8 +92,8 @@ public class MoveShoot15 extends OpMode {
                 .setLinearHeadingInterpolation(intakePose1.getHeading(), acIntakePose1.getHeading())
                 .build();
         scoreLoad1= follower.pathBuilder()
-                .addPath(new BezierLine(hitPose, scorePose1))
-                .setLinearHeadingInterpolation(hitPose.getHeading(), scorePose1.getHeading())
+                .addPath(new BezierLine(acIntakePose1, scorePose1))
+                .setLinearHeadingInterpolation(acIntakePose1.getHeading(), scorePose1.getHeading())
                 .build();
         secondLoad= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1,intakePose2))
@@ -104,8 +104,8 @@ public class MoveShoot15 extends OpMode {
                 .setLinearHeadingInterpolation(acIntakePose1.getHeading(), backPose.getHeading())
                 .build();
         hitLoad= follower.pathBuilder()
-                .addPath(new BezierLine(backPose,hitPose))
-                .setLinearHeadingInterpolation(backPose.getHeading(), hitPose.getHeading())
+                .addPath(new BezierLine(scorePose1,hitPose))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), hitPose.getHeading())
                 .build();
         acSecondLoad= follower.pathBuilder()
                 .addPath(new BezierLine(intakePose2,acIntakePose2))
@@ -384,7 +384,7 @@ public class MoveShoot15 extends OpMode {
         pathState = pState;
         pathTimer.resetTimer();
     }
-    public double shooterPowerSet(){
+  /*  public double shooterPowerSet(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1930.07059;
     }
@@ -395,14 +395,14 @@ public class MoveShoot15 extends OpMode {
     public double getRecoil(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.1900;
-    }
+    }*/
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        intakeAndShoot.update(1,1, intakeIndex);
+        intakeAndShoot.update(1,1, intakeIndex, follower);
         //intakeAndShoot.wallPos(.2);
-        double current = Math.abs(intakeAndShoot.getVelocity());
+        /*double current = Math.abs(intakeAndShoot.getVelocity());
         TargetVelocity = shooterPowerSet();
         shooterPower = PIDControl(TargetVelocity, current);
         if(!isShoot) {
@@ -412,7 +412,7 @@ public class MoveShoot15 extends OpMode {
         recoil = getRecoil() -.02;
         intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
-
+*/
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
             autonomousPathUpdate(); //updating our cases so that we can change paths
@@ -436,13 +436,13 @@ public class MoveShoot15 extends OpMode {
         actionTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
-
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(startPose);
         //main thing that controls a lot
         intakeAndShoot = new intakeShoot(hardwareMap,"intake", "intake1",
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
-                "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally", "color1", "color2", "shooterHood");
+                 "wally", "color1", "color2", "shooterHood", follower);
 
         //thing that controls the servo that goes up and down allowing balls to shoot
         push = hardwareMap.get(Servo.class, "push");
@@ -452,8 +452,7 @@ public class MoveShoot15 extends OpMode {
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
 
 
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
+
 
 
         //setting the basic positions of the hood and stuff
