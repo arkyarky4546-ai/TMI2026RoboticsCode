@@ -14,10 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
-import org.firstinspires.ftc.teamcode.revisedTeleOp.Turret;
 
-@Autonomous(name = "Blue12", group = "Autonomous")
-public class Blue12 extends OpMode {
+@Autonomous(name = "Blue18", group = "Autonomous")
+public class Blue18 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
@@ -26,12 +25,12 @@ public class Blue12 extends OpMode {
 
     private final Pose startPose = new Pose(119,-25, Math.toRadians(45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(87, -56, Math.toRadians(135)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(58, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(58, -24 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(63, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(58, -16 , Math.toRadians(30));
+    private final Pose intakePose1 = new Pose(52, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(52, -24 , Math.toRadians(90));
+    private final Pose intakePose2 = new Pose(70, -47, Math.toRadians(90));
+    private final Pose hitPose = new Pose(58, -10 , Math.toRadians(30));
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(63, -24, Math.toRadians(90));
+    private final Pose acIntakePose2 = new Pose(70, -24, Math.toRadians(90));
     private final Pose intakePose3 = new Pose(40, -47, Math.toRadians(90));
     private final Pose acIntakePose3 = new Pose(40, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
@@ -194,7 +193,7 @@ public class Blue12 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.15) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(firstLoad,true);
@@ -227,34 +226,43 @@ public class Blue12 extends OpMode {
                     intakeAndShoot.setPos(0,intakePos);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
+
                     setPathState(6);
                 }
                 break;
             case 6:
-                if(shootTimer.milliseconds() > 400) {
-                   // push.setPosition(kickUp);
-                    //shooting every 800 milliseconds
-                    intakeAndShoot.fastShoot();
-
-
-                    //this is what I mean about the timer being used to delay stuff
-                    shootTimer.reset();
-                }
-                if(actionTimer.getElapsedTimeSeconds() > .6) {
-                    intakeAndShoot.setPos(0, intakePos);
-                    isShoot = false;
-                    follower.followPath(hiLoad,true);
-
-                    //push servo is down now
-                   // push.setPosition(kickZero);
-                    //closed wall position
-                    intakeAndShoot.wallPos(.45);
-                    intakeIndex = true;
+                if (follower.isBusy()){
                     actionTimer.resetTimer();
-                    setPathState(7);
                 }
+                if(!follower.isBusy()){
+                    if(shootTimer.milliseconds() > 400) {
+                        // push.setPosition(kickUp);
+                        //shooting every 800 milliseconds
+                        intakeAndShoot.fastShoot();
+
+
+                        //this is what I mean about the timer being used to delay stuff
+                        shootTimer.reset();
+
+                    }
+                    if(actionTimer.getElapsedTimeSeconds() > .6) {
+                        intakeAndShoot.setPos(0, intakePos);
+                        isShoot = false;
+                        follower.followPath(hiLoad,true);
+
+                        //push servo is down now
+                        // push.setPosition(kickZero);
+                        //closed wall position
+                        intakeAndShoot.wallPos(.45);
+                        intakeIndex = true;
+                        actionTimer.resetTimer();
+                        setPathState(7);
+                    }
+                }
+
+
             case 7:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .35){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
                     follower.followPath(scoreLoad15,true);
                     setPathState(8);
                 }
@@ -307,7 +315,7 @@ public class Blue12 extends OpMode {
                     pattern = ppg;
 
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .35) {
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85) {
                     intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
                     scan = true;
@@ -349,11 +357,9 @@ public class Blue12 extends OpMode {
 
                 break;
             case 13:
-                if(!follower.isBusy()) {
                     follower.followPath(acSecondLoad);
                     actionTimer.resetTimer();
                     setPathState(14);
-                }
                 break;
             case 14:
                 if(!follower.isBusy()) {

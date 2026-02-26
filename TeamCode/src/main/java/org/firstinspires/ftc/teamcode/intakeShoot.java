@@ -89,14 +89,8 @@ public class intakeShoot {
         //setting the power of the shooter and intake here
         //shootsetPower(shootPower);
         intakesetPower(intakePower);
-        temp = Values.getHoodPos();
-        if(temp<.1 || temp > .9){
-            hoods.setPosition(.8);
-        }
-        else {
-            //hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.1, .9));
-            hoods.setPosition(.4);
-        }
+
+        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
         /*distance = sensors.getIntakeDistance();
         if((distance < 10) && Intaketimer.milliseconds() > 263 && intake){

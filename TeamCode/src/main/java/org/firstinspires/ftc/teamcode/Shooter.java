@@ -30,7 +30,7 @@ public class Shooter {
         double a = ShooterConstants.Score_Angle;
         //calculate initial launch components
         //assuming that the robot is not moving
-        double hoodAngle = MathFunctions.clamp(Math.atan(2*y/x-Math.tan(a)), ShooterConstants.Hood_Max_Angle, ShooterConstants.Hood_Min_Angle);
+        double hoodAngle = MathFunctions.clamp(Math.atan(2*y/x-Math.tan(a)), ShooterConstants.Hood_Min_Angle, ShooterConstants.Hood_Max_Angle);
         double flywheelSpeed = Math.sqrt(g * x * x / (2 * Math.pow(Math.cos(hoodAngle),2) * (x * Math.tan(hoodAngle) - y)));
         //get robot velocity and convert it into parallel and perpendicular components
         Vector robotVelocity = new Vector(follower.getVelocity().getXComponent(), follower.getVelocity().getYComponent()); //just use follower for this
@@ -48,7 +48,7 @@ public class Shooter {
         double ndr = nvr * time; //distance
 
         //recalc launch components
-        hoodAngle = MathFunctions.clamp(Math.atan(v2 / nvr), ShooterConstants.Hood_Max_Angle, ShooterConstants.Hood_Min_Angle);
+        hoodAngle = MathFunctions.clamp(Math.atan(v2 / nvr), ShooterConstants.Hood_Min_Angle, ShooterConstants.Hood_Max_Angle);
         flywheelSpeed = Math.sqrt(g * ndr * ndr / (2 * Math.pow(Math.cos(hoodAngle), 2) * (ndr * Math.tan(hoodAngle) -y)));
         //update turret
         double turretVelCompOffset = Math.atan(perpendicularComponent / ivr);
