@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -39,6 +41,7 @@ public class intakeShoot {
     private int shootMode = 1;
     private int index;
     private int intakeMode = 0;
+    double temp = 0.0;
     private int arrayShootIntakeTrack;
 
     //various timers for delaying stuff (super useful in a lot of scenarios)
@@ -47,8 +50,9 @@ public class intakeShoot {
     private sensCalc1 sensors;
     private shooterThread Values;
     private Servo hoods;
+    private Shooter shooter = new Shooter();
 
-    public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String distance1, String distance2, String distance3, String distance4, String distance5, String distance6, String distance7, String wallName, String colorS1, String colorS2, String shooterHood) {
+    public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String wallName, String colorS1, String colorS2, String shooterHood, Follower follower) {
         //constructor this is where everything is initialized
         intakeMotor1 = hardwareMap.get(DcMotorEx.class, intake1);
         intakeMotor2 = hardwareMap.get(DcMotorEx.class, intake2);
@@ -62,17 +66,17 @@ public class intakeShoot {
         Intaketimer.reset();
 
         //my custom class takes all of these variables
-        spindexer = new servo720Rot(hardwareMap, servoName, servoName2, distance1, distance2, distance3, distance4, distance5, distance6, distance7, colorS1, colorS2);
+        spindexer = new servo720Rot(hardwareMap, servoName, servoName2, colorS1, colorS2);
         spindexer.sSP(0,0);
-        sensors = new sensCalc1(spindexer);
-        sensors.start();
-        Values = new shooterThread();
+        //sensors = new sensCalc1(spindexer);
+        //sensors.start();
+        Values = new shooterThread(shooter, follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         Values.start();
 
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
-    public void update(double intakePower, int pathstate, boolean intake){
-
+    public void update(double intakePower, int pathstate, boolean intake, Follower follower){
+        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         if(pathstate == 16) {
             shootPower = 0;
             intakePower = 0;
@@ -83,9 +87,16 @@ public class intakeShoot {
 
         }
         //setting the power of the shooter and intake here
-        shootsetPower(shootPower);
+        //shootsetPower(shootPower);
         intakesetPower(intakePower);
-        hoods.setPosition(Values.getHoodPos());
+        temp = Values.getHoodPos();
+        if(temp<.1 || temp > .9){
+            hoods.setPosition(.8);
+        }
+        else {
+            //hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.1, .9));
+            hoods.setPosition(.4);
+        }
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
         /*distance = sensors.getIntakeDistance();
         if((distance < 10) && Intaketimer.milliseconds() > 263 && intake){
@@ -124,7 +135,7 @@ public class intakeShoot {
         intakeMotor2.setPower(-power);
     }
     public void wallPos(double pos){
-        wall.setPosition(pos);
+        wall.setPosition(MathFunctions.clamp(pos,0,1));
     }
 
     //method to shoot balls and rotate from my class
@@ -144,12 +155,22 @@ public class intakeShoot {
     }
     public void stopT(){
         sensors.stopThread();
-        Values.stopThread();
+       //Values.stopThread();
     }
     public double turretAngle(){
         return Values.getTurretPos();
     }
     public void fastShoot(){
         spindexer.fastRot(spindexer.getPos());
+    }
+    public double findGreen(){
+        if (spindexer.getColors() == 1){
+            return spindexer.getPos();
+        }
+        simpleShoot();
+        return 0.0;
+    }
+    public void colorSort(double Position, int[]Pattern){
+        spindexer.sort(Position, Pattern);
     }
 }

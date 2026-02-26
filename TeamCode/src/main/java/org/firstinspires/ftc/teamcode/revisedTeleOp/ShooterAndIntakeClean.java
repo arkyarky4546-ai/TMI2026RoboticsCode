@@ -62,7 +62,7 @@ public class ShooterAndIntakeClean {
 
         artifactPush = hardwareMap.get(Servo.class, "push");
 
-        servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave","disDiss","dis2","dis3","dis4","dis5","dis6","dis7");
+        //servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave","disDiss","dis2","dis3","dis4","dis5","dis6","dis7");
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");

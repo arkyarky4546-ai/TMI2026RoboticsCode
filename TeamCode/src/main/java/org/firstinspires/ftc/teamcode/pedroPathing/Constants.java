@@ -33,11 +33,11 @@ import java.util.List;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(10.433) //chassis in kg
-            .forwardZeroPowerAcceleration(-46.63)
-            .lateralZeroPowerAcceleration(-85.2)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.15, 0, 0.01, 0))
-            .headingPIDFCoefficients(new PIDFCoefficients(.75, 0, 0, 0))
+            .mass(12.906) //chassis in kg
+           .forwardZeroPowerAcceleration(-42.06)
+            .lateralZeroPowerAcceleration(-82.0)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.025, 0))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.1, 0, 0, 0.01))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0.0,0.00001,0.6,0))
             .centripetalScaling(0.000499999)
     ;
@@ -53,8 +53,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(72)
-            .yVelocity(60)
+            .xVelocity(77.73)
+            .yVelocity(60.367)
             ;
 
     public static Follower createFollower(HardwareMap hardwareMap) {
@@ -67,8 +67,8 @@ public class Constants {
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(-5.087)
-            .strafePodX(1.88)
+            .forwardPodY(-7.113188976)
+            .strafePodX(2.147027559)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("allMyHomiesHateOctoQuad")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)

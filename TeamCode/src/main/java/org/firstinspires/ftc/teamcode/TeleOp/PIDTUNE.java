@@ -17,7 +17,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.intakeShoot;
@@ -43,8 +45,8 @@ public class PIDTUNE extends OpMode {
     ElapsedTime timer=new ElapsedTime();
     //ElapsedTime pidTimer = new ElapsedTime();
     double lasterror=0;
-    Servo turretRight; //launchservo
-    Servo turretLeft; //launchservo
+    ServoImplEx turretRight; //launchservo
+    ServoImplEx turretLeft; //launchservo
     CRServo artifactSpinner;
     Servo artifactPush;
     DcMotor intake;
@@ -62,6 +64,7 @@ public class PIDTUNE extends OpMode {
     double shooterPower;
     boolean intakeIndex = true;
     boolean isShooting = false;
+    double wallPos = 0.0;
     double lastPos = 0.0;
     double kickZero = 0.85;
     double kickUp = 0.65;
@@ -88,14 +91,14 @@ public class PIDTUNE extends OpMode {
     @Override
     public void loop() {
         follower.update();
-        //hoodPos();
-        intakeAndShoot.wallPos(.2);
-        double current = Math.abs(intakeAndShoot.getVelocity());
+       // hood.setPosition(hoodPos);
+        //intakeAndShoot.wallPos(.2);
+        //double current = Math.abs(intakeAndShoot.getVelocity());
 
-        shooterPower = PIDControl(TargetVelocity, current);
-        intakeAndShoot.shootsetPower(shooterPower);
+        //shooterPower = PIDControl(TargetVelocity, current);
+        intakeAndShoot.shootsetVelocity(1300);
         intakeAndShoot.intakesetPower(1);
-        intakeAndShoot.update(1,1, intakeIndex);
+        intakeAndShoot.update(1,1, intakeIndex, follower);
         if (gamepad2.left_trigger > 0.5) {
             if (!intakeIndex) {
                 intakeIndex = true;
@@ -114,9 +117,8 @@ public class PIDTUNE extends OpMode {
 
             telemetry.addData("hit", 0);
             if(shootTimer1.milliseconds() > 400){
-                intakeAndShoot.wallPos(0);
+                //intakeAndShoot.wallPos(0);
                 intakeAndShoot.simpleShoot();
-                hood.setPosition(hood.getPosition()-recoil);
                 shootTimer1.reset();
             }
         }
@@ -148,16 +150,12 @@ public class PIDTUNE extends OpMode {
             recoil += .005;
         }
         if(gamepad2.leftBumperWasPressed()){
-            push.setPosition(kickZero);
+            wallPos -= .1;
+            intakeAndShoot.wallPos(wallPos);
         }
         if(gamepad2.rightBumperWasPressed()){
-            push.setPosition(kickUp);
-        }
-        if(!isShooting) {
-            hood.setPosition(hoodPos);
-        }
-        if(gamepad1.dpadUpWasPressed()){
-            Kp+=.001;
+            wallPos +=.1;
+            intakeAndShoot.wallPos(wallPos);
         }
         if(gamepad1.dpadDownWasPressed()){
             Kp-=.001;
@@ -180,8 +178,8 @@ public class PIDTUNE extends OpMode {
         if(gamepad1.bWasPressed()){
             Kf+=.00005;
         }
-        turretRight.setPosition(turretPos);
-        turretLeft.setPosition(turretPos);
+        //turretRight.setPosition(turretPos);
+        //turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
         telemetry.addData("hoodrecoil", recoil);
         // telemetry.addData("velocity2", );
@@ -207,13 +205,14 @@ public class PIDTUNE extends OpMode {
         intakeAndShoot = new intakeShoot(hardwareMap,"intake", "intake1",
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
-                "disDiss", "dis2", "dis3",
-                "dis4", "dis5", "dis6", "dis7", "wally");
+                 "wally", "color1", "color2", "shooterHood", follower);
         intakeAndShoot.wallPos(.2);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
-        turretRight = hardwareMap.get(Servo.class, "turretRight");
-        turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+        turretRight = hardwareMap.get(ServoImplEx.class, "turretRight");
+        turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretLeft = hardwareMap.get(ServoImplEx.class, "turretLeft");
+        turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeAndShoot.setPos(0,0);
 
     }

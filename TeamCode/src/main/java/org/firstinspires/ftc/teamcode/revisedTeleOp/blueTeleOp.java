@@ -1,35 +1,48 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+/*package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.AutoTurret;
+import org.firstinspires.ftc.teamcode.LimeLight;
+import org.firstinspires.ftc.teamcode.ShooterConstants;
+import org.firstinspires.ftc.teamcode.shooterThread;
+
 @Configurable
 @TeleOp
 public class blueTeleOp extends OpMode {
-    /* newly created classes */
+    /* newly created classes
     Drivetrain drivetrain; //all driving functionality and pedro pathing
-    Turret turret; //autoaiming and manual control
-    shootAndIntakev2 shooterAndIntake;
+    AutoTurret turret; //autoaiming and manual control
+    //shootAndIntakev2 shooterAndIntake;
     //ShooterAndIntake shooterAndIntake; //everything else really - - there wasn't a good way to split them up bc all the parts are the same
 
     Limelight3A limelight3A; //for pattern recognition
     boolean patternDetected = false;
     boolean shootFirst = true;
+    boolean aim = true;
+    shooterThread shootThing;
+    LimeLight Lime;
+    int[] pattern = {1,2,2};
+    int[] ppg = {2,2,1};
+    int[] pgp = {2,1,2};
+    int[] gpp = {1,2,2};
 
     @Override
     public void init() {
         drivetrain = new Drivetrain(hardwareMap);
         drivetrain.setModeBlue();
-
-        turret = new Turret(hardwareMap, "turretLeft", "turretRight");
+        Lime = new LimeLight(hardwareMap);
+        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
         turret.setModeBlue();
 
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
-
+        shootThing = new shooterThread();
+        shootThing.start();
         shooterAndIntake = new shootAndIntakev2(hardwareMap);
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
 
@@ -46,20 +59,29 @@ public class blueTeleOp extends OpMode {
         if(gamepad1.b){
             drivetrain.resetCurrentPoseGoal();
         }
-
         //turret calls - manual is controlled by gamepad2 on the dpad
         // (down = autoaiming on/off, up = set center pos, left/right = manual turning)
-        turret.update(drivetrain.getFollower(), telemetry);
+        shootThing.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, drivetrain.getFollower().getHeading());
+        turret.updateAuto(drivetrain.getFollower(), telemetry, shootThing.getTurretPos(),aim);
         if(gamepad1.dpadDownWasPressed()){
-            turret.switchMode();
+            aim = !aim;
+            if(Lime.getPatternFromLimelight() == 0){
+                pattern = gpp;
+
+            }
+            else if(Lime.getPatternFromLimelight() == 1){
+                pattern = pgp;
+
+            }
+            else if(Lime.getPatternFromLimelight() == 2){
+                pattern = ppg;
+
+            }
         }
-        if(gamepad1.dpad_up){
-            turret.setTurretCenter();
-        }
-        else if(!turret.isAutoAiming() && gamepad1.dpad_left){
+        else if(!aim && gamepad1.dpad_left){
             turret.manualLeft();
         }
-        else if(!turret.isAutoAiming() && gamepad1.dpad_right){
+        else if(!aim && gamepad1.dpad_right){
             turret.manualRight();
         }
 
@@ -77,6 +99,7 @@ public class blueTeleOp extends OpMode {
             shootFirst = false;
             drivetrain.setHoldMode(true);
         }
+
         else{
             shootFirst = true;
             drivetrain.setHoldMode(false);
@@ -92,32 +115,13 @@ public class blueTeleOp extends OpMode {
         telemetry.addData("hood", shooterAndIntake.shooterHood.getPosition());
         telemetry.addData("distance", drivetrain.getDistanceFromGoal());
        // telemetry.update();
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper);
+        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper, shootThing.getSpeed(), shootThing.getHoodPos(), gamepad2.xWasPressed(), pattern);
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
-        /*
-        //limelight pattern detection
-        if(!patternDetected) {
-            LLResult result = limelight3A.getLatestResult();
-            if (result != null && result.isValid()){
-                List<LLResultTypes.FiducialResult> results = result.getFiducialResults();
-                for (LLResultTypes.FiducialResult tag : results) {
-                    if (tag.getFiducialId() == 23) {
-                        shooterAndIntake.setPattern(1);
-                        patternDetected = true;
-                    } else if (tag.getFiducialId() == 22) {
-                        shooterAndIntake.setPattern(2);
-                        patternDetected = true;
-                    } else if (tag.getFiducialId() == 21) {
-                        shooterAndIntake.setPattern(3);
-                        patternDetected = true;
-                    }
-                }
-            }
-        } */
     }
     @Override
     public void stop(){
         shooterAndIntake.stopT();
+        shootThing.stopThread();
     }
-}
+}*/
