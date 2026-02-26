@@ -1,4 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.revisedTeleOp;
+package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import static java.lang.Math.abs;
 
@@ -72,7 +72,7 @@ public class shootAndIntakev2 {
 
         artifactPush = hardwareMap.get(Servo.class, "push");
 
-        servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave","disDiss","dis2","dis3","dis4","dis5","dis6","dis7", "color1", "color2");
+        servRot = new servo720Rot(hardwareMap,"spindexRoter", "slave", "color1", "color2");
 
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
@@ -267,4 +267,4 @@ public class shootAndIntakev2 {
         Integralsum=0;
         lasterror=0;
     }
-}*/
+}

@@ -46,7 +46,7 @@ public class AutoTurret {
     }
 
     public void updateAuto(Follower follower, Telemetry telemetry, double Angle, boolean aim) {
-        /*if(aim) {
+        if(aim) {
             double servoAngleNeeded = Angle * gearRatio / 360; //356
             double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
 
@@ -58,7 +58,7 @@ public class AutoTurret {
             servoLeft.setPosition(1 - targetPos);
             servoRight.setPosition(1 - targetPos);
             currentServoPosition = targetPos;
-        }*/
+        }
     }
 
 
