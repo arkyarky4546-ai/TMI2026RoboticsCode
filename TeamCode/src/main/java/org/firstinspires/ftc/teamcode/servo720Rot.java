@@ -46,8 +46,8 @@ public class servo720Rot {
         servo = hardwareMap.get(Servo.class, servoName);
         servo2 = hardwareMap.get(Servo.class, servoName2);
 
-        colorSensors[0] = hardwareMap.get(NormalizedColorSensor.class, color1);
-        colorSensors[1] = hardwareMap.get(NormalizedColorSensor.class, color2);
+        /*colorSensors[0] = hardwareMap.get(NormalizedColorSensor.class, color1);
+        colorSensors[1] = hardwareMap.get(NormalizedColorSensor.class, color2);*/
         //these are the various shoot and intake positions (since the gear ratio is 5/2, I chose the positions in order to have 720 degrees of rotation)
         positionHoldShoot = new double[] {0.0740442655936 , 0.222132796781 , 0.370221327968 , 0.518309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
         positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};

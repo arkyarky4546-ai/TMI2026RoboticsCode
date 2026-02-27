@@ -23,7 +23,6 @@ public class blueTeleOp extends OpMode {
     boolean patternDetected = false;
     boolean shootFirst = true;
     boolean aim = true;
-    shooterThread shootThing;
     LimeLight Lime;
     int[] pattern = {1,2,2};
     int[] ppg = {2,2,1};
@@ -41,9 +40,7 @@ public class blueTeleOp extends OpMode {
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.pipelineSwitch(6);
         limelight3A.start();
-        shootThing = new shooterThread(shooter, follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading()); //make this work by doing stuff
-        shootThing.start();
-        shooterAndIntake = new shootAndIntakev2(hardwareMap);
+        shooterAndIntake = new shootAndIntakev2(hardwareMap, drivetrain.getFollower());
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
 
     }
@@ -60,9 +57,8 @@ public class blueTeleOp extends OpMode {
             drivetrain.resetCurrentPoseGoal();
         }
         //turret calls - manual is controlled by gamepad2 on the dpad
-        // (down = autoaiming on/off, up = set center pos, left/right = manual turning)
-        shootThing.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, drivetrain.getFollower().getHeading());
-        turret.updateAuto(drivetrain.getFollower(), telemetry, shootThing.getTurretPos(),aim);
+        // (down = autoaiming on/off, up = set center pos, left/right = manual turning
+        turret.updateAuto(drivetrain.getFollower(), telemetry, shooterAndIntake.getTurretPos(), aim);
         if(gamepad1.dpadDownWasPressed()){
             aim = !aim;
             if(Lime.getPatternFromLimelight() == 0){
@@ -115,13 +111,12 @@ public class blueTeleOp extends OpMode {
         telemetry.addData("hood", shooterAndIntake.shooterHood.getPosition());
         telemetry.addData("distance", drivetrain.getDistanceFromGoal());
        // telemetry.update();
-        shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper, shootThing.getSpeed(), shootThing.getHoodPos(), gamepad2.xWasPressed(), pattern);
+        shooterAndIntake.update(leftTrigger ,(rightTrigger || gamepad2.right_bumper), gamepad2.left_bumper, gamepad2.dpadUpWasPressed(),telemetry, gamepad2.right_bumper, gamepad2.xWasPressed(), pattern, drivetrain.getFollower());
         //shooterAndIntake.update(drivetrain.getDistanceFromGoal(), leftTrigger, rightTrigger, gamepad2.left_bumper, gamepad2.right_bumper, gamepad2.x, gamepad2.b, gamepad2.y, gamepad1.dpadRightWasPressed(), gamepad1.dpadUpWasPressed(), telemetry);
 
     }
     @Override
     public void stop(){
         shooterAndIntake.stopT();
-        shootThing.stopThread();
     }
 }

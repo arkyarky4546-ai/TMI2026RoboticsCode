@@ -98,6 +98,8 @@ public class PIDTUNE extends OpMode {
         //shooterPower = PIDControl(TargetVelocity, current);
         intakeAndShoot.shootsetVelocity(1300);
         intakeAndShoot.intakesetPower(1);
+        wallPos = 0;
+        intakeAndShoot.wallPos(wallPos);
         intakeAndShoot.update(1,1, intakeIndex, follower);
         if (gamepad2.left_trigger > 0.5) {
             if (!intakeIndex) {
@@ -108,6 +110,9 @@ public class PIDTUNE extends OpMode {
             }
         }
         if (gamepad2.right_trigger > 0.5) {
+
+            wallPos = 0.5;
+            intakeAndShoot.wallPos(wallPos);
             if(intakeIndex){
                 intakeIndex = false;
                 shootTimer1.reset();
@@ -150,11 +155,11 @@ public class PIDTUNE extends OpMode {
             recoil += .005;
         }
         if(gamepad2.leftBumperWasPressed()){
-            wallPos -= .1;
+            wallPos -= .025;
             intakeAndShoot.wallPos(wallPos);
         }
         if(gamepad2.rightBumperWasPressed()){
-            wallPos +=.1;
+            wallPos +=.025;
             intakeAndShoot.wallPos(wallPos);
         }
         if(gamepad1.dpadDownWasPressed()){
@@ -194,6 +199,7 @@ public class PIDTUNE extends OpMode {
         telemetry.addData("d", Kd);
         telemetry.addData("i", Ki);
         telemetry.addData("f", Kf);
+        telemetry.addData("wallPos", wallPos);
 
     }
     @Override

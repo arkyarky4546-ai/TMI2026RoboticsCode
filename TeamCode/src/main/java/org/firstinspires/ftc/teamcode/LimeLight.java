@@ -25,9 +25,9 @@ public class LimeLight {
                 for (int i = 0; i < patternList.length; i++) {
                     if (id == patternList[i]) {
                         return i;
-                        // 21 -> pattern 0
-                        // 22 -> pattern 1
-                        // 23 -> pattern 2
+                        // 21 -> pattern 0 gpp
+                        // 22 -> pattern 1 pgp
+                        // 23 -> pattern 2 ppg
                     }
                 }
             }
