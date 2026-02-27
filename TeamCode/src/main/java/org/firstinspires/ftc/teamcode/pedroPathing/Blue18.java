@@ -25,10 +25,10 @@ public class Blue18 extends OpMode {
 
     private final Pose startPose = new Pose(119,-25, Math.toRadians(45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(87, -56, Math.toRadians(135)); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose intakePose1 = new Pose(52, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(52, -24 , Math.toRadians(90));
+    private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(54, -24 , Math.toRadians(90));
     private final Pose intakePose2 = new Pose(70, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(58, -10 , Math.toRadians(30));
+    private final Pose hitPose = new Pose(56, -10 , Math.toRadians(30));
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(70, -24, Math.toRadians(90));
     private final Pose intakePose3 = new Pose(40, -47, Math.toRadians(90));
@@ -318,6 +318,7 @@ public class Blue18 extends OpMode {
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85) {
                     intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
+                    //intakeAndShoot.setPos(0,0);
                     scan = true;
                     setPathState(11);
                 }
@@ -333,6 +334,7 @@ public class Blue18 extends OpMode {
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
+                    //intakeAndShoot.setPos(0,0);
                     //push.setPosition(kickUp);
                     setPathState(12);
                 }

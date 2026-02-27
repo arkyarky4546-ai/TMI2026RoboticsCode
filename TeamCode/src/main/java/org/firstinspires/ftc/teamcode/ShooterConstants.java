@@ -14,7 +14,7 @@ public class ShooterConstants {
     private static double flyOff = 0.0;
     private static double flyMin = 0.0;
     private static double flyMax = 2000.0;
-    public static double Hood_Max_Angle = 2.617;
+    public static double Hood_Max_Angle = 2.517;
     public static double Hood_Min_Angle = .25;//from like 0 to pi
     public static double hoodDegreesToServoTicks(double degrees){ //turn calculated velocity to motor commands
         return 0.0226 * degrees -.7443;

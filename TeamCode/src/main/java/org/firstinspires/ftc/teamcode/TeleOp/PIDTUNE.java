@@ -70,7 +70,7 @@ public class PIDTUNE extends OpMode {
     double kickUp = 0.65;
     double Integralsum=0;
     double hoodPos = .4;
-    double turretPos = .96;
+    double turretPos = .8;
     double recoil = .03;
     public static double TURN_Constant = 0.005;
     private ElapsedTime shootTimer1 = new ElapsedTime();
@@ -96,6 +96,7 @@ public class PIDTUNE extends OpMode {
         //double current = Math.abs(intakeAndShoot.getVelocity());
 
         //shooterPower = PIDControl(TargetVelocity, current);
+
         intakeAndShoot.shootsetVelocity(1300);
         intakeAndShoot.intakesetPower(1);
         wallPos = 0;
@@ -183,8 +184,8 @@ public class PIDTUNE extends OpMode {
         if(gamepad1.bWasPressed()){
             Kf+=.00005;
         }
-        //turretRight.setPosition(turretPos);
-        //turretLeft.setPosition(turretPos);
+        turretRight.setPosition(turretPos);
+        turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
         telemetry.addData("hoodrecoil", recoil);
         // telemetry.addData("velocity2", );
