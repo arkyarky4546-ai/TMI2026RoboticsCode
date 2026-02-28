@@ -25,7 +25,7 @@ public class Shooter {
 //        );
         Vector robotToGoalVector = new Vector(
                 Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
-                Math.atan2(goalPose.getX() - follower.getPose().getX(), goalPose.getY() - follower.getPose().getY())
+                Math.atan2(follower.getPose().getY() - goalPose.getY(), goalPose.getX() - follower.getPose().getX())
         );
         double g = 32.174 * 12; //gravity in inches/second
         //need to make a vector from the robot to the goal from follower I think
@@ -42,6 +42,7 @@ public class Shooter {
                 Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
                 Math.atan2(goalPose.getX() - follower.getPose().getX(), goalPose.getY() - follower.getPose().getY())
         );
+        robotVelocity = follower.poseTracker.getVelocity();
         //difference in heading from the robots velocity and the robot to goal vector
         double coordinateTheta = robotVelocity.getTheta() - robotToGoalVector.getTheta();
 
