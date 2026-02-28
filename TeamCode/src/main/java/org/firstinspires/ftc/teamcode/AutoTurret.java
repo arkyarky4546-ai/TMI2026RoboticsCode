@@ -57,7 +57,7 @@ public class AutoTurret {
         if(aim) {
             double servoAngleNeeded = Angle * gearRatio / 360; //356
             //double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
-            targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
+            targetPos = (servoAngleNeeded) + CENTER_POSITION;
 
 //            if (targetPos < 0) {
 //                targetPos += 360 / 355;
@@ -67,8 +67,10 @@ public class AutoTurret {
                 targetPos -= 360 / 355;
             }
             targetPos = Range.clip(targetPos, 0.0, 1.0);
-            servoLeft.setPosition(1 - targetPos);
-            servoRight.setPosition(1 - targetPos);
+//            servoLeft.setPosition(1 - targetPos);
+//            servoRight.setPosition(1 - targetPos);
+            servoLeft.setPosition(targetPos);
+            servoRight.setPosition(targetPos);
             currentServoPosition = targetPos;
         }
     }
