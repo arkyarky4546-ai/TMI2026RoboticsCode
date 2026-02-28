@@ -15,7 +15,7 @@ public class AutoAimTurret {
     private Servo servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 320; //361.0;
-    private static final double CENTER_POSITION = 0.5;
+    private static final double CENTER_POSITION = 0.11;
 
     private double targetX = 0.0;
     private double targetY = 0.0;

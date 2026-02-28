@@ -52,6 +52,13 @@ public class intakeShoot {
     private Servo hoods;
     private Shooter shooter = new Shooter();
 
+    //teleop stuff
+    private double intakePower;
+    private final double WALL_SHOOT = 0.5;
+    private final double WALL_UP = 0.1;
+    private ElapsedTime shootTimer = new ElapsedTime();
+
+
     public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String wallName, String colorS1, String colorS2, String shooterHood, Follower follower) {
         //constructor this is where everything is initialized
         intakeMotor1 = hardwareMap.get(DcMotorEx.class, intake1);
@@ -72,6 +79,10 @@ public class intakeShoot {
         //sensors.start();
         Values = new shooterThread(shooter, follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         Values.start();
+
+        //more teleop stuff
+        intakePower = 0.75;
+
 
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
@@ -102,6 +113,41 @@ public class intakeShoot {
         }*/
 
     }
+
+    /*Teleop Update*/
+    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, Follower follower) {
+        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        shootsetVelocity(1000);
+        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+
+        if (intakeActive) {
+            intakesetPower(intakePower);
+            wallPos(WALL_UP);
+        }
+        else if (intakeOut) {
+            intakesetPower(-intakePower);
+            wallPos(WALL_UP);
+        }
+        else if (shootActive) {
+            shootsetVelocity(Values.getSpeed());
+            intakesetPower(0.25);
+            if (shootTimer.milliseconds() > 600) {
+                //intakeAndShoot.wallPos(0);
+                wallPos(WALL_SHOOT);
+                simpleShoot();
+                shootTimer.reset();
+               // wallPos(WALL_UP);
+            }
+            else if (shootTimer.milliseconds() > 300){
+                wallPos(WALL_UP);
+            }
+        }
+        else{
+            intakeMotor1.setPower(0);
+            intakeMotor2.setPower(0);
+        }
+    }
+
     public void shootsetVelocity(double velocity){
         shootMotor1.setVelocity(-velocity);
         shootMotor2.setVelocity(velocity);

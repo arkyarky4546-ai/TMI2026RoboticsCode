@@ -45,8 +45,8 @@ public class PIDTUNE extends OpMode {
     ElapsedTime timer=new ElapsedTime();
     //ElapsedTime pidTimer = new ElapsedTime();
     double lasterror=0;
-    ServoImplEx turretRight; //launchservo
-    ServoImplEx turretLeft; //launchservo
+    Servo turretRight; //launchservo
+    Servo turretLeft; //launchservo
     CRServo artifactSpinner;
     Servo artifactPush;
     DcMotor intake;
@@ -216,10 +216,10 @@ public class PIDTUNE extends OpMode {
         intakeAndShoot.wallPos(.2);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
-        turretRight = hardwareMap.get(ServoImplEx.class, "turretRight");
-        turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        turretLeft = hardwareMap.get(ServoImplEx.class, "turretLeft");
-        turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretRight = hardwareMap.get(Servo.class, "turretRight");
+        //turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+        //turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeAndShoot.setPos(0,0);
 
     }

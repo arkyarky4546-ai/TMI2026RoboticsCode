@@ -8,7 +8,7 @@ import com.bylazar.configurables.annotations.Configurable;
 public class ShooterConstants {
     public static Pose GOAL_POSE_RED = new Pose(138,-138);
     public static Pose GOAL_POSE_BLUE = new Pose(138,-6);
-    public static double Score_Height = 26;
+    public static double Score_Height = 32; //measured from the flywheel not the turret, but it should work for either
     public static double Score_Angle = Math.toRadians(-30);
     public static double Pass_Through_Radius = 5;
     private static double flyOff = 0.0;

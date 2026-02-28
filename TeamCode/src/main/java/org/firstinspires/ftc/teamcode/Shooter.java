@@ -19,9 +19,13 @@ public class Shooter {
         }
     }
     public ShotParameters calculateShotVectorAndUpdateTurret(double robotHeading, Pose goalPose, Follower follower){ //pass in either goalpose blue or red
+//        Vector robotToGoalVector = new Vector(
+//                goalPose.getX() - follower.getPose().getX(),
+//                goalPose.getY() - follower.getPose().getY()
+//        );
         Vector robotToGoalVector = new Vector(
-                goalPose.getX() - follower.getPose().getX(),
-                goalPose.getY() - follower.getPose().getY()
+                Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
+                Math.atan2(goalPose.getX() - follower.getPose().getX(), goalPose.getY() - follower.getPose().getY())
         );
         double g = 32.174 * 12; //gravity in inches/second
         //need to make a vector from the robot to the goal from follower I think
@@ -33,7 +37,11 @@ public class Shooter {
         double hoodAngle = MathFunctions.clamp(Math.atan(2*y/x-Math.tan(a)), ShooterConstants.Hood_Min_Angle, ShooterConstants.Hood_Max_Angle);
         double flywheelSpeed = Math.sqrt(g * x * x / (2 * Math.pow(Math.cos(hoodAngle),2) * (x * Math.tan(hoodAngle) - y)));
         //get robot velocity and convert it into parallel and perpendicular components
-        Vector robotVelocity = new Vector(follower.getVelocity().getXComponent(), follower.getVelocity().getYComponent()); //just use follower for this
+        //Vector robotVelocity = new Vector(follower.getVelocity().getXComponent(), follower.getVelocity().getYComponent()); //just use follower for this
+        Vector robotVelocity = new Vector(
+                Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
+                Math.atan2(goalPose.getX() - follower.getPose().getX(), goalPose.getY() - follower.getPose().getY())
+        );
         //difference in heading from the robots velocity and the robot to goal vector
         double coordinateTheta = robotVelocity.getTheta() - robotToGoalVector.getTheta();
 

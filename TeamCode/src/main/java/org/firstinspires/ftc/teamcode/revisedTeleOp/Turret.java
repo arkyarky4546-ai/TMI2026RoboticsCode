@@ -19,7 +19,7 @@ public class Turret {
     private ServoImplEx servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 361.0;
-    private static double CENTER_POSITION = 0.924;
+    private static double CENTER_POSITION = 0.11;
 
 
     private double targetX = 0.0;
