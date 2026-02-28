@@ -14,7 +14,6 @@ import com.pedropathing.geometry.Pose;
 
 //it's the same as the AutoAimTurret class but I added a safety in case the drivers want to aim manually
 public class AutoTurret {
-
     private Servo servoLeft;
     private Servo servoRight;
 

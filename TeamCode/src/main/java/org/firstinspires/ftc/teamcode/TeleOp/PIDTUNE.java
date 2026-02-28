@@ -213,7 +213,8 @@ public class PIDTUNE extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                  "wally", "color1", "color2", "shooterHood", follower);
-        intakeAndShoot.wallPos(.2);
+        wallPos = 0.2;
+        intakeAndShoot.wallPos(wallPos);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
         turretRight = hardwareMap.get(Servo.class, "turretRight");

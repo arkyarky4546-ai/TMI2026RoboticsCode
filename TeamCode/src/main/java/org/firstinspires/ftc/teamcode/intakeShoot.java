@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.revisedTeleOp.sensCalc;
 import org.firstinspires.ftc.teamcode.revisedTeleOp.sensCalc1;
 import org.firstinspires.ftc.teamcode.servo720Rot;
 
+//added jimmy's code
 public class intakeShoot {
 
     //DcMotors
@@ -43,6 +44,7 @@ public class intakeShoot {
     private int intakeMode = 0;
     double temp = 0.0;
     private int arrayShootIntakeTrack;
+    private int shootSequenceStep = 0;
 
     //various timers for delaying stuff (super useful in a lot of scenarios)
     private ElapsedTime PIDtimer = new ElapsedTime();
@@ -82,6 +84,7 @@ public class intakeShoot {
 
         //more teleop stuff
         intakePower = 0.75;
+        wallPos(WALL_UP);
 
 
     }
@@ -123,28 +126,58 @@ public class intakeShoot {
         if (intakeActive) {
             intakesetPower(intakePower);
             wallPos(WALL_UP);
+            shootSequenceStep = 0;
         }
         else if (intakeOut) {
             intakesetPower(-intakePower);
             wallPos(WALL_UP);
+            shootSequenceStep = 0;
         }
         else if (shootActive) {
             shootsetVelocity(Values.getSpeed());
-            intakesetPower(0.25);
-            if (shootTimer.milliseconds() > 600) {
-                //intakeAndShoot.wallPos(0);
-                wallPos(WALL_SHOOT);
-                simpleShoot();
-                shootTimer.reset();
-               // wallPos(WALL_UP);
-            }
-            else if (shootTimer.milliseconds() > 300){
+            intakesetPower(0.75);
+            if (shootSequenceStep == 0) {
                 wallPos(WALL_UP);
+                shootTimer.reset();  // Start the failsafe stopwatch
+                shootSequenceStep = 1;
+            }
+            if(shootSequenceStep == 1 && shootTimer.milliseconds() > 500){
+                spindexer.sSP(0, 0); // Send it to index 0
+                shootTimer.reset();  // Start the failsafe stopwatch
+               // if (spindexer.isAtTarget())
+                shootSequenceStep = 2;
+            }
+
+            else if (shootSequenceStep == 2) {
+                // Wait until the analog sensor confirms arrival, OR 500ms passes (failsafe)
+                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 500) {
+                    wallPos(WALL_SHOOT);
+                    shootTimer.reset();
+                    shootSequenceStep = 3;
+                }
+            }
+
+            else if (shootSequenceStep == 3) {
+                // Wait until the analog sensor confirms arrival, OR 500ms passes (failsafe)
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.fastRot(spindexer.getPos());
+                    shootTimer.reset();
+                    shootSequenceStep = 4;
+                }
+            }
+
+            else if (shootSequenceStep == 4) {
+                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 500) {
+                    // shot complete
+                    shootSequenceStep = 0;
+                }
             }
         }
         else{
+            wallPos(WALL_UP);
             intakeMotor1.setPower(0);
             intakeMotor2.setPower(0);
+            shootTimer.reset();
         }
     }
 
@@ -194,8 +227,8 @@ public class intakeShoot {
         return Math.abs(shootMotor1.getVelocity());
     }
     public void stopT(){
-        sensors.stopThread();
-       //Values.stopThread();
+       // sensors.stopThread();
+        Values.stopThread();
     }
     public double turretAngle(){
         return Values.getTurretPos();
