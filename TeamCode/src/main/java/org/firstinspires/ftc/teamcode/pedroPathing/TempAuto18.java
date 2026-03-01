@@ -27,12 +27,12 @@ public class TempAuto18 extends OpMode {
     private final Pose scorePose1 = new Pose(87, -56, Math.toRadians(135)); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(54, -24 , Math.toRadians(90));
-    private final Pose intakePose2 = new Pose(70, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(56, -10 , Math.toRadians(30));
+    private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
+    private final Pose hitPose = new Pose(56, -8.5 , Math.toRadians(40));
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(70, -24, Math.toRadians(90));
-    private final Pose intakePose3 = new Pose(40, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(40, -24, Math.toRadians(90));
+    private final Pose acIntakePose2 = new Pose(65, -24, Math.toRadians(90));
+    private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
+    private final Pose acIntakePose3 = new Pose(35, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
 
     //paths
@@ -46,7 +46,7 @@ public class TempAuto18 extends OpMode {
     double kickUp = 0.68;
     double TargetVelocity = 1200;
     double shooterPower = 0;
-    AutoTurret turret;
+    //AutoTurret turret;
     double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
@@ -195,7 +195,7 @@ public class TempAuto18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .65) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     follower.followPath(firstLoad,true);
@@ -511,8 +511,9 @@ public class TempAuto18 extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
-
+       // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+        turretLeft.setPosition(1);
+        turretRight.setPosition(1);
         intakeAndShoot.update(1,1, intakeIndex, follower);
         intakeAndShoot.intakesetPower(1);
 
@@ -534,8 +535,8 @@ public class TempAuto18 extends OpMode {
 
     @Override
     public void init() {
-        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
+        //turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        //turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
