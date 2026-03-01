@@ -19,9 +19,13 @@ public class Shooter {
         }
     }
     public ShotParameters calculateShotVectorAndUpdateTurret(double robotHeading, Pose goalPose, Follower follower){ //pass in either goalpose blue or red
+//        Vector robotToGoalVector = new Vector(
+//                goalPose.getX() - follower.getPose().getX(),
+//                goalPose.getY() - follower.getPose().getY()
+//        );
         Vector robotToGoalVector = new Vector(
-                goalPose.getX() - follower.getPose().getX(),
-                goalPose.getY() - follower.getPose().getY()
+                Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
+                Math.atan2(follower.getPose().getY() - goalPose.getY(), goalPose.getX() - follower.getPose().getX())
         );
         double g = 32.174 * 12; //gravity in inches/second
         //need to make a vector from the robot to the goal from follower I think
@@ -33,18 +37,24 @@ public class Shooter {
         double hoodAngle = MathFunctions.clamp(Math.atan(2*y/x-Math.tan(a)), ShooterConstants.Hood_Min_Angle, ShooterConstants.Hood_Max_Angle);
         double flywheelSpeed = Math.sqrt(g * x * x / (2 * Math.pow(Math.cos(hoodAngle),2) * (x * Math.tan(hoodAngle) - y)));
         //get robot velocity and convert it into parallel and perpendicular components
-        Vector robotVelocity = new Vector(follower.getVelocity().getXComponent(), follower.getVelocity().getYComponent()); //just use follower for this
+        //Vector robotVelocity = new Vector(follower.getVelocity().getXComponent(), follower.getVelocity().getYComponent()); //just use follower for this
+        Vector robotVelocity = new Vector(
+                Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
+                Math.atan2(goalPose.getX() - follower.getPose().getX(), goalPose.getY() - follower.getPose().getY())
+        );
+        robotVelocity = follower.poseTracker.getVelocity();
         //difference in heading from the robots velocity and the robot to goal vector
         double coordinateTheta = robotVelocity.getTheta() - robotToGoalVector.getTheta();
 
-        double parallelComponent = -Math.cos(coordinateTheta) * robotVelocity.getMagnitude();
-        double perpendicularComponent = Math.sin(coordinateTheta) * robotVelocity.getMagnitude(); //seems to be the robots velocity and finding which is in which way
+        //basically rotate the velocity to have two components: one pointing at the goal and the other perpendicular
+        double parallelComponent = -Math.cos(coordinateTheta) * robotVelocity.getMagnitude(); //robot's velocity moving away from the goal
+        double perpendicularComponent = Math.sin(coordinateTheta) * robotVelocity.getMagnitude(); //robot's velocity moving tangentially to the goal
 
         //velocity compensation variable
-        double v2 = flywheelSpeed * Math.sin(hoodAngle);
-        double time = x / (flywheelSpeed * Math.cos(hoodAngle));
-        double ivr = x / time + parallelComponent;
-        double nvr = Math.sqrt(ivr * ivr + perpendicularComponent * perpendicularComponent);
+        double v2 = flywheelSpeed * Math.sin(hoodAngle); //initial ball speed
+        double time = x / (flywheelSpeed * Math.cos(hoodAngle)); //time for ball to get to goal
+        double ivr = x / time + parallelComponent; //compensated ball x velocity in radial direction (ball x velocity + robot 'x' velocity)
+        double nvr = Math.sqrt(ivr * ivr + perpendicularComponent * perpendicularComponent); //compensated total ball velocity (tangential compensation =tangential robot speed)
         double ndr = nvr * time; //distance
 
         //recalc launch components

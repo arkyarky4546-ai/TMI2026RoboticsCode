@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Double.min;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,10 +13,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+//added jimmy's code
+
 public class servo720Rot {
     //servos
     private Servo servo;
     private Servo servo2;
+    private AnalogInput analogEncoder;
 
     //distance sensors
     public DistanceSensor[] distanceSensors = new DistanceSensor[6];
@@ -38,13 +42,15 @@ public class servo720Rot {
     double distanceCM = 0.0;
     private int green = 1;
     private int purple = 2;
+    private double currentTarget = 0.0; // the original getPosition
 
 
-    public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String color1, String color2){
+    public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String color1, String color2){ //jimmy modified
 
         //constructor to initialize everything
         servo = hardwareMap.get(Servo.class, servoName);
         servo2 = hardwareMap.get(Servo.class, servoName2);
+        analogEncoder = hardwareMap.get(AnalogInput.class, "spindexAng");
 
         /*colorSensors[0] = hardwareMap.get(NormalizedColorSensor.class, color1);
         colorSensors[1] = hardwareMap.get(NormalizedColorSensor.class, color2);*/
@@ -52,6 +58,16 @@ public class servo720Rot {
         positionHoldShoot = new double[] {0.0740442655936 , 0.222132796781 , 0.370221327968 , 0.518309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
         positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
     }
+
+    //jimmy add
+    public double getRealPos() {
+        return analogEncoder.getVoltage() /3.3;
+    }
+    //jimmy add
+    public boolean isAtTarget() {
+        return Math.abs(getRealPos() - currentTarget) < 0.05;
+    }
+
     public double getDisMain(){
         return mainDis.getDistance(DistanceUnit.CM);
     }
@@ -62,8 +78,9 @@ public class servo720Rot {
     //@twins, if you want to use this, make sure to specify if you are in shoot position or in intake position
     //offset = 1 means shoot posotion so this references posHoldShoot array. offset = 0 means intake position
     //int angle means what position you want the servo to go to range between 0 to 6
-    public void sSP(int angle, int offset){
+    public void sSP(int angle, int offset){ //jimmy modified
         if(offset == 0) { // intake Pos
+            currentTarget = positionHoldIntake[angle];
             servo.setPosition(positionHoldIntake[angle]);
             servo2.setPosition(positionHoldIntake[angle]);
         }
@@ -97,12 +114,12 @@ public class servo720Rot {
         int color2 = 0;
         //if(colors1.red + colors1.blue + colors1.green > colors2.red + colors2.blue + colors2.green) {
         if (colors1.red <= .001 && colors1.green <= .001 && colors1.blue <= .001) {
-                color1 = 0;
+            color1 = 0;
         } else if (colors1.green > colors1.blue && colors1.green > .001) {
-                color1 = green;
+            color1 = green;
 
         } else if (colors1.blue > colors1.green && colors1.blue > .001) {
-                color1 = purple;
+            color1 = purple;
         }
         if (colors2.red <= .001 && colors2.green <= .001 && colors2.blue <= .001) {
             color2 = 0;
@@ -225,32 +242,28 @@ public class servo720Rot {
             return close;
         }
     }*/
-    public void regRot (double Pos){
+    public void regRot (double Pos){ //jimmy modified
         int currentIndex = 0;
         for(int i = 0; i < 7; i++){
-            if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+            //if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+            if (isAtTarget()) {
                 currentIndex = i;
                 break;
             }
         }
-        currentIndex += 1;
-        if(currentIndex == 7){
-            currentIndex = 0;
-        }
+        currentIndex = (currentIndex + 1) % 7;
         sSP(currentIndex, 0);
     }
-    public void fastRot (double Pos){
+    public void fastRot (double Pos){ // jimmy modified
         int currentIndex = 0;
         for(int i = 0; i < 7; i++){
-            if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+            //if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
+            if (isAtTarget()) {
                 currentIndex = i;
                 break;
             }
         }
-        currentIndex += 3;
-        if(currentIndex <= 7){
-            currentIndex = 0;
-        }
+        currentIndex = (currentIndex + 3) % 7;
         sSP(currentIndex, 0);
     }
 }

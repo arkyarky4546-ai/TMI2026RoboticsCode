@@ -47,7 +47,7 @@ public class Drivetrain {
         holdPos = false;
     }
 
-    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed){
+    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed, boolean intakeFar, boolean shootFar){
         follower.update();
 
         if (!automatedDrive) {
@@ -92,6 +92,31 @@ public class Drivetrain {
         }
         else if(yWasPressed){
             field = !field;
+        }
+        else if(intakeFar){
+            Pose targetPose = new Pose(3, -3, Math.toRadians(-90));;
+            if(mode == RED){
+                targetPose = new Pose(3, -133, Math.toRadians(90));
+            }
+            PathChain twoPointsOrSmthn = follower.pathBuilder()
+                    .addPath(new BezierLine(follower.getPose(), targetPose))
+                    .setLinearHeadingInterpolation(follower.getHeading(), targetPose.getHeading())
+                    .build();
+            follower.followPath(twoPointsOrSmthn);
+            automatedDrive = true;
+        }
+        else if(shootFar){
+            Pose targetPose = new Pose(12, -88, Math.toRadians(-90));;
+            if(mode == RED){
+                targetPose = new Pose(12, -30, Math.toRadians(90));
+
+            }
+            PathChain twoPointsOrSmthn = follower.pathBuilder()
+                    .addPath(new BezierLine(follower.getPose(), targetPose))
+                    .setLinearHeadingInterpolation(follower.getHeading(), targetPose.getHeading())
+                    .build();
+            follower.followPath(twoPointsOrSmthn);
+            automatedDrive = true;
         }
 
         //Stop automated following if the follower is done

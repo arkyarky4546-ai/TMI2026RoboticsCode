@@ -45,8 +45,8 @@ public class PIDTUNE extends OpMode {
     ElapsedTime timer=new ElapsedTime();
     //ElapsedTime pidTimer = new ElapsedTime();
     double lasterror=0;
-    ServoImplEx turretRight; //launchservo
-    ServoImplEx turretLeft; //launchservo
+    Servo turretRight; //launchservo
+    Servo turretLeft; //launchservo
     CRServo artifactSpinner;
     Servo artifactPush;
     DcMotor intake;
@@ -76,6 +76,7 @@ public class PIDTUNE extends OpMode {
     private ElapsedTime shootTimer1 = new ElapsedTime();
     double limelightPause = System.currentTimeMillis();
     int index = 0;
+    private ElapsedTime shootTimer = new ElapsedTime();
     public double PIDControl(double reference, double state){
         double error=reference-state;
         double dt = timer.seconds();
@@ -97,7 +98,7 @@ public class PIDTUNE extends OpMode {
 
         //shooterPower = PIDControl(TargetVelocity, current);
 
-        intakeAndShoot.shootsetVelocity(1300);
+        intakeAndShoot.shootsetVelocity(TargetVelocity);
         intakeAndShoot.intakesetPower(1);
         wallPos = 0;
         intakeAndShoot.wallPos(wallPos);
@@ -111,25 +112,10 @@ public class PIDTUNE extends OpMode {
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-
-            wallPos = 0.5;
-            intakeAndShoot.wallPos(wallPos);
-            if(intakeIndex){
-                intakeIndex = false;
-                shootTimer1.reset();
-                intakeAndShoot.setPos(0,0);
-                isShooting = true;
-            }
-
-            telemetry.addData("hit", 0);
-            if(shootTimer1.milliseconds() > 400){
-                //intakeAndShoot.wallPos(0);
-                intakeAndShoot.simpleShoot();
-                shootTimer1.reset();
-            }
+            intakeAndShoot.update(false, false, true, follower);
         }
         else{
-            //1intakeAndShoot.wallPos(.5);
+            intakeAndShoot.wallPos(.1);
         }
         if(gamepad2.aWasPressed()){
             hoodPos-=.01;
@@ -184,6 +170,8 @@ public class PIDTUNE extends OpMode {
         if(gamepad1.bWasPressed()){
             Kf+=.00005;
         }
+        intakeAndShoot.hoodPos(hoodPos);
+        intakeAndShoot.shootsetVelocity(TargetVelocity);
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
@@ -213,14 +201,18 @@ public class PIDTUNE extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                  "wally", "color1", "color2", "shooterHood", follower);
-        intakeAndShoot.wallPos(.2);
+        wallPos = 0.2;
+        intakeAndShoot.wallPos(wallPos);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");
-        turretRight = hardwareMap.get(ServoImplEx.class, "turretRight");
-        turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        turretLeft = hardwareMap.get(ServoImplEx.class, "turretLeft");
-        turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretRight = hardwareMap.get(Servo.class, "turretRight");
+        //turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+        //turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeAndShoot.setPos(0,0);
+
+        shooterPower = 1300;
+        shootTimer.reset();
 
     }
 
