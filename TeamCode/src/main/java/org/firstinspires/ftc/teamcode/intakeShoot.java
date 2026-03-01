@@ -59,6 +59,10 @@ public class intakeShoot {
     private final double WALL_SHOOT = 0.5;
     private final double WALL_UP = 0.1;
     private ElapsedTime shootTimer = new ElapsedTime();
+    private boolean setHoodVelocityTurret;
+    final int BLUE = 1;
+    final int RED = 2;
+    private int mode;
 
 
     public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String wallName, String colorS1, String colorS2, String shooterHood, Follower follower) {
@@ -85,6 +89,7 @@ public class intakeShoot {
         //more teleop stuff
         intakePower = 0.75;
         wallPos(WALL_UP);
+        setHoodVelocityTurret = false;
 
 
     }
@@ -97,14 +102,14 @@ public class intakeShoot {
         }
         else {
             //using PID and a targetVelocity in order to keep the right motor velocity
-            shootsetVelocity(Values.getSpeed());
+            //shootsetVelocity(Values.getSpeed());
 
         }
         //setting the power of the shooter and intake here
         //shootsetPower(shootPower);
         intakesetPower(intakePower);
 
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+        //hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
         /*distance = sensors.getIntakeDistance();
         if((distance < 10) && Intaketimer.milliseconds() > 263 && intake){
@@ -119,9 +124,11 @@ public class intakeShoot {
 
     /*Teleop Update*/
     public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, Follower follower) {
-        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
-        shootsetVelocity(1000);
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+        if(!setHoodVelocityTurret){
+            Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+            shootsetVelocity(1000);
+            hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+        }
 
         if (intakeActive) {
             intakesetPower(intakePower);
@@ -134,7 +141,7 @@ public class intakeShoot {
             shootSequenceStep = 0;
         }
         else if (shootActive) {
-            shootsetVelocity(Values.getSpeed());
+            //shootsetVelocity(Values.getSpeed());
             intakesetPower(0.75);
             if (shootSequenceStep == 0) {
                 wallPos(WALL_UP);
@@ -169,8 +176,12 @@ public class intakeShoot {
             else if (shootSequenceStep == 4) {
                 if (spindexer.isAtTarget() || shootTimer.milliseconds() > 500) {
                     // shot complete
-                    shootSequenceStep = 0;
+                    shootSequenceStep = -1;
+                    shootTimer.reset();
                 }
+            }
+            else if(shootTimer.milliseconds() > 4000){
+                shootSequenceStep = 0;
             }
         }
         else{
@@ -178,6 +189,7 @@ public class intakeShoot {
             intakeMotor1.setPower(0);
             intakeMotor2.setPower(0);
             shootTimer.reset();
+            shootSequenceStep = 0;
         }
     }
 
@@ -209,6 +221,10 @@ public class intakeShoot {
     }
     public void wallPos(double pos){
         wall.setPosition(MathFunctions.clamp(pos,0,1));
+    }
+
+    public void hoodPos(double pos){
+        hoods.setPosition(MathFunctions.clamp(pos, 0, 1));
     }
 
     //method to shoot balls and rotate from my class
@@ -245,5 +261,23 @@ public class intakeShoot {
     }
     public void colorSort(double Position, int[]Pattern){
         spindexer.sort(Position, Pattern);
+    }
+    public void setModeBlue(){
+        mode = BLUE;
+    }
+
+    public void setModeRed(){
+        mode = RED;
+    }
+
+    public void setShootFar(){
+        setHoodVelocityTurret = !setHoodVelocityTurret;
+        if(mode == BLUE){
+            hoods.setPosition(0.4);
+            shootsetVelocity(1500);
+        }
+        else if(mode == RED){
+
+        }
     }
 }

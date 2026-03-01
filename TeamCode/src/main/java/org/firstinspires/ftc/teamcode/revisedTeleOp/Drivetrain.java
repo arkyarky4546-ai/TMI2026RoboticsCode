@@ -94,7 +94,10 @@ public class Drivetrain {
             field = !field;
         }
         else if(intakeFar){
-            Pose targetPose = new Pose(3, -3, Math.toRadians(90));
+            Pose targetPose = new Pose(3, -3, Math.toRadians(-90));;
+            if(mode == RED){
+                targetPose = new Pose(3, -133, Math.toRadians(90));
+            }
             PathChain twoPointsOrSmthn = follower.pathBuilder()
                     .addPath(new BezierLine(follower.getPose(), targetPose))
                     .setLinearHeadingInterpolation(follower.getHeading(), targetPose.getHeading())
@@ -103,7 +106,11 @@ public class Drivetrain {
             automatedDrive = true;
         }
         else if(shootFar){
-            Pose targetPose = new Pose(3, -15, Math.toRadians(90));
+            Pose targetPose = new Pose(12, -88, Math.toRadians(-90));;
+            if(mode == RED){
+                targetPose = new Pose(12, -30, Math.toRadians(90));
+
+            }
             PathChain twoPointsOrSmthn = follower.pathBuilder()
                     .addPath(new BezierLine(follower.getPose(), targetPose))
                     .setLinearHeadingInterpolation(follower.getHeading(), targetPose.getHeading())

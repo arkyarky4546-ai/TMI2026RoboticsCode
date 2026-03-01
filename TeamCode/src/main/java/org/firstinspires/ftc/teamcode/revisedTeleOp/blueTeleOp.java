@@ -55,6 +55,7 @@ public class blueTeleOp extends OpMode {
                 "spindexRoter", "slave",
                 "wally", "color1", "color2", "shooterHood", drivetrain.getFollower());
         //shooterAndIntake = new ShooterAndIntake(hardwareMap);
+        shooterAndIntake.setModeBlue();
 
     }
 
@@ -69,6 +70,12 @@ public class blueTeleOp extends OpMode {
         if(gamepad1.b){
             drivetrain.resetCurrentPoseGoal();
         }
+        if(gamepad1.dpadLeftWasPressed()) { //shootFar
+            shooterAndIntake.setShootFar();
+            aim = false;
+            turret.setManualPosition(0.38); //red = 0.81 and everything else should be the same
+        }
+
         //turret calls - manual is controlled by gamepad2 on the dpad
         // (down = autoaiming on/off, up = set center pos, left/right = manual turning
 

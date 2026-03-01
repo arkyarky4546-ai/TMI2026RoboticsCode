@@ -15,7 +15,7 @@ public class AutoAimTurret {
     private Servo servoLeft;
     private Servo servoRight;
 
-    private static final double SERVO_RANGE_DEGREES = 320; //361.0;
+    private static final double SERVO_RANGE_DEGREES = 320; //320?;
     private static final double CENTER_POSITION = 0.73;
 
     private double targetX = 0.0;
@@ -31,6 +31,8 @@ public class AutoAimTurret {
         servoLeft = hardwareMap.get(Servo.class, leftServoName);
         servoRight = hardwareMap.get(Servo.class, rightServoName);
         autoAiming = true;
+        servoLeft.setPosition(CENTER_POSITION);
+        servoRight.setPosition(CENTER_POSITION);
     }
 
     public void setTargetCoordinates(double x, double y) {
@@ -57,10 +59,14 @@ public class AutoAimTurret {
 
             double targetPos = (relativeAngleDeg / SERVO_RANGE_DEGREES) + CENTER_POSITION;
 
+            if(targetPos > 1){
+                targetPos -= 360/SERVO_RANGE_DEGREES;
+            }
+
             targetPos = Range.clip(targetPos, 0.0, 1.0);
 
-            servoLeft.setPosition(1 - targetPos);
-            servoRight.setPosition(1 - targetPos);
+            servoLeft.setPosition(targetPos); //took off 1-targetpos
+            servoRight.setPosition(targetPos);
 
             currentServoPosition = targetPos;
     }
