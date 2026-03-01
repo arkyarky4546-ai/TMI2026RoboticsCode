@@ -102,7 +102,7 @@ public class intakeShoot {
         }
         else {
 
-            shootsetVelocity(1600);
+            shootsetVelocity(1500);
 
         }
         //setting the power of the shooter and intake here

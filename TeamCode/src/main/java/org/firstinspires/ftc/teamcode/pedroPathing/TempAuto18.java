@@ -247,7 +247,7 @@ public class TempAuto18 extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .5) {
+                    if(actionTimer.getElapsedTimeSeconds() > .7) {
                         intakeAndShoot.setPos(0, intakePos);
                         isShoot = false;
                         follower.followPath(hiLoad,true);
@@ -289,7 +289,7 @@ public class TempAuto18 extends OpMode {
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > .7) {
                     follower.followPath(hiLoad,true);
                     isShoot = false;
                     intakeAndShoot.setPos(0, intakePos);
@@ -352,7 +352,7 @@ public class TempAuto18 extends OpMode {
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > .7) {
                     follower.followPath(secondLoad,true);
                     isShoot = false;
                     intakeAndShoot.setPos(0, intakePos);
@@ -411,7 +411,7 @@ public class TempAuto18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > .7) {
                     go = true;
                     intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
