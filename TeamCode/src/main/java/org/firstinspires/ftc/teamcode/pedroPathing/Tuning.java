@@ -326,7 +326,7 @@ class TurnTuner extends OpMode {
  */
 class ForwardVelocityTuner extends OpMode {
     private final ArrayList<Double> velocities = new ArrayList<>();
-    public static double DISTANCE = 80;
+    public static double DISTANCE = 75;
     public static double RECORD_NUMBER = 10;
 
     private boolean end;
@@ -433,7 +433,7 @@ class ForwardVelocityTuner extends OpMode {
 class LateralVelocityTuner extends OpMode {
     private final ArrayList<Double> velocities = new ArrayList<>();
 
-    public static double DISTANCE = 80;
+    public static double DISTANCE = 75;
     public static double RECORD_NUMBER = 10;
 
     private boolean end;
@@ -605,8 +605,8 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
             double average = 0;
             for (double acceleration : accelerations) {
                 average += acceleration;
-                telemetry.addData("accleration: ", acceleration);
-                telemetry.update();
+                //telemetry.addData("accleration: ", acceleration);
+                //telemetry.update();
             }
             average /= accelerations.size();
 

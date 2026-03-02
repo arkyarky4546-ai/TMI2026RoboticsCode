@@ -33,12 +33,12 @@ import java.util.List;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(12.906) //chassis in kg
-           .forwardZeroPowerAcceleration(-42.06)
-            .lateralZeroPowerAcceleration(-82.0)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.025, 0))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.1, 0, 0, 0.01))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0.0,0.00001,0.6,0))
+            .mass(13.87993) //chassis in kg
+           .forwardZeroPowerAcceleration(-44.3382333333) //-45.5667 -38.02 -43.17 -44.278 (old was -42.06)
+            .lateralZeroPowerAcceleration(-83.901) //-86.7 -77.14 -85.96 -90.84 -78.865 (very inconsistent - old was -82)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.025, 0)) //looked good to me
+            .headingPIDFCoefficients(new PIDFCoefficients(1.12, 0, 0, 0.01)) //bumped p up from 1.1 to 1.12
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0.0,0.00001,0.6,0)) //seemed fine
             .centripetalScaling(0.000499999)
     ;
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .2, 1);
@@ -53,8 +53,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(77.73)
-            .yVelocity(60.367)
+            .xVelocity(75.5066666667) //67.16 74.99 76.72 74.81 (got rid of outlier - old was 77.73)
+            .yVelocity(61.0833333333) //60.55 61.32 61.38 (old was 60.367)
             ;
 
     public static Follower createFollower(HardwareMap hardwareMap) {

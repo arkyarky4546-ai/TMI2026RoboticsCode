@@ -76,7 +76,7 @@ public class AutoAimTurret {
         servoLeft.setPosition(currentServoPosition);
         servoRight.setPosition(currentServoPosition);
     }
-
+    //TODO: could center position be why it's off when resetting near goal?
     public void setModeRed(){
         targetX = 138.0;
         targetY = -138.0;
