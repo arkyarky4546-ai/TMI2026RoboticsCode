@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
+import static org.firstinspires.ftc.teamcode.intakeShoot.WALL_UP;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -73,7 +75,7 @@ public class blueTeleopFlanker extends OpMode {
         shootThread = new shooterThread(shooterCalculator, drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, initialHeading);
         shootThread.start();
 
-        shooterAndIntake.wallPos(0.2);
+        shooterAndIntake.wallPos(WALL_UP);
     }
 
     @Override
