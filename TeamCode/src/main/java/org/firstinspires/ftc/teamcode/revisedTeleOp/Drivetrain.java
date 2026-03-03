@@ -64,9 +64,9 @@ public class Drivetrain {
 
                 //This is how it looks with slowMode on
             else follower.setTeleOpDrive(
-                    -left_stick_y,
-                    -left_stick_x ,
-                    -right_stick_x,
+                    left_stick_y,
+                    left_stick_x ,
+                    right_stick_x,
                     false // Robot Centric
             );
         }

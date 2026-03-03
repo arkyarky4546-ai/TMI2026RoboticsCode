@@ -18,7 +18,7 @@ public class AutoTurret {
     private Servo servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 361.0;
-    private static double CENTER_POSITION = 0.73;
+    private static double CENTER_POSITION = 0.71;
 
 
     private double targetX = 0.0;
@@ -83,7 +83,7 @@ public class AutoTurret {
 
     public void setModeBlue(){
         targetX = 138.0;
-        targetY = 0.0;
+        targetY = -6.0;
         //CENTER_POSITION = .89;
     }
     public void manualLeft(){

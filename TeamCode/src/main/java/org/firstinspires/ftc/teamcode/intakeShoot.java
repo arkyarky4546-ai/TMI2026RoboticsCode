@@ -60,18 +60,32 @@ public class intakeShoot {
     //teleop stuff
     private double intakePower;
     private final double WALL_SHOOT = 0.5;
-    private final double WALL_UP = 0.2;
+    private final double WALL_UP = 0.2127;
     private ElapsedTime shootTimer = new ElapsedTime();
     private ElapsedTime debugTimer = new ElapsedTime();
     private boolean setHoodVelocityTurret;
     final int BLUE = 1;
     final int RED = 2;
     private int mode;
+    private boolean shootAc = true;
     private DistanceSensor disBL;
     private DistanceSensor disST;
     private ElapsedTime reverseTimer = new ElapsedTime();
+    private ElapsedTime shooting = new ElapsedTime();
     private boolean wasIntaking = false;
     private boolean isReversing = false;
+    private disAndColor colorShoot;
+    private double currentPos = 0.0;
+    private double lastError = 0;
+    public static double Kp=0.0121;
+    public static double Ki=0.00014;
+    public static double Kd=0.0000;
+    public static double Kf=.0000;
+    ElapsedTime timer=new ElapsedTime();
+    //ElapsedTime pidTimer = new ElapsedTime();
+    double lasterror=0;
+    double Integralsum=0;
+    double shooterPower = .5;
 
 
     public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String wallName, String colorS1, String colorS2, String shooterHood, Follower follower) {
@@ -98,6 +112,9 @@ public class intakeShoot {
         //sensors.start();
         Values = new shooterThread(shooter, follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         Values.start();
+        colorShoot = new disAndColor(spindexer);
+        colorShoot.start();
+
 
         //more teleop stuff
         intakePower = 1;
@@ -105,7 +122,17 @@ public class intakeShoot {
         setHoodVelocityTurret = false;
 
     }
+    public double PIDControl(double reference, double state){
+        double error=reference-state;
+        double dt = timer.seconds();
+        Integralsum+=error*dt;
+        double derivative=(error-lasterror)/dt;
+        lasterror=error;
+        timer.reset();
 
+        double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
+        return output;
+    }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
     public void update(double intakePower, int pathstate, boolean intake, Follower follower){
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
@@ -134,10 +161,18 @@ public class intakeShoot {
     }
 
     public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
+
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        double current = Math.abs(getVelocity());
+
+        shooterPower = PIDControl(Values.getSpeed(), current);
+        telemetry.addData("turretAngle", Values.getTurretPos());
+        telemetry.addData("speed", Values.getSpeed());
+        telemetry.addData("hoodAngle", Values.getHoodPos());
+        shootsetPower(shooterPower);
        // shootsetVelocity(1000);
         hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
-
+        colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
             spindexer.sSP(0,0);
             intakesetPower(intakePower);
@@ -149,9 +184,9 @@ public class intakeShoot {
             wallPos(WALL_UP);
             shootSequenceStep = 0;
         }
-        /*
+
         else if (debugActive) {
-            wallPos(WALL_UP);
+           // wallPos(WALL_UP);
             if(sensorReader.hasBallBL() && sensorReader.hasBallST()){
                 spindexer.sSP(0, 0);
             }else if (sensorReader.hasBallBL()) {
@@ -162,8 +197,19 @@ public class intakeShoot {
                 spindexer.sSP(0, 0);
             }
         }
-        */
-        else if (shootActive) {
+        else if(shootActive){
+            if(shootAc){
+                shootAc = false;
+                shooting.reset();
+                currentPos = spindexer.getPos();
+            }
+            wallPos(WALL_SHOOT);
+            if(shooting.milliseconds() > 600){
+                fastShootREAL(currentPos);
+            }
+
+        }
+        /*else if (shootActive) {
             shootsetVelocity(Values.getSpeed());
             intakesetPower(1);
 
@@ -214,15 +260,17 @@ public class intakeShoot {
                     shootSequenceStep = 0; // Loop back to the top
                 }
             }
-        }
+        }*/
+
         else {
             // IDLE STATE (Driver let go of all buttons)
             intakeMotor1.setPower(0);
             intakeMotor2.setPower(0);
-
+            shootAc = true;
+            wallPos(WALL_UP);
             // IDLE CLEANUP SEQUENCE
-            if (shootSequenceStep < 10) {
-                wallPos(WALL_UP);
+            /*if (shootSequenceStep < 10) {
+                wallPos(WALL_SHOOT);
                 shootTimer.reset();
                 shootSequenceStep = 10;
             }
@@ -234,7 +282,8 @@ public class intakeShoot {
             }
             else if (shootSequenceStep == 12) {
                 // safe zone
-            }
+            }*/
+
         }
     }
 
@@ -293,6 +342,7 @@ public class intakeShoot {
     public void stopT(){
         // sensors.stopThread();
         Values.stopThread();
+        colorShoot.stopThread();
         if (sensorReader != null) {
             sensorReader.stopThread();
         }
@@ -302,6 +352,9 @@ public class intakeShoot {
     }
     public void fastShoot(){
         spindexer.fastRot(spindexer.getPos());
+    }
+    public void fastShootREAL(double pos){
+        spindexer.fastRot(pos);
     }
     public double findGreen(){
         if (spindexer.getColors() == 1){
@@ -320,7 +373,9 @@ public class intakeShoot {
     public void setModeRed(){
         mode = RED;
     }
-
+    public double getGreen(){
+        return colorShoot.foundGreen();
+    }
     public void setShootFar(){
         setHoodVelocityTurret = !setHoodVelocityTurret;
         if(mode == BLUE){

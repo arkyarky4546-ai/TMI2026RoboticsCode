@@ -38,8 +38,8 @@ public class blueTeleopFlanker extends OpMode {
 
 
     Shooter shooterCalculator;
-    shooterThread shootThread;
-
+    //shooterThread shootThread;
+    private double greenPos = 0.0;
 
     boolean shootFirst = true;
     boolean aim = true;
@@ -47,6 +47,7 @@ public class blueTeleopFlanker extends OpMode {
     int[] ppg = {2,2,1};
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
+    private boolean reset = true;
 
     @Override
     public void init() {
@@ -70,10 +71,10 @@ public class blueTeleopFlanker extends OpMode {
 
         shooterCalculator = new Shooter();
         double initialHeading = drivetrain.getFollower().getPose().getHeading();
-        shootThread = new shooterThread(shooterCalculator, drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, initialHeading);
-        shootThread.start();
+        //shootThread = new shooterThread(shooterCalculator, drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, initialHeading);
+        //shootThread.start();
 
-        shooterAndIntake.wallPos(0.2);
+        //shooterAndIntake.wallPos(0.2);
     }
 
     @Override
@@ -87,15 +88,25 @@ public class blueTeleopFlanker extends OpMode {
         if(gamepad1.b){
             drivetrain.resetCurrentPoseGoal();
         }
-
+        if(gamepad2.yWasPressed()){
+            greenPos = shooterAndIntake.getGreen();
+        }
+        if(gamepad2.aWasPressed()){
+            reset = false;
+            shooterAndIntake.simpleShoot();
+        }
+        if(gamepad2.bWasPressed()){
+            reset = false;
+            shooterAndIntake.colorSort(greenPos, pattern);
+        }
         double currentHeading = drivetrain.getFollower().getPose().getHeading();
-        shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
+      //  shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
 
-        double dynamicTurretAngle = shootThread.getTurretPos();
+       /* double dynamicTurretAngle = shootThread.getTurretPos();
         double dynamicHoodPos = shootThread.getHoodPos();
-        double dynamicFlywheelSpeed = shootThread.getSpeed();
+        double dynamicFlywheelSpeed = shootThread.getSpeed();*/
 
-        if(gamepad1.dpadLeftWasPressed()) { // shootFar
+        if(gamepad2.dpadLeftWasPressed()) { // shootFar
             shooterAndIntake.setShootFar();
             aim = false;
             // Note: Make sure setManualPosition(double pos) is added to AutoTurret.java if you still need this override!
@@ -104,10 +115,10 @@ public class blueTeleopFlanker extends OpMode {
 
         // Pass the dynamically calculated angle into the turret
         if(aim){
-            turret.updateAuto(drivetrain.getFollower(), telemetry, dynamicTurretAngle, aim);
+            turret.updateAuto(drivetrain.getFollower(), telemetry, shooterAndIntake.turretAngle(), aim);
         }
 
-        if(gamepad1.dpadDownWasPressed()){
+        if(gamepad2.dpadDownWasPressed()){
             aim = !aim;
             if(Lime.getPatternFromLimelight() == 0){
                 pattern = gpp;
@@ -137,12 +148,13 @@ public class blueTeleopFlanker extends OpMode {
 
         //Check for Shooting (Highest Priority)
         if(gamepad1.right_trigger > 0.75){
+            reset = true;
             rightTrigger = true;
             shootFirst = false;
             drivetrain.setHoldMode(true);
 
             // Feed the dynamically calculated velocity instead of the static TargetVelocity
-            shooterAndIntake.shootsetVelocity(dynamicFlywheelSpeed);
+            //shooterAndIntake.shootsetVelocity(dynamicFlywheelSpeed);
 
             // Override and disable intake while shooting
             leftTrigger = false;
@@ -152,26 +164,29 @@ public class blueTeleopFlanker extends OpMode {
             // Not Shooting (Allow Intake and Default States)
             shootFirst = true;
             drivetrain.setHoldMode(false);
-            shooterAndIntake.wallPos(0.25);
-
+            shooterAndIntake.wallPos(.2127);
+            if(reset) {
+                shooterAndIntake.setPos(0, 0);
+            }
             // Only allow intake if the right trigger is NOT pressed
             if(gamepad1.left_trigger > 0.75){
+                reset = true;
                 leftTrigger = true;
             }
         }
 
-        shooterAndIntake.hoodPos(dynamicHoodPos);
+      //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
         shooterAndIntake.update(leftTrigger, leftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);
         //telemetry.addData("ShootFirst", shootFirst)
-        telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
+    //    telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
         telemetry.addData("Current Velocity", shooterAndIntake.getVelocity());
-        telemetry.addData("Dynamic Hood Pos", dynamicHoodPos);
+      //  telemetry.addData("Dynamic Hood Pos", dynamicHoodPos);
         telemetry.addData("Distance", drivetrain.getDistanceFromGoal());
-        telemetry.addData("Calculated Turret Angle", dynamicTurretAngle);
+        //telemetry.addData("Calculated Turret Angle", dynamicTurretAngle);
         telemetry.addData("Debug Mode", rightBumper);
        // telemetry.addData("BL Vertex Has Ball", shooterAndIntake.getBLBallState());
       //  telemetry.addData("ST Vertex Has Ball", shooterAndIntake.getSTBallState());
@@ -180,7 +195,7 @@ public class blueTeleopFlanker extends OpMode {
     @Override
     public void stop(){
         // Crucial: Kill the background thread to prevent memory leaks or crashes after stopping the OpMode
-        shootThread.stopThread();
+        //shootThread.stopThread();
         shooterAndIntake.stopT();
 
     }

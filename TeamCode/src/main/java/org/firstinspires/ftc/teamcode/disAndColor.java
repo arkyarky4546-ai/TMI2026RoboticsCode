@@ -21,37 +21,37 @@ public class disAndColor extends Thread {
     private volatile boolean blHasBall = false;
     private volatile boolean stHasBall = false;
     private volatile double greenPos = 0.0;
+    private volatile double currentPos = 0;
 
-    public disAndColor(servo720Rot servRot, DistanceSensor disBL, DistanceSensor disST) {
+    public disAndColor(servo720Rot servRot) {
         this.servRot = servRot;
-        this.disBL = disBL;
-        this.disST = disST;
+        //this.disBL = disBL;
+        //this.disST = disST;
     }
 
     @Override //ts is good practice to comment that you are overriding the thread class stuff. You need to in order to run stuff and you need to call (variable that is a thread).start() to start running the thread
-    public void run(){
-        while (running){
-            if(servRot.getColors() == 1){
-                greenPos = servRot.getPos();
-            }
-            if (disBL != null) {
-                blHasBall = disBL.getDistance(DistanceUnit.CM) < 4.0;
-            }
-            if (disST != null) {
-                stHasBall = disST.getDistance(DistanceUnit.CM) < 4.0;
+    public void run() {
+        while (running) {
+            if (servRot != null && servRot.getColors() == 1) {
+                greenPos = currentPos;
             }
             try {
-                Thread.sleep(20); //something called cpu spinning
+                Thread.sleep(20);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }
-    public boolean hasBallBL() { return blHasBall; }
-    public boolean hasBallST() { return stHasBall; }
+
+   // public boolean hasBallBL() { return blHasBall; }
+    //public boolean hasBallST() { return stHasBall; }
     public double foundGreen() {return greenPos; }
 
     public void stopThread(){
         running = false;
+    }
+    public void upColor(double position){
+        currentPos = position;
     }
 }

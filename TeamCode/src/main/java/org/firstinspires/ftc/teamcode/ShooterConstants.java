@@ -16,10 +16,11 @@ public class ShooterConstants {
     private static double flyMax = 2000.0;
     public static double Hood_Max_Angle = 2.517;
     public static double Hood_Min_Angle = .25;//from like 0 to pi
-    public static double hoodDegreesToServoTicks(double degrees){ //turn calculated velocity to motor commands
+    public static double hoodDegreesToServoTicks(double radians){ //turn calculated velocity to motor commands
 
         //return 0.0226 * degrees -.7443;
-        return 0.3*degrees - 0.8;
+        //return 0.3*radians - 0.8;
+        return -3.44*radians + 1.9; //our brains are
     }
     public static double getFlyWheelTicksFromVelocity(double velocity){
         //return MathFunctions.clamp(94.501 * velocity/12 - 187.96 + flyOff, flyMin, flyMax);

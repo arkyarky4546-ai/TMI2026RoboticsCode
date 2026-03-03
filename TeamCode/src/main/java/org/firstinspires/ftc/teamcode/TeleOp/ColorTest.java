@@ -1,0 +1,238 @@
+package org.firstinspires.ftc.teamcode.TeleOp;
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.HeadingInterpolator;
+import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.intakeShoot;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.List;
+
+@TeleOp
+public class ColorTest extends OpMode {
+    private double IntegralSum = 0;
+
+    private Follower follower;
+    private double lastError = 0;
+    public static double Kp=0.0121;
+    public static double Ki=0.00014;
+    public static double Kd=0.0000;
+    public static double Kf=.0000;
+    double TargetVelocity = 1400;
+    private double PIDdistance = 0;
+    private double timeBegan;
+    private boolean pressShooter;
+    boolean sixSeven = false;
+    ElapsedTime timer=new ElapsedTime();
+    //ElapsedTime pidTimer = new ElapsedTime();
+    double lasterror=0;
+    Servo turretRight; //launchservo
+    Servo turretLeft; //launchservo
+    CRServo artifactSpinner;
+    Servo artifactPush;
+    DcMotor intake;
+    DcMotor intake1;
+    DcMotorEx shoot1;
+    DcMotorEx shoot2;
+    DcMotor intakeMotor;
+    DcMotor intakeMotor1;
+    Servo intakeGate;
+    Servo shooterHood;
+    Servo push;
+    Servo hood;
+    intakeShoot intakeAndShoot;
+    double distance;
+    double shooterPower;
+    boolean intakeIndex = true;
+    boolean isShooting = false;
+    double wallPos = 0.0;
+    double lastPos = 0.0;
+    double kickZero = 0.85;
+    double kickUp = 0.65;
+    double Integralsum=0;
+    double hoodPos = .4;
+    double turretPos = .8;
+    double recoil = .03;
+    public static double TURN_Constant = 0.005;
+    private ElapsedTime shootTimer1 = new ElapsedTime();
+    double limelightPause = System.currentTimeMillis();
+    int index = 0;
+    double greenPos = -1;
+    private ElapsedTime shootTimer = new ElapsedTime();
+    int[] pattern = {1,2,2};
+    public double PIDControl(double reference, double state){
+        double error=reference-state;
+        double dt = timer.seconds();
+        Integralsum+=error*dt;
+        double derivative=(error-lasterror)/dt;
+        lasterror=error;
+        timer.reset();
+
+        double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
+        return output;
+    }
+
+    @Override
+    public void loop() {
+        follower.update();
+
+        //double current = Math.abs(intakeAndShoot.getVelocity());
+        //shooterPower = PIDControl(TargetVelocity, current);
+
+        // hood.setPosition(hoodPos);
+        //intakeAndShoot.wallPos(.2);
+        double current = Math.abs(intakeAndShoot.getVelocity());
+
+        shooterPower = PIDControl(TargetVelocity, current);
+
+        intakeAndShoot.shootsetPower(shooterPower);
+        intakeAndShoot.intakesetPower(1);
+        // wallPos = 0;
+        // intakeAndShoot.wallPos(wallPos);
+        greenPos = intakeAndShoot.getGreen();
+        if (gamepad2.left_trigger > 0.5) {
+                intakeAndShoot.setPos(0, 0);
+        }
+        if (gamepad2.right_trigger > 0.5) {
+            intakeAndShoot.update(false, false, true, false, follower, telemetry);
+            //intakeAndShoot.simpleShoot();
+        }
+        else{
+            intakeAndShoot.update(true, false, false, false, follower, telemetry);
+        }
+        if(gamepad2.aWasPressed()){
+            intakeAndShoot.simpleShoot();
+        }
+        if(gamepad2.yWasPressed()){
+            if(greenPos != -1) {
+                intakeAndShoot.colorSort(greenPos, pattern);
+            }
+        }
+        if(gamepad2.xWasPressed()){
+            turretPos-=.01;
+        }
+        if(gamepad2.bWasPressed()){
+            turretPos+=.01;
+        }
+        if(gamepad2.dpadUpWasPressed()){
+            TargetVelocity+=25;
+        }
+        if(gamepad2.dpadDownWasPressed()){
+            TargetVelocity-=25;
+        }
+        if(gamepad2.dpadLeftWasPressed()){
+            intakeAndShoot.wallPos(.5);
+        }
+        if(gamepad2.dpadRightWasPressed()){
+            intakeAndShoot.wallPos(.2127);
+        }
+        if(gamepad2.leftBumperWasPressed()){
+            wallPos -= .025;
+
+        }
+        if(gamepad2.rightBumperWasPressed()){
+            wallPos +=.025;
+        }
+        if(gamepad1.dpadDownWasPressed()){
+            Kp-=.001;
+        }
+        if(gamepad1.dpadRightWasPressed()){
+            Kd+=.0001;
+        }
+        if(gamepad1.dpadLeftWasPressed()){
+            Kd-=.0001;
+        }
+        if(gamepad1.yWasPressed()){
+            Ki+=.00001;
+        }
+        if(gamepad1.aWasPressed()){
+            Ki-=.00001;
+        }
+        if(gamepad1.xWasPressed()){
+            Kf-=.00005;
+        }
+        if(gamepad1.bWasPressed()){
+            Kf+=.00005;
+        }
+        intakeAndShoot.hoodPos(hoodPos);
+        //intakeAndShoot.wallPos(wallPos);
+        //intakeAndShoot.shootsetVelocity(TargetVelocity);
+        turretRight.setPosition(turretPos);
+        turretLeft.setPosition(turretPos);
+        telemetry.addData("velocity1", intakeAndShoot.getVelocity());
+        telemetry.addData("wall", wallPos);
+        telemetry.addData("hoodrecoil", recoil);
+        // telemetry.addData("velocity2", );
+        telemetry.addData("shootPower", TargetVelocity);
+        telemetry.addData("shooterHoodPos",hoodPos);
+        telemetry.addData("turretPos",turretPos);
+        telemetry.addData("distance", distance);
+        //telemetry.addData("target", TargetVelocity);
+        telemetry.addData("6767676767", Math.sqrt(Math.pow(138-follower.getPose().getX(),2) + Math.pow(6+follower.getPose().getY(),2)));
+        //telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("p", Kp);
+        telemetry.addData("d", Kd);
+        telemetry.addData("i", Ki);
+        telemetry.addData("f", Kf);
+        telemetry.addData("wallPos", wallPos);
+
+    }
+    @Override
+    public void init(){
+        follower = Constants.createFollower(hardwareMap);
+
+        follower.setPose(new Pose(128,-26, Math.toRadians(47)));
+        follower.update();
+        intakeAndShoot = new intakeShoot(hardwareMap,"intake", "intake1",
+                "shoot1", "shoot2",
+                "spindexRoter", "slave",
+                "wally", "color1", "color2", "shooterHood", follower);
+        //wallPos = 0.2127;
+        //intakeAndShoot.wallPos(wallPos);
+        hood = hardwareMap.get(Servo.class, "shooterHood");
+        push = hardwareMap.get(Servo.class, "push");
+        turretRight = hardwareMap.get(Servo.class, "turretRight");
+        //turretRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turretLeft = hardwareMap.get(Servo.class, "turretLeft");
+        //turretLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        intakeAndShoot.setPos(0,0);
+
+        shooterPower = 1300;
+        shootTimer.reset();
+
+    }
+
+    @Override
+    public void start(){
+
+        //opmodeTimer.resetTimer();
+    }
+    @Override
+    public void stop(){
+        intakeAndShoot.stopT();
+        //opmodeTimer.resetTimer();
+    }
+}
+
+
+
+
