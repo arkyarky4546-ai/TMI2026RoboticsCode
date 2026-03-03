@@ -1,0 +1,187 @@
+package org.firstinspires.ftc.teamcode.revisedTeleOp;
+
+import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+// Import your new move-shoot classes
+import org.firstinspires.ftc.teamcode.AutoTurret;
+import org.firstinspires.ftc.teamcode.Shooter;
+import org.firstinspires.ftc.teamcode.ShooterConstants;
+import org.firstinspires.ftc.teamcode.shooterThread;
+import org.firstinspires.ftc.teamcode.LimeLight;
+import org.firstinspires.ftc.teamcode.intakeShoot;
+import com.pedropathing.geometry.Pose;
+
+@Configurable
+@TeleOp
+public class blueTeleopFlanker extends OpMode {
+
+
+    public static double Kp = 0.0121;
+    public static double Ki = 0.00014;
+    public static double Kd = 0.0000;
+    public static double Kf = 0.0000;
+
+
+    public static double turretPos = 0.8;
+    public static double recoil = 0.03;
+    public static double wallPos = 0.0;
+
+    // --- ROBOT SUBSYSTEMS ---
+    Drivetrain drivetrain;
+    AutoTurret turret;
+    intakeShoot shooterAndIntake;
+    Limelight3A limelight3A;
+    LimeLight Lime;
+
+
+    Shooter shooterCalculator;
+    shooterThread shootThread;
+
+
+    boolean shootFirst = true;
+    boolean aim = true;
+    int[] pattern = {1,2,2};
+    int[] ppg = {2,2,1};
+    int[] pgp = {2,1,2};
+    int[] gpp = {1,2,2};
+
+    @Override
+    public void init() {
+        drivetrain = new Drivetrain(hardwareMap);
+        drivetrain.setModeBlue();
+        Lime = new LimeLight(hardwareMap);
+
+        // Initialize the new AutoTurret
+        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        turret.setModeBlue();
+
+        limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight3A.pipelineSwitch(6);
+        limelight3A.start();
+
+        shooterAndIntake = new intakeShoot(hardwareMap,"intake", "intake1",
+                "shoot1", "shoot2",
+                "spindexRoter", "slave",
+                "wally", "color1", "color2", "shooterHood", drivetrain.getFollower());
+        shooterAndIntake.setModeBlue();
+
+        shooterCalculator = new Shooter();
+        double initialHeading = drivetrain.getFollower().getPose().getHeading();
+        shootThread = new shooterThread(shooterCalculator, drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, initialHeading);
+        shootThread.start();
+
+        shooterAndIntake.wallPos(0.2);
+    }
+
+    @Override
+    public void loop() {
+        // --- DRIVETRAIN ---
+        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad1.bWasPressed(), gamepad1.yWasPressed(), gamepad1.dpadRightWasPressed(), gamepad1.dpadLeftWasPressed());
+
+        if(gamepad1.a){
+            drivetrain.resetCurrentPose();
+        }
+        if(gamepad1.b){
+            drivetrain.resetCurrentPoseGoal();
+        }
+
+        double currentHeading = drivetrain.getFollower().getPose().getHeading();
+        shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
+
+        double dynamicTurretAngle = shootThread.getTurretPos();
+        double dynamicHoodPos = shootThread.getHoodPos();
+        double dynamicFlywheelSpeed = shootThread.getSpeed();
+
+        if(gamepad1.dpadLeftWasPressed()) { // shootFar
+            shooterAndIntake.setShootFar();
+            aim = false;
+            // Note: Make sure setManualPosition(double pos) is added to AutoTurret.java if you still need this override!
+            // turret.setManualPosition(0.38);
+        }
+
+        // Pass the dynamically calculated angle into the turret
+        if(aim){
+            turret.updateAuto(drivetrain.getFollower(), telemetry, dynamicTurretAngle, aim);
+        }
+
+        if(gamepad1.dpadDownWasPressed()){
+            aim = !aim;
+            if(Lime.getPatternFromLimelight() == 0){
+                pattern = gpp;
+            } else if(Lime.getPatternFromLimelight() == 1){
+                pattern = pgp;
+            } else if(Lime.getPatternFromLimelight() == 2){
+                pattern = ppg;
+            }
+        }
+        else if(!aim && gamepad1.dpad_left){
+            turret.manualLeft();
+        }
+        else if(!aim && gamepad1.dpad_right){
+            turret.manualRight();
+        }
+        else if(gamepad1.dpadUpWasPressed()){
+            turret.setCenter();
+            aim = !aim;
+        }
+
+        boolean leftTrigger = false;
+        boolean rightTrigger = false;
+
+        boolean leftBumper = gamepad1.left_bumper;
+        boolean rightBumper = gamepad2.right_bumper;
+
+
+        //Check for Shooting (Highest Priority)
+        if(gamepad1.right_trigger > 0.75){
+            rightTrigger = true;
+            shootFirst = false;
+            drivetrain.setHoldMode(true);
+
+            // Feed the dynamically calculated velocity instead of the static TargetVelocity
+            shooterAndIntake.shootsetVelocity(dynamicFlywheelSpeed);
+
+            // Override and disable intake while shooting
+            leftTrigger = false;
+            leftBumper = false;
+
+        } else {
+            // Not Shooting (Allow Intake and Default States)
+            shootFirst = true;
+            drivetrain.setHoldMode(false);
+            shooterAndIntake.wallPos(0.1);
+
+            // Only allow intake if the right trigger is NOT pressed
+            if(gamepad1.left_trigger > 0.75){
+                leftTrigger = true;
+            }
+        }
+
+        shooterAndIntake.hoodPos(dynamicHoodPos);
+
+        shooterAndIntake.update(leftTrigger, leftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry);
+
+
+        telemetry.addData("RightTrigger (Shooting)", rightTrigger);
+        //telemetry.addData("ShootFirst", shootFirst)
+        telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
+        telemetry.addData("Current Velocity", shooterAndIntake.getVelocity());
+        telemetry.addData("Dynamic Hood Pos", dynamicHoodPos);
+        telemetry.addData("Distance", drivetrain.getDistanceFromGoal());
+        telemetry.addData("Calculated Turret Angle", dynamicTurretAngle);
+        telemetry.addData("Debug Mode", rightBumper);
+       // telemetry.addData("BL Vertex Has Ball", shooterAndIntake.getBLBallState());
+      //  telemetry.addData("ST Vertex Has Ball", shooterAndIntake.getSTBallState());
+    }
+
+    @Override
+    public void stop(){
+        // Crucial: Kill the background thread to prevent memory leaks or crashes after stopping the OpMode
+        shootThread.stopThread();
+        shooterAndIntake.stopT();
+
+    }
+}
