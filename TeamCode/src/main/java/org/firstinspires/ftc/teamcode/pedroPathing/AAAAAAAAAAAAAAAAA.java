@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -15,8 +16,8 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "TempAuto18", group = "Autonomous")
-public class TempAuto18 extends OpMode {
+@Autonomous(name = "AAAAAAAAAAAAAAAAA", group = "Autonomous")
+public class AAAAAAAAAAAAAAAAA extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
@@ -34,6 +35,9 @@ public class TempAuto18 extends OpMode {
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
     private final Pose acIntakePose3 = new Pose(35, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
+    private final Pose curve1 = new Pose(70, -40);
+    private final Pose curve2 = new Pose(70, -40, Math.toRadians(0));
+    private final Pose curve3 = new Pose(45, -40, Math.toRadians(0));
 
     //paths
     private Path score1;
@@ -95,22 +99,22 @@ public class TempAuto18 extends OpMode {
     public void buildPaths() {//this is where we build the path stuff using our positions
         score1 = new Path(new BezierLine(startPose, scorePose1));
         score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
-        firstLoad=follower.pathBuilder()
+        /*firstLoad=follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1, intakePose1))
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose1.getHeading())
-                .build();
+                .build();*/
         acFirstLoad=follower.pathBuilder()
-                .addPath(new BezierLine(intakePose1, acIntakePose1))
+                .addPath(new BezierCurve(scorePose1, curve1, acIntakePose1))
                 .setLinearHeadingInterpolation(intakePose1.getHeading(), acIntakePose1.getHeading())
                 .build();
         scoreLoad1= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose1, scorePose1))
                 .setLinearHeadingInterpolation(acIntakePose1.getHeading(), scorePose1.getHeading())
                 .build();
-        secondLoad= follower.pathBuilder()
+    /*    secondLoad= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1,intakePose2))
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose2.getHeading())
-                .build();
+                .build();*/
         backLoad1= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose1, backPose))
                 .setLinearHeadingInterpolation(acIntakePose1.getHeading(), backPose.getHeading())
@@ -124,8 +128,8 @@ public class TempAuto18 extends OpMode {
                 .setLinearHeadingInterpolation(backPose.getHeading(), hitPose.getHeading())
                 .build();
         acSecondLoad= follower.pathBuilder()
-                .addPath(new BezierLine(intakePose2,acIntakePose2))
-                .setLinearHeadingInterpolation(intakePose2.getHeading(), acIntakePose2.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve2, acIntakePose2))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose2.getHeading())
                 .build();
         scoreLoad2= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose2, scorePose1))
@@ -135,13 +139,13 @@ public class TempAuto18 extends OpMode {
                 .addPath(new BezierLine(acIntakePose3, scorePose1))
                 .setLinearHeadingInterpolation(acIntakePose3.getHeading(), scorePose1.getHeading())
                 .build();
-        thirdLoad= follower.pathBuilder()
+        /*thirdLoad= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1,intakePose3))
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose3.getHeading())
-                .build();
+                .build();*/
         acThirdLoad= follower.pathBuilder()
-                .addPath(new BezierLine(intakePose3,acIntakePose3))
-                .setLinearHeadingInterpolation(intakePose3.getHeading(), acIntakePose3.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve3, acIntakePose3))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose3.getHeading())
                 .build();
         hiLoad= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1,hitPose))
@@ -197,7 +201,7 @@ public class TempAuto18 extends OpMode {
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .6) {
                     isShoot = false;
-                    follower.followPath(firstLoad,true);
+                    follower.followPath(acFirstLoad,true);
                     go = true;
                     //push servo is down now
                     //push.setPosition(kickZero);
@@ -209,30 +213,22 @@ public class TempAuto18 extends OpMode {
                 break;
             case 3:
                 if(!follower.isBusy()) {
-
-                    follower.followPath(acFirstLoad,true);
-                    intakeAndShoot.setPos(0, intakePos);
+                    follower.holdPoint(acIntakePose1);
+                    actionTimer.resetTimer();
                     setPathState(4);
                 }
                 break;
             case 4:
-                if(!follower.isBusy()) {
-                    follower.holdPoint(acIntakePose1);
-                    actionTimer.resetTimer();
-                    setPathState(5);
-                }
-                break;
-            case 5:
 
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
                     intakeAndShoot.setPos(0,intakePos);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
                     intakeAndShoot.wallPos(.5);
-                    setPathState(6);
+                    setPathState(5);
                 }
                 break;
-            case 6:
+            case 5:
                 if (follower.isBusy()){
                     actionTimer.resetTimer();
                 }
@@ -258,19 +254,19 @@ public class TempAuto18 extends OpMode {
                         go = true;
                         intakeIndex = true;
                         actionTimer.resetTimer();
-                        setPathState(7);
+                        setPathState(6);
                     }
                 }
 
 
-            case 7:
+            case 6:
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
                     follower.followPath(scoreLoad15,true);
                     intakeAndShoot.setPos(0, intakePos);
-                    setPathState(8);
+                    setPathState(7);
                 }
                 break;
-            case 8:
+            case 7:
                 intakeAndShoot.wallPos(0.5);
                 if(!follower.isBusy()) {
 
@@ -278,10 +274,10 @@ public class TempAuto18 extends OpMode {
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
                     // push.setPosition(kickUp);
-                    setPathState(9);
+                    setPathState(8);
                 }
                 break;
-            case 9:
+            case 8:
                 if(shootTimer.milliseconds() > 100 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
@@ -297,11 +293,11 @@ public class TempAuto18 extends OpMode {
                     intakeAndShoot.wallPos(0.1);
                     //push.setPosition(kickZero);
                     actionTimer.resetTimer();
-                    setPathState(10);
+                    setPathState(9);
                 }
 
                 break;
-            case 10:
+            case 9:
                 /*if(scan){
                     scan = false;
                     turretLeft.setPosition();
@@ -321,14 +317,14 @@ public class TempAuto18 extends OpMode {
                 }*/
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85) {
                     intakeAndShoot.setPos(0, intakePos);
-                   // intakeAndShoot.findGreen();
+                    // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
-                    setPathState(11);
+                    setPathState(10);
                 }
                 break;
-            case 11:
+            case 10:
                 intakeAndShoot.wallPos(0.5);
                 /*if(intakeAndShoot.findGreen() != 0.0){
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
@@ -341,10 +337,10 @@ public class TempAuto18 extends OpMode {
                     follower.holdPoint(scorePose1);
                     //intakeAndShoot.setPos(0,0);
                     //push.setPosition(kickUp);
-                    setPathState(12);
+                    setPathState(11);
                 }
                 break;
-            case 12:
+            case 11:
                 if(shootTimer.milliseconds() > 100 & go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
@@ -353,42 +349,34 @@ public class TempAuto18 extends OpMode {
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .5) {
-                    follower.followPath(secondLoad,true);
+                    follower.followPath(acSecondLoad,true);
                     isShoot = false;
                     go = true;
                     intakeIndex = true;
                     intakeAndShoot.wallPos(0.1);
                     //push.setPosition(kickZero);
                     actionTimer.resetTimer();
-                    setPathState(13);
+                    setPathState(12);
                 }
 
                 break;
-            case 13:
-                if(!follower.isBusy()) {
-                    intakeAndShoot.setPos(0, intakePos);
-                    follower.followPath(acSecondLoad);
-                    actionTimer.resetTimer();
-                    setPathState(14);
-                }
-                break;
-            case 14:
+            case 12:
                 if(!follower.isBusy()) {
                     follower.holdPoint(acIntakePose2);
                     actionTimer.resetTimer();
-                    setPathState(15);
+                    setPathState(13);
                 }
                 break;
-            case 15:
+            case 13:
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
                     //intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad2,true);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
-                    setPathState(16);
+                    setPathState(14);
                 }
                 break;
-            case 16:
+            case 14:
                 intakeAndShoot.wallPos(0.5);
                /* if(intakeAndShoot.findGreen() != 0.0){
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
@@ -399,10 +387,10 @@ public class TempAuto18 extends OpMode {
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
                     //push.setPosition(kickUp);
-                    setPathState(17);
+                    setPathState(15);
                 }
                 break;
-            case 17:
+            case 15:
                 if(shootTimer.milliseconds() > 100 && go) {
                     //push.setPosition(kickUp);
                     go = false;
@@ -416,42 +404,35 @@ public class TempAuto18 extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds() > .5) {
                     go = true;
                     isShoot = false;
-                    follower.followPath(thirdLoad,true);
+                    follower.followPath(acThirdLoad,true);
 
                     //push servo is down now
                     //push.setPosition(kickZero);
                     //closed wall position
                     intakeAndShoot.wallPos(.1);
                     intakeIndex = true;
-                    setPathState(18);
+                    setPathState(16);
                 }
                 break;
-            case 18:
-                if(!follower.isBusy()) {
-                    follower.followPath(acThirdLoad,true);
-                    intakeAndShoot.setPos(0, intakePos);
-                    setPathState(19);
-                }
-                break;
-            case 19:
+            case 16:
                 if(!follower.isBusy()) {
                     follower.holdPoint(acIntakePose3);
                     actionTimer.resetTimer();
-                    setPathState(20);
+                    setPathState(17);
                 }
                 break;
-            case 20:
+            case 17:
 
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
-                   // intakeAndShoot.findGreen();
+                    // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad3,true);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
 
-                    setPathState(21);
+                    setPathState(18);
                 }
                 break;
-            case 21:
+            case 18:
                 /*if(intakeAndShoot.findGreen() != 0.0){
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
@@ -463,10 +444,10 @@ public class TempAuto18 extends OpMode {
                     follower.holdPoint(scorePose1);
                     intakeAndShoot.wallPos(0.5);
                     //push.setPosition(kickUp);
-                    setPathState(22);
+                    setPathState(19);
                 }
                 break;
-            case 22:
+            case 19:
                 if(shootTimer.milliseconds() > 100 && go) {
                     //push.setPosition(kickUp);
                     go = false;
@@ -479,17 +460,17 @@ public class TempAuto18 extends OpMode {
                     go = true;
                     intakeAndShoot.wallPos(0.1);
                     follower.followPath(end,true);
-                    setPathState(23);
+                    setPathState(20);
                 }
                 break;
 
-            case 23:
+            case 20:
                 if(!follower.isBusy()){
                     intakeAndShoot.setPos(0, intakePos);
-                    setPathState(24);
+                    setPathState(21);
                 }
                 break;
-            case 24:
+            case 21:
                 break;
         }
     }
@@ -513,7 +494,7 @@ public class TempAuto18 extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-       // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+        // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         turretLeft.setPosition(1);
         turretRight.setPosition(1);
         intakeAndShoot.update(1,1, intakeIndex, follower);

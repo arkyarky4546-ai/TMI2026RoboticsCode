@@ -88,7 +88,7 @@ public class intakeShoot {
 
         //more teleop stuff
         intakePower = 0.75;
-        wallPos(WALL_UP);
+       // wallPos(WALL_UP);
         setHoodVelocityTurret = false;
 
 
@@ -102,14 +102,14 @@ public class intakeShoot {
         }
         else {
 
-            shootsetVelocity(1500);
+            //shootsetVelocity(1500);
 
         }
         //setting the power of the shooter and intake here
-        shootsetPower(shootPower);
+        //shootsetPower(shootPower);
         intakesetPower(intakePower);
 
-        hoods.setPosition(.6);
+       // hoods.setPosition(.6);
         //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
         /*distance = sensors.getIntakeDistance();
         if((distance < 10) && Intaketimer.milliseconds() > 263 && intake){
@@ -123,73 +123,105 @@ public class intakeShoot {
     }
 
     /*Teleop Update*/
-    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, Follower follower) {
-        if(!setHoodVelocityTurret){
-            Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
-            shootsetVelocity(1000);
-            hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
-        }
+    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
+        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        //shootsetVelocity(1000);
+       // hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
 
         if (intakeActive) {
+            spindexer.sSP(0,0);
             intakesetPower(intakePower);
-            wallPos(WALL_UP);
+          //  wallPos(WALL_UP);
             shootSequenceStep = 0;
         }
         else if (intakeOut) {
             intakesetPower(-intakePower);
-            wallPos(WALL_UP);
+           // wallPos(WALL_UP);
             shootSequenceStep = 0;
         }
+        /*else if (debugActive) {
+            wallPos(WALL_UP);
+            if(sensorReader.hasBallBL() && sensorReader.hasBallST()){
+                spindexer.sSP(0, 0);
+            }else if (sensorReader.hasBallBL()) {
+                spindexer.sSP(1, 0);
+            } else if (sensorReader.hasBallST()) {
+                spindexer.sSP(1, 0);
+            } else {
+                spindexer.sSP(0, 0);
+            }
+        }*/
+
         else if (shootActive) {
-            //shootsetVelocity(Values.getSpeed());
-            intakesetPower(0.75);
-            if (shootSequenceStep == 0) {
-                wallPos(WALL_UP);
-                shootTimer.reset();  // Start the failsafe stopwatch
+            shootsetVelocity(Values.getSpeed());
+            intakesetPower(1);
+
+            //  Wake up / Loop restart (Wall goes UP instantly)
+            if (shootSequenceStep == 0 || shootSequenceStep == 12) {
+               // wallPos(WALL_UP);
+                shootTimer.reset();
                 shootSequenceStep = 1;
             }
-            if(shootSequenceStep == 1 && shootTimer.milliseconds() > 500){
-                spindexer.sSP(0, 0); // Send it to index 0
-                shootTimer.reset();  // Start the failsafe stopwatch
-               // if (spindexer.isAtTarget())
-                shootSequenceStep = 2;
+
+            else if (shootSequenceStep == 1) {
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.sSP(0, 0);
+                    shootTimer.reset();
+                    shootSequenceStep = 2;
+                }
             }
 
             else if (shootSequenceStep == 2) {
-                // Wait until the analog sensor confirms arrival, OR 500ms passes (failsafe)
-                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 500) {
-                    wallPos(WALL_SHOOT);
+                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 1500) {
                     shootTimer.reset();
                     shootSequenceStep = 3;
                 }
             }
 
             else if (shootSequenceStep == 3) {
-                // Wait until the analog sensor confirms arrival, OR 500ms passes (failsafe)
-                if (shootTimer.milliseconds() > 500) {
-                    spindexer.fastRot(spindexer.getPos());
+                if (shootTimer.milliseconds() > 150) {
+                    //wallPos(WALL_SHOOT);
                     shootTimer.reset();
                     shootSequenceStep = 4;
                 }
             }
 
+            //fire
             else if (shootSequenceStep == 4) {
-                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 500) {
-                    // shot complete
-                    shootSequenceStep = -1;
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.fastRot(spindexer.getPos());
                     shootTimer.reset();
+                    shootSequenceStep = 5;
                 }
             }
-            else if(shootTimer.milliseconds() > 4000){
-                shootSequenceStep = 0;
+
+            //detect jamming
+            else if (shootSequenceStep == 5) {
+                if (shootTimer.milliseconds() > 1500) {
+                    shootSequenceStep = 0; // Loop back to the top
+                }
             }
         }
-        else{
-            wallPos(WALL_UP);
+        else {
+            // IDLE STATE (Driver let go of all buttons)
             intakeMotor1.setPower(0);
             intakeMotor2.setPower(0);
-            shootTimer.reset();
-            shootSequenceStep = 0;
+
+            // IDLE CLEANUP SEQUENCE
+            if (shootSequenceStep < 10) {
+               // wallPos(WALL_UP);
+                shootTimer.reset();
+                shootSequenceStep = 10;
+            }
+            else if (shootSequenceStep == 10) {
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.sSP(0, 0);
+                    shootSequenceStep = 12;
+                }
+            }
+            else if (shootSequenceStep == 12) {
+                // safe zone
+            }
         }
     }
 
@@ -240,7 +272,7 @@ public class intakeShoot {
         spindexer.sSP(angle, offset);
     }
     public double getVelocity(){
-        return Math.abs(shootMotor1.getVelocity());
+        return Math.abs(shootMotor2.getVelocity());
     }
     public void stopT(){
        // sensors.stopThread();

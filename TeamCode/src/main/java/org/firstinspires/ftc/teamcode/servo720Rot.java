@@ -254,17 +254,21 @@ public class servo720Rot {
         currentIndex = (currentIndex + 1) % 7;
         sSP(currentIndex, 0);
     }
-    public void fastRot (double Pos){ // jimmy modified
+    public void fastRot (double Pos){
         int currentIndex = 0;
         for(int i = 0; i < 7; i++){
-            //if(positionHoldIntake[i] <= Pos * 1.1 && positionHoldIntake[i] > Pos * .9){
-            if (isAtTarget()) {
+            if(isAtTarget()){
                 currentIndex = i;
                 break;
             }
         }
-        currentIndex = (currentIndex + 3) % 7;
+
+        currentIndex += 6;
+
+        if (currentIndex > 6) {
+            currentIndex = 6;
+        }
+
         sSP(currentIndex, 0);
     }
 }
-

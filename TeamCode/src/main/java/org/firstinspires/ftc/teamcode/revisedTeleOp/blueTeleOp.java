@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+/*package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -18,7 +18,7 @@ public class blueTeleOp extends OpMode {
     // newly created classes
     Drivetrain drivetrain; //all driving functionality and pedro pathing
 
-    /* switched back to autoAimTurret for the scrimmage) */
+    /* switched back to autoAimTurret for the scrimmage)
     //AutoTurret turret; //autoaiming and manual control
     AutoAimTurret turret;
 
@@ -154,4 +154,4 @@ public class blueTeleOp extends OpMode {
     public void stop(){
         shooterAndIntake.stopT();
     }
-}
+}*/

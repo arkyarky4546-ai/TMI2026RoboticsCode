@@ -92,17 +92,20 @@ public class PIDTUNE extends OpMode {
     @Override
     public void loop() {
         follower.update();
+        double current = Math.abs(intakeAndShoot.getVelocity());
+        shooterPower = PIDControl(TargetVelocity, current);
+
        // hood.setPosition(hoodPos);
         //intakeAndShoot.wallPos(.2);
         //double current = Math.abs(intakeAndShoot.getVelocity());
 
         //shooterPower = PIDControl(TargetVelocity, current);
 
-        intakeAndShoot.shootsetVelocity(TargetVelocity);
+        intakeAndShoot.shootsetPower(shooterPower);
         intakeAndShoot.intakesetPower(1);
-        wallPos = 0;
-        intakeAndShoot.wallPos(wallPos);
-        intakeAndShoot.update(1,1, intakeIndex, follower);
+       // wallPos = 0;
+       // intakeAndShoot.wallPos(wallPos);
+
         if (gamepad2.left_trigger > 0.5) {
             if (!intakeIndex) {
                 intakeIndex = true;
@@ -112,10 +115,11 @@ public class PIDTUNE extends OpMode {
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-            intakeAndShoot.update(false, false, true, follower);
+            intakeAndShoot.update(false, false, true, false, follower, telemetry);
+            //intakeAndShoot.simpleShoot();
         }
         else{
-            intakeAndShoot.wallPos(.1);
+            intakeAndShoot.update(true, false, false, false, follower, telemetry);
         }
         if(gamepad2.aWasPressed()){
             hoodPos-=.01;
@@ -136,10 +140,10 @@ public class PIDTUNE extends OpMode {
             TargetVelocity-=25;
         }
         if(gamepad2.dpadLeftWasPressed()){
-            recoil -=.005;
+            intakeAndShoot.wallPos(.5);
         }
         if(gamepad2.dpadRightWasPressed()){
-            recoil += .005;
+            intakeAndShoot.wallPos(0);
         }
         if(gamepad2.leftBumperWasPressed()){
             wallPos -= .025;
@@ -171,19 +175,19 @@ public class PIDTUNE extends OpMode {
             Kf+=.00005;
         }
         intakeAndShoot.hoodPos(hoodPos);
-        intakeAndShoot.shootsetVelocity(TargetVelocity);
+        //intakeAndShoot.shootsetVelocity(TargetVelocity);
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
         telemetry.addData("hoodrecoil", recoil);
         // telemetry.addData("velocity2", );
-        telemetry.addData("shootPower", shooterPower);
+        telemetry.addData("shootPower", TargetVelocity);
         telemetry.addData("shooterHoodPos",hoodPos);
         telemetry.addData("turretPos",turretPos);
         telemetry.addData("distance", distance);
-        telemetry.addData("target", TargetVelocity);
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
+        //telemetry.addData("target", TargetVelocity);
+        telemetry.addData("6767676767", Math.sqrt(Math.pow(138-follower.getPose().getX(),2) + Math.pow(6+follower.getPose().getY(),2)));
+        //telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("p", Kp);
         telemetry.addData("d", Kd);
         telemetry.addData("i", Ki);
