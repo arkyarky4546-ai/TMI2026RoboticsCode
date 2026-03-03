@@ -56,7 +56,7 @@ public class AutoTurret {
         if(aim) {
             double servoAngleNeeded = Angle * gearRatio / 360; //356
             //double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
-            targetPos = (servoAngleNeeded) + CENTER_POSITION;
+            targetPos = (servoAngleNeeded) + (CENTER_POSITION);
 
 //            if (targetPos < 0) {
 //                targetPos += 360 / 355;

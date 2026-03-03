@@ -60,7 +60,7 @@ public class intakeShoot {
     //teleop stuff
     private double intakePower;
     private final double WALL_SHOOT = 0.5;
-    private final double WALL_UP = 0.25;
+    private final double WALL_UP = 0.2;
     private ElapsedTime shootTimer = new ElapsedTime();
     private ElapsedTime debugTimer = new ElapsedTime();
     private boolean setHoodVelocityTurret;
@@ -135,7 +135,7 @@ public class intakeShoot {
 
     public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
-        shootsetVelocity(1000);
+       // shootsetVelocity(1000);
         hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
 
         if (intakeActive) {
@@ -169,15 +169,17 @@ public class intakeShoot {
 
             //  Wake up / Loop restart (Wall goes UP instantly)
             if (shootSequenceStep == 0 || shootSequenceStep == 12) {
+                //spindexer.sSPT();
                 wallPos(WALL_UP);
                 shootTimer.reset();
                 shootSequenceStep = 1;
             }
 
             else if (shootSequenceStep == 1) {
-                if (shootTimer.milliseconds() > 500) {
-                    spindexer.sSP(0, 0);
+                if (shootTimer.milliseconds() > 400) {
+                    spindexer.sSPT();
                     shootTimer.reset();
+                    //wallPos(WALL_SHOOT);
                     shootSequenceStep = 2;
                 }
             }

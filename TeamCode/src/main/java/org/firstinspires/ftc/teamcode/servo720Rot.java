@@ -89,6 +89,12 @@ public class servo720Rot {
             servo2.setPosition(positionHoldShoot[angle]);
         }*/
     }
+
+    public void sSPT() {
+        currentTarget = 0.075;
+        servo.setPosition(currentTarget);
+        servo2.setPosition(currentTarget);
+    }
     //gets current servo positions
     public double getPos(){
         return servo2.getPosition();

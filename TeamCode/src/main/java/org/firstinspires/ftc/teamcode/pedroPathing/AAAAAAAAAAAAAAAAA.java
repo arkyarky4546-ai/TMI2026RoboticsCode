@@ -29,15 +29,15 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(54, -24 , Math.toRadians(90));
     private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(56, -8.5 , Math.toRadians(40));
+    private final Pose hitPose = new Pose(56.2, -8.5 , Math.toRadians(40));
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(65, -24, Math.toRadians(90));
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
     private final Pose acIntakePose3 = new Pose(35, -24, Math.toRadians(90));
     private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
-    private final Pose curve1 = new Pose(70, -40);
-    private final Pose curve2 = new Pose(70, -40, Math.toRadians(0));
-    private final Pose curve3 = new Pose(45, -40, Math.toRadians(0));
+    private final Pose curve1 = new Pose(74, -50);
+    private final Pose curve2 = new Pose(67, -50, Math.toRadians(0));
+    private final Pose curve3 = new Pose(45, -50, Math.toRadians(0));
 
     //paths
     private Path score1;

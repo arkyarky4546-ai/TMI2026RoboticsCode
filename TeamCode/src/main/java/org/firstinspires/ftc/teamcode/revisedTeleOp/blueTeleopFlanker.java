@@ -152,7 +152,7 @@ public class blueTeleopFlanker extends OpMode {
             // Not Shooting (Allow Intake and Default States)
             shootFirst = true;
             drivetrain.setHoldMode(false);
-            shooterAndIntake.wallPos(0.1);
+            shooterAndIntake.wallPos(0.25);
 
             // Only allow intake if the right trigger is NOT pressed
             if(gamepad1.left_trigger > 0.75){
