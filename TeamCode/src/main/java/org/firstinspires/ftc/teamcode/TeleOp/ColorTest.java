@@ -98,7 +98,7 @@ public class ColorTest extends OpMode {
         //double current = Math.abs(intakeAndShoot.getVelocity());
         //shooterPower = PIDControl(TargetVelocity, current);
 
-        // hood.setPosition(hoodPos);
+         hood.setPosition(hoodPos);
         //intakeAndShoot.wallPos(.2);
         double current = Math.abs(intakeAndShoot.getVelocity());
 

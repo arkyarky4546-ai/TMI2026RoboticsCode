@@ -102,7 +102,7 @@ public class PIDTUNE extends OpMode {
         //shooterPower = PIDControl(TargetVelocity, current);
 
         intakeAndShoot.shootsetPower(shooterPower);
-        intakeAndShoot.intakesetPower(1);
+       // intakeAndShoot.intakesetPower(1);
        // wallPos = 0;
        // intakeAndShoot.wallPos(wallPos);
 
@@ -118,9 +118,9 @@ public class PIDTUNE extends OpMode {
             intakeAndShoot.update(false, false, true, false, follower, telemetry);
             //intakeAndShoot.simpleShoot();
         }
-        else{
-            intakeAndShoot.update(true, false, false, false, follower, telemetry);
-        }
+        /*else{
+            intakeAndShoot.update(false, false, false, false, follower, telemetry);
+        }*/
         if(gamepad2.aWasPressed()){
             hoodPos-=.01;
         }

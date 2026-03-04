@@ -162,14 +162,14 @@ public class intakeShoot {
 
     public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
 
-        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
-        double current = Math.abs(getVelocity());
+       /* Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+      //  double current = Math.abs(getVelocity());
 
-        shooterPower = PIDControl(Values.getSpeed(), current);
+       // shooterPower = PIDControl(Values.getSpeed(), current);
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());
-        shootsetPower(shooterPower);
+       // shootsetPower(shooterPower);
        // shootsetVelocity(1000);
         hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
@@ -204,7 +204,133 @@ public class intakeShoot {
                 currentPos = spindexer.getPos();
             }
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 600){
+            if(shooting.milliseconds() > 400){
+                fastShootREAL(currentPos);
+            }
+
+        }*/
+        /*else if (shootActive) {
+            shootsetVelocity(Values.getSpeed());
+            intakesetPower(1);
+
+            //  Wake up / Loop restart (Wall goes UP instantly)
+            if (shootSequenceStep == 0 || shootSequenceStep == 12) {
+                //spindexer.sSPT();
+                wallPos(WALL_UP);
+                shootTimer.reset();
+                shootSequenceStep = 1;
+            }
+
+            else if (shootSequenceStep == 1) {
+                if (shootTimer.milliseconds() > 400) {
+                    spindexer.sSPT();
+                    shootTimer.reset();
+                    //wallPos(WALL_SHOOT);
+                    shootSequenceStep = 2;
+                }
+            }
+
+            else if (shootSequenceStep == 2) {
+                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 1500) {
+                    shootTimer.reset();
+                    shootSequenceStep = 3;
+                }
+            }
+
+            else if (shootSequenceStep == 3) {
+                if (shootTimer.milliseconds() > 150) {
+                    wallPos(WALL_SHOOT);
+                    shootTimer.reset();
+                    shootSequenceStep = 4;
+                }
+            }
+
+            //fire
+            else if (shootSequenceStep == 4) {
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.fastRot(spindexer.getPos());
+                    shootTimer.reset();
+                    shootSequenceStep = 5;
+                }
+            }
+
+            //detect jamming
+            else if (shootSequenceStep == 5) {
+                if (shootTimer.milliseconds() > 1500) {
+                    shootSequenceStep = 0; // Loop back to the top
+                }
+            }
+        }*/
+
+       /* else {
+            // IDLE STATE (Driver let go of all buttons)
+            intakeMotor1.setPower(0);
+            intakeMotor2.setPower(0);
+            shootAc = true;
+            wallPos(WALL_UP);*/
+            // IDLE CLEANUP SEQUENCE
+            /*if (shootSequenceStep < 10) {
+                wallPos(WALL_SHOOT);
+                shootTimer.reset();
+                shootSequenceStep = 10;
+            }
+            else if (shootSequenceStep == 10) {
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.sSP(0, 0);
+                    shootSequenceStep = 12;
+                }
+            }
+            else if (shootSequenceStep == 12) {
+                // safe zone
+            }*/
+
+        //}
+    }
+    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean Auto) {
+
+        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        //double current = Math.abs(getVelocity());
+
+        // shooterPower = PIDControl(Values.getSpeed(), current);
+        telemetry.addData("turretAngle", Values.getTurretPos());
+        telemetry.addData("speed", Values.getSpeed());
+        telemetry.addData("hoodAngle", Values.getHoodPos());
+        // shootsetPower(shooterPower);
+        // shootsetVelocity(1000);
+        //hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+        colorShoot.upColor(spindexer.getPos());
+        if (intakeActive) {
+            spindexer.sSP(0,0);
+            intakesetPower(intakePower);
+            wallPos(WALL_UP);
+            shootSequenceStep = 0;
+        }
+        else if (intakeOut) {
+            intakesetPower(-intakePower);
+            wallPos(WALL_UP);
+            shootSequenceStep = 0;
+        }
+
+        else if (debugActive) {
+            // wallPos(WALL_UP);
+            if(sensorReader.hasBallBL() && sensorReader.hasBallST()){
+                spindexer.sSP(0, 0);
+            }else if (sensorReader.hasBallBL()) {
+                spindexer.sSP(1, 0);
+            } else if (sensorReader.hasBallST()) {
+                spindexer.sSP(1, 0);
+            } else {
+                spindexer.sSP(0, 0);
+            }
+        }
+        else if(shootActive){
+            if(shootAc){
+                shootAc = false;
+                shooting.reset();
+                currentPos = spindexer.getPos();
+            }
+            wallPos(WALL_SHOOT);
+            if(shooting.milliseconds() > 200){
                 fastShootREAL(currentPos);
             }
 
@@ -286,7 +412,6 @@ public class intakeShoot {
 
         }
     }
-
     public void shootsetVelocity(double velocity){
         shootMotor1.setVelocity(-velocity);
         shootMotor2.setVelocity(velocity);
