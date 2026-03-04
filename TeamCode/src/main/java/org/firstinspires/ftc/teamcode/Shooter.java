@@ -25,13 +25,13 @@ public class Shooter {
 //        );
         Vector robotToGoalVector = new Vector(
                 Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
-                Math.atan2(follower.getPose().getY() - goalPose.getY(), goalPose.getX() - follower.getPose().getX())
+                Math.atan2(goalPose.getY() - follower.getPose().getY(), goalPose.getX() - follower.getPose().getX())
         );
         double g = 32.174 * 12; //gravity in inches/second
         //need to make a vector from the robot to the goal from follower I think
         double x = robotToGoalVector.getMagnitude() - ShooterConstants.Pass_Through_Radius;
         double y = ShooterConstants.Score_Height;
-        double a = ShooterConstants.Score_Angle;
+        double a = ShooterConstants.Score_Angle; //radians
         //calculate initial launch components
         //assuming that the robot is not moving
         double hoodAngle = MathFunctions.clamp(Math.atan(2*y/x-Math.tan(a)), ShooterConstants.Hood_Min_Angle, ShooterConstants.Hood_Max_Angle);
@@ -44,7 +44,7 @@ public class Shooter {
         );
         robotVelocity = follower.poseTracker.getVelocity();
         //difference in heading from the robots velocity and the robot to goal vector
-        double coordinateTheta = robotVelocity.getTheta() - robotToGoalVector.getTheta();
+        double coordinateTheta = -robotVelocity.getTheta() + robotToGoalVector.getTheta();
 
         //basically rotate the velocity to have two components: one pointing at the goal and the other perpendicular
         double parallelComponent = -Math.cos(coordinateTheta) * robotVelocity.getMagnitude(); //robot's velocity moving away from the goal
@@ -53,7 +53,7 @@ public class Shooter {
         //velocity compensation variable
         double v2 = flywheelSpeed * Math.sin(hoodAngle); //initial ball speed
         double time = x / (flywheelSpeed * Math.cos(hoodAngle)); //time for ball to get to goal
-        double ivr = x / time + parallelComponent; //compensated ball x velocity in radial direction (ball x velocity + robot 'x' velocity)
+        double ivr = (x / time) + parallelComponent; //compensated ball x velocity in radial direction (ball x velocity + robot 'x' velocity)
         double nvr = Math.sqrt(ivr * ivr + perpendicularComponent * perpendicularComponent); //compensated total ball velocity (tangential compensation =tangential robot speed)
         double ndr = nvr * time; //distance
 
@@ -62,11 +62,11 @@ public class Shooter {
         flywheelSpeed = Math.sqrt(g * ndr * ndr / (2 * Math.pow(Math.cos(hoodAngle), 2) * (ndr * Math.tan(hoodAngle) -y)));
         //update turret
         double turretVelCompOffset = Math.atan(perpendicularComponent / ivr);
-        double turretAngle = Math.toDegrees(robotHeading - robotToGoalVector.getTheta() + turretVelCompOffset);
+        double turretAngle = Math.toDegrees(robotHeading - robotToGoalVector.getTheta() - turretVelCompOffset);
         if (turretAngle > 180) {
             turretAngle -= 360;
         }
-        return new ShotParameters(Math.toDegrees(hoodAngle), flywheelSpeed, turretAngle);
+        return new ShotParameters(hoodAngle, flywheelSpeed, turretAngle);
     }
 
 }
