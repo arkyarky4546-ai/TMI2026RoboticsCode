@@ -92,17 +92,16 @@ public class PIDTUNE extends OpMode {
     @Override
     public void loop() {
         follower.update();
-        double current = Math.abs(intakeAndShoot.getVelocity());
-        shooterPower = PIDControl(TargetVelocity, current);
-
-       // hood.setPosition(hoodPos);
-        //intakeAndShoot.wallPos(.2);
-        //double current = Math.abs(intakeAndShoot.getVelocity());
-
+       double current = Math.abs(intakeAndShoot.getVelocity());
         //shooterPower = PIDControl(TargetVelocity, current);
 
+       // hood.setPosition(hoodPos);
+        //intakeAndShoot.wallPos(.2);/double current = Math.abs(intakeAndShoot.getVelocity());
+
+        shooterPower = PIDControl(TargetVelocity, current);
+
         intakeAndShoot.shootsetPower(shooterPower);
-       // intakeAndShoot.intakesetPower(1);
+        //intakeAndShoot.intakesetPower(1);
        // wallPos = 0;
        // intakeAndShoot.wallPos(wallPos);
 
@@ -115,7 +114,7 @@ public class PIDTUNE extends OpMode {
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-            intakeAndShoot.update(false, false, true, false, follower, telemetry);
+            intakeAndShoot.update(false, false, true, false, follower, telemetry, true);
             //intakeAndShoot.simpleShoot();
         }
         /*else{

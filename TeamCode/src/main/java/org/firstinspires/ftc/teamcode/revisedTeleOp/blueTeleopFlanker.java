@@ -164,7 +164,7 @@ public class blueTeleopFlanker extends OpMode {
             // Not Shooting (Allow Intake and Default States)
             shootFirst = true;
             drivetrain.setHoldMode(false);
-            shooterAndIntake.wallPos(.2127);
+            //shooterAndIntake.wallPos(.2127);
             if(reset) {
                 shooterAndIntake.setPos(0, 0);
             }

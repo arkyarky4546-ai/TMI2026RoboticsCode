@@ -64,9 +64,9 @@ public class Drivetrain {
 
                 //This is how it looks with slowMode on
             else follower.setTeleOpDrive(
-                    left_stick_y,
-                    left_stick_x ,
-                    right_stick_x,
+                   - left_stick_x,
+                    -left_stick_y ,
+                    -right_stick_x,
                     false // Robot Centric
             );
         }
@@ -162,14 +162,14 @@ public class Drivetrain {
 
     public void setModeBlue(){
         mode = BLUE;
-        startingPose = new Pose(80, -30, Math.toRadians(7));
+        startingPose = new Pose(123, -22, Math.toRadians(45));
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }
 
     public void resetCurrentPose(){
         if(mode == BLUE){
-            follower.setPose(new Pose(8.125, 8.625, Math.toRadians(0))); //far left corner of the field
+            follower.setPose(new Pose(8.125, -8.625, Math.toRadians(0))); //far left corner of the field
         }
         else if(mode == RED){
             follower.setPose(new Pose(8.125, -135.375, Math.toRadians(0))); //far right corner of the field
@@ -181,7 +181,7 @@ public class Drivetrain {
             follower.setPose(new Pose(128, -128, Math.toRadians(-47))); //far left corner of the field
         }
         else if(mode == BLUE){
-            follower.setPose(new Pose(128,-26, Math.toRadians(47)));
+            follower.setPose(new Pose(123,-22, Math.toRadians(45)));
         }
     }
 

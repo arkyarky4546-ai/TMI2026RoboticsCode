@@ -24,12 +24,13 @@ public class Blue9far extends OpMode {
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose startPose = new Pose(8.125,-48, Math.toRadians(45)); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose acIntakePose1 = new Pose(8.125, 8.625, Math.toRadians(90));
-    private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(35, -24, Math.toRadians(90));
-    private final Pose endPose1 = new Pose(80, -30, Math.toRadians(0));
-    private final Pose cur = new Pose(30, -37, Math.toRadians(90));
+    private final Pose startPose = new Pose(7.525,-39.721, 1.549); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose acIntakePose1 = new Pose(9.154, -9.340, 1.5798);
+    private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90)); //
+    private final Pose acIntakePose3 = new Pose(35.345, -21.1236, 1.542);
+    private final Pose endPose1 = new Pose(22.922, -34.253, 0.4825);
+    private final Pose cur = new Pose(19.525, -44.956, 0.8875);
+    private final Pose cur1 = new Pose(29.963, -39.621, 1.1389);
 
     //paths
     private Path score1;
@@ -104,8 +105,12 @@ public class Blue9far extends OpMode {
                 .build();
 
         acThirdLoad= follower.pathBuilder()
-                .addPath(new BezierCurve(startPose, cur, acIntakePose3))
-                .setLinearHeadingInterpolation(startPose.getHeading(), acIntakePose3.getHeading())
+                .addPath(new BezierLine(startPose, cur))
+                .setLinearHeadingInterpolation(startPose.getHeading(), cur.getHeading())
+                .addPath(new BezierLine(cur, cur1))
+                .setLinearHeadingInterpolation(cur.getHeading(), cur1.getHeading())
+                .addPath(new BezierLine(cur1, acIntakePose3))
+                .setLinearHeadingInterpolation(cur1.getHeading(), acIntakePose3.getHeading())
                 .build();
 
         end= follower.pathBuilder()
@@ -147,7 +152,7 @@ public class Blue9far extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.2) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.4) {
                     isShoot = false;
 
                     follower.followPath(score1,true);
@@ -385,6 +390,7 @@ public class Blue9far extends OpMode {
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
 
         Lime = new LimeLight(hardwareMap);
+        hood.setPosition(.4);
 
 
 

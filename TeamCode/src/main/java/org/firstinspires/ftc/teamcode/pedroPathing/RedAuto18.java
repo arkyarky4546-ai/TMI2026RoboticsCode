@@ -16,34 +16,33 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "AAAAAAAAAAAAAAAAA", group = "Autonomous")
-public class AAAAAAAAAAAAAAAAA extends OpMode {
+@Autonomous(name = "RedAuto18", group = "Autonomous")
+public class RedAuto18 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose startPose = new Pose(122.38,-18.69, -2.3420214); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(84.14, -53.727, 2.22152); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
+    private final Pose startPose = new Pose(121.39,-123.02, 2.2236); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(83.057, -89.94, -2.3429); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(58.75, -16.1058 , 1.5549);
+    private final Pose acIntakePose1 = new Pose(58.836, -119.178 , -1.571);
     private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(58.845, -10.319 , 1.013);
+    private final Pose hitPose = new Pose(56.823, -129.853, -1.086);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(83.414, -20, 1.573238);
+    private final Pose acIntakePose2 = new Pose(81.75, -120, -1.545);
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(35.46, -20, 1.57494);
-    private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
-    private final Pose curve1 = new Pose(72.28, -51.71, 2.299);
-    private final Pose curve11 = new Pose(61.59, -41.17, 1.7936);
-    private final Pose curve2 = new Pose(82.4, -47.09, 1.87111);
-    private final Pose curve21 = new Pose(83.414, -38.8, 1.573238);
-    private final Pose curve3 = new Pose(60.6, -54.7, 2.26);
-    private final Pose curve31 = new Pose(42.6341, -43.3, 2.0555);
-    private final Pose hit1 = new Pose(62.739872, -26.1, 1.2511);
-    private final Pose hit = new Pose(74.20, -41.41, 1.9363);
+    private final Pose acIntakePose3 = new Pose(32.213, -121.856, -1.589);
+    private final Pose endPose1 = new Pose(55.609, -127.123, -0.8696);
+    private final Pose curve1 = new Pose(71.292, -92.984, -2.0587);
+    private final Pose curve11 = new Pose(62.88, -100.336, -1.868);
+    private final Pose curve2 = new Pose(81.366, -96.297, -1.6349);
+    private final Pose curve21 = new Pose(81.750, -102.5538, -1.5788);
+    private final Pose curve3 = new Pose(56.557, -90.978, -2.487);
+    private final Pose curve31 = new Pose(36.967, -101.489, -1.896);
+    private final Pose hit = new Pose(70.154, -99.95, -1.8197);
+    private final Pose hit1 = new Pose(58.957, -112.072, -1.109);
 
     //paths
     private Path score1;
@@ -521,7 +520,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
         follower.update();
         turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
-       // turretLeft.setPosition(1);
+        // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
         intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
         intakeAndShoot.intakesetPower(1);
@@ -545,7 +544,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     @Override
     public void init() {
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
+        turret.setModeRed();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
@@ -558,14 +557,14 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave"
                 , "wally", "color1", "color2", "shooterHood", follower);
-        intakeAndShoot.setModeBlue();
+
         //thing that controls the servo that goes up and down allowing balls to shoot
         // push = hardwareMap.get(Servo.class, "push");
         hood = hardwareMap.get(Servo.class, "shooterHood");
         //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
-
+        intakeAndShoot.setModeRed();
         Lime = new LimeLight(hardwareMap);
 
 

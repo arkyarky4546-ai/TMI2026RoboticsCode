@@ -174,7 +174,7 @@ public class ColorTest extends OpMode {
             Kf+=.00005;
         }
         intakeAndShoot.hoodPos(hoodPos);
-        //intakeAndShoot.wallPos(wallPos);
+        intakeAndShoot.wallPos(wallPos);
         //intakeAndShoot.shootsetVelocity(TargetVelocity);
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);

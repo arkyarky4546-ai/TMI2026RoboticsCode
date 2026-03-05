@@ -26,10 +26,14 @@ public class shooterThread extends Thread {
     //ts is good practice to comment that you are overriding the thread class stuff. You need to in order to run stuff and you need to call (variable that is a thread).start() to start running the thread
     public void run() {
         while (running) {
+
             params = shooter.calculateShotVectorAndUpdateTurret(robHead, goal, follow);
-            hood = ShooterConstants.hoodDegreesToServoTicks(params.hoodAngle);
-            Speed =ShooterConstants.getFlyWheelTicksFromVelocity(params.flywheelSpeed);
-            turret = params.turretAngle;
+            if(params.flywheelSpeed !=-1){
+                hood = ShooterConstants.hoodDegreesToServoTicks(params.hoodAngle);
+                Speed =ShooterConstants.getFlyWheelTicksFromVelocity(params.flywheelSpeed);
+                turret = params.turretAngle;
+            }
+
             try {
                 Thread.sleep(10); //something called cpu spinning
             } catch (InterruptedException e) {

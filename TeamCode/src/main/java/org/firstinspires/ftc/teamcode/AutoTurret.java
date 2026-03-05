@@ -18,7 +18,7 @@ public class AutoTurret {
     private Servo servoRight;
 
     private static final double SERVO_RANGE_DEGREES = 361.0;
-    private static double CENTER_POSITION = 0.71;
+    private static double CENTER_POSITION = 0.73;
 
 
     private double targetX = 0.0;

@@ -36,9 +36,9 @@ public class Constants {
             .mass(13.87993) //chassis in kg
            .forwardZeroPowerAcceleration(-44.3382333333) //-45.5667 -38.02 -43.17 -44.278 (old was -42.06)
             .lateralZeroPowerAcceleration(-83.901) //-86.7 -77.14 -85.96 -90.84 -78.865 (very inconsistent - old was -82)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.025, 0)) //looked good to me
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.025, 0)) //looked good to me
             .headingPIDFCoefficients(new PIDFCoefficients(1.12, 0, 0, 0.01)) //bumped p up from 1.1 to 1.12
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0.0,0.00001,0.6,0)) //seemed fine
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01,0.0,0.00001,0.6,0)) //seemed fine
             .centripetalScaling(0.000499999)
     ;
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .2, 1);

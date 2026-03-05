@@ -23,10 +23,22 @@ public class Shooter {
 //                goalPose.getX() - follower.getPose().getX(),
 //                goalPose.getY() - follower.getPose().getY()
 //        );
+        try{
+            follower.getPose().getX();
+
+        }
+        catch (NullPointerException e){
+            return new ShotParameters(-1,-1,-1);
+        }
         Vector robotToGoalVector = new Vector(
                 Math.sqrt(Math.pow(goalPose.getX() - follower.getPose().getX(), 2) + Math.pow(goalPose.getY() - follower.getPose().getY(), 2)),
                 Math.atan2(goalPose.getY() - follower.getPose().getY(), goalPose.getX() - follower.getPose().getX())
         );
+        Vector robotToShooterVector = new Vector( //magic number for faster!!! source:trust me bro
+                3.16227766017, //root 10
+                robotHeading + 1.89254688119 //heading - (arctan(1/3) + tau/4
+        );
+        robotToGoalVector = robotToGoalVector.minus(robotToShooterVector);
         double g = 32.174 * 12; //gravity in inches/second
         //need to make a vector from the robot to the goal from follower I think
         double x = robotToGoalVector.getMagnitude() - ShooterConstants.Pass_Through_Radius;
