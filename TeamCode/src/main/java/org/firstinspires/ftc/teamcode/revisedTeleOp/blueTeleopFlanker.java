@@ -27,7 +27,6 @@ public class blueTeleopFlanker extends OpMode {
     public static double recoil = 0.03;
     public static double wallPos = 0.0;
 
-    public double ceilingDOWN = 0.0;
 
     // --- ROBOT SUBSYSTEMS ---
     Drivetrain drivetrain;
@@ -81,7 +80,7 @@ public class blueTeleopFlanker extends OpMode {
     @Override
     public void loop() {
         // --- DRIVETRAIN ---
-        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad1.bWasPressed(), gamepad1.yWasPressed(), gamepad1.dpadRightWasPressed(), gamepad1.dpadLeftWasPressed());
+        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad2.bWasPressed(), gamepad1.yWasPressed(), gamepad2.dpadRightWasPressed(), gamepad2.dpadLeftWasPressed(), gamepad1.dpad_left);
 
         if(gamepad1.a){
             drivetrain.resetCurrentPose();
@@ -101,26 +100,12 @@ public class blueTeleopFlanker extends OpMode {
             shooterAndIntake.colorSort(greenPos, pattern);
         }
 
-        if(gamepad2.dpadUpWasPressed()){
-            ceilingDOWN += 0.1;
-        }
-        if(gamepad2.xWasPressed()){
-            ceilingDOWN -= 0.1;
-        }
-
         double currentHeading = drivetrain.getFollower().getPose().getHeading();
         //  shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
 
        /* double dynamicTurretAngle = shootThread.getTurretPos();
         double dynamicHoodPos = shootThread.getHoodPos();
         double dynamicFlywheelSpeed = shootThread.getSpeed();*/
-
-        if(gamepad2.dpadLeftWasPressed()) { // shootFar
-            shooterAndIntake.setShootFar();
-            aim = false;
-            // Note: Make sure setManualPosition(double pos) is added to AutoTurret.java if you still need this override!
-            // turret.setManualPosition(0.38);
-        }
 
         // Pass the dynamically calculated angle into the turret
         if(aim){
@@ -137,15 +122,15 @@ public class blueTeleopFlanker extends OpMode {
                 pattern = ppg;
             }
         }
-        else if(!aim && gamepad1.dpad_left){
+        /*else if(!aim && gamepad1.dpad_left){
             turret.manualLeft();
         }
         else if(!aim && gamepad1.dpad_right){
             turret.manualRight();
-        }
-        else if(gamepad1.dpadUpWasPressed()){
+        } */
+        else if(gamepad2.dpadUpWasPressed()){
             turret.setCenter();
-            aim = !aim;
+            aim = false;
         }
 
         boolean leftTrigger = false;
@@ -160,7 +145,6 @@ public class blueTeleopFlanker extends OpMode {
             reset = true;
             rightTrigger = true;
             shootFirst = false;
-            drivetrain.setHoldMode(true);
 
             // Feed the dynamically calculated velocity instead of the static TargetVelocity
             //shooterAndIntake.shootsetVelocity(dynamicFlywheelSpeed);
@@ -172,7 +156,6 @@ public class blueTeleopFlanker extends OpMode {
         } else {
             // Not Shooting (Allow Intake and Default States)
             shootFirst = true;
-            drivetrain.setHoldMode(false);
             //shooterAndIntake.wallPos(.2127);
             if(reset) {
                 shooterAndIntake.setPos(0, 0);
@@ -197,7 +180,6 @@ public class blueTeleopFlanker extends OpMode {
         telemetry.addData("Distance", drivetrain.getDistanceFromGoal());
         //telemetry.addData("Calculated Turret Angle", dynamicTurretAngle);
         telemetry.addData("Debug Mode", rightBumper);
-        telemetry.addData("ceilingDOWN", ceilingDOWN);
         // telemetry.addData("BL Vertex Has Ball", shooterAndIntake.getBLBallState());
         //  telemetry.addData("ST Vertex Has Ball", shooterAndIntake.getSTBallState());
     }
