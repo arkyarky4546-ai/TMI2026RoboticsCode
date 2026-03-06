@@ -111,12 +111,9 @@ public class RedAuto18 extends OpMode {
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose1.getHeading())
                 .build();*/
         acFirstLoad=follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1, curve1))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), curve1.getHeading())
-                .addPath(new BezierLine(curve1, curve11))
-                .setLinearHeadingInterpolation(curve1.getHeading(), curve11.getHeading())
-                .addPath(new BezierLine(curve11, acIntakePose1))
-                .setLinearHeadingInterpolation(curve11.getHeading(), acIntakePose1.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve1, curve11, acIntakePose1))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose1.getHeading())
+
                 .build();
         scoreLoad1= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose1, scorePose1))
@@ -135,20 +132,14 @@ public class RedAuto18 extends OpMode {
                 .setLinearHeadingInterpolation(hitPose.getHeading(), scorePose1.getHeading())
                 .build();
         hitLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1,hit))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), hit.getHeading())
-                .addPath(new BezierLine(hit,hit1))
-                .setLinearHeadingInterpolation(hit.getHeading(), hit1.getHeading())
-                .addPath(new BezierLine(hit1,hitPose))
-                .setLinearHeadingInterpolation(hit.getHeading(), hitPose.getHeading())
+                .addPath(new BezierCurve(scorePose1,hit, hit1, hitPose))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), hitPose.getHeading())
+
                 .build();
         acSecondLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1, curve2))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), curve2.getHeading())
-                .addPath(new BezierLine(curve2, curve21))
-                .setLinearHeadingInterpolation(curve2.getHeading(), curve21.getHeading())
-                .addPath(new BezierLine(curve21, acIntakePose2))
-                .setLinearHeadingInterpolation(curve21.getHeading(), acIntakePose2.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve2, curve21, acIntakePose2))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose2.getHeading())
+
                 .build();
         scoreLoad2= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose2, scorePose1))
@@ -163,20 +154,13 @@ public class RedAuto18 extends OpMode {
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose3.getHeading())
                 .build();*/
         acThirdLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1, curve3))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), curve3.getHeading())
-                .addPath(new BezierLine(curve3, curve31))
-                .setLinearHeadingInterpolation(curve3.getHeading(), curve31.getHeading())
-                .addPath(new BezierLine(curve31, acIntakePose3))
-                .setLinearHeadingInterpolation(curve31.getHeading(), acIntakePose3.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve3, curve31,acIntakePose3))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose3.getHeading())
+
                 .build();
         hiLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1,hit))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), hit.getHeading())
-                .addPath(new BezierLine(hit,hit1))
-                .setLinearHeadingInterpolation(hit.getHeading(), hit1.getHeading())
-                .addPath(new BezierLine(hit1,hitPose))
-                .setLinearHeadingInterpolation(hit.getHeading(), hitPose.getHeading())
+                .addPath(new BezierCurve(scorePose1,hit, hit1, hitPose))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), hitPose.getHeading())
                 .build();
         end= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1,endPose1))

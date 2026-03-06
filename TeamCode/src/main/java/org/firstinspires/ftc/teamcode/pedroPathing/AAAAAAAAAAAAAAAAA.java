@@ -56,7 +56,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     double kickUp = 0.68;
     double TargetVelocity = 1200;
     double shooterPower = 0;
-    AutoTurret turret;
+   // AutoTurret turret;
     double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
@@ -112,12 +112,8 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose1.getHeading())
                 .build();*/
         acFirstLoad=follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1, curve1))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), curve1.getHeading())
-                .addPath(new BezierLine(curve1, curve11))
-                .setLinearHeadingInterpolation(curve1.getHeading(), curve11.getHeading())
-                .addPath(new BezierLine(curve11, acIntakePose1))
-                .setLinearHeadingInterpolation(curve11.getHeading(), acIntakePose1.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve1, curve11, acIntakePose1))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose1.getHeading())
                 .build();
         scoreLoad1= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose1, scorePose1))
@@ -136,20 +132,12 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 .setLinearHeadingInterpolation(hitPose.getHeading(), scorePose1.getHeading())
                 .build();
         hitLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1,hit))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), hit.getHeading())
-                .addPath(new BezierLine(hit,hit1))
-                .setLinearHeadingInterpolation(hit.getHeading(), hit1.getHeading())
-                .addPath(new BezierLine(hit1,hitPose))
-                .setLinearHeadingInterpolation(hit.getHeading(), hitPose.getHeading())
+                .addPath(new BezierCurve(scorePose1,hit, hit1, hitPose))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), hitPose.getHeading())
                 .build();
         acSecondLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1, curve2))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), curve2.getHeading())
-                .addPath(new BezierLine(curve2, curve21))
-                .setLinearHeadingInterpolation(curve2.getHeading(), curve21.getHeading())
-                .addPath(new BezierLine(curve21, acIntakePose2))
-                .setLinearHeadingInterpolation(curve21.getHeading(), acIntakePose2.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve2, curve21, acIntakePose2))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose2.getHeading())
                 .build();
         scoreLoad2= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose2, scorePose1))
@@ -164,20 +152,12 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), intakePose3.getHeading())
                 .build();*/
         acThirdLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1, curve3))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), curve3.getHeading())
-                .addPath(new BezierLine(curve3, curve31))
-                .setLinearHeadingInterpolation(curve3.getHeading(), curve31.getHeading())
-                .addPath(new BezierLine(curve31, acIntakePose3))
-                .setLinearHeadingInterpolation(curve31.getHeading(), acIntakePose3.getHeading())
+                .addPath(new BezierCurve(scorePose1, curve3, curve31, acIntakePose3))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose3.getHeading())
                 .build();
         hiLoad= follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1,hit))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), hit.getHeading())
-                .addPath(new BezierLine(hit,hit1))
-                .setLinearHeadingInterpolation(hit.getHeading(), hit1.getHeading())
-                .addPath(new BezierLine(hit1,hitPose))
-                .setLinearHeadingInterpolation(hit.getHeading(), hitPose.getHeading())
+                .addPath(new BezierCurve(scorePose1,hit, hit1, hitPose))
+                .setLinearHeadingInterpolation(scorePose1.getHeading(), hitPose.getHeading())
                 .build();
         end= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose1,endPose1))
@@ -227,7 +207,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .6) {
+                if(actionTimer.getElapsedTimeSeconds() > 3) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad,true);
@@ -266,14 +246,13 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
-                        intakeAndShoot.fastShoot();
                         go = false;
 
                         //this is what I mean about the timer being used to delay stuff
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .5) {
+                    if(actionTimer.getElapsedTimeSeconds() > 2) {
                         isShoot = false;
                         follower.followPath(hiLoad,true);
 
@@ -311,11 +290,10 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(shootTimer.milliseconds() > 100 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
-                    intakeAndShoot.fastShoot();
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
                     follower.followPath(hiLoad,true);
                     isShoot = false;
                     go = true;
@@ -372,11 +350,10 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(shootTimer.milliseconds() > 100 & go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
-                    intakeAndShoot.fastShoot();
-                    go = false;
+                    //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
                     follower.followPath(acSecondLoad,true);
                     isShoot = false;
                     go = true;
@@ -424,11 +401,10 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     isShoot = true;
 
                     //shooting every 800 milliseconds
-                    intakeAndShoot.fastShoot();
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > 1) {
                     go = true;
                     isShoot = false;
                     follower.followPath(acThirdLoad,true);
@@ -477,10 +453,9 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //push.setPosition(kickUp);
                     go = false;
                     isShoot = true;
-                    intakeAndShoot.fastShoot();
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > 1) {
                     //push.setPosition(kickZero);
                     go = true;
                     isShoot = false;
@@ -520,9 +495,11 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+       // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
        // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
+        turretRight.setPosition(1);
+        turretLeft.setPosition(1);
         intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
         intakeAndShoot.intakesetPower(1);
 
@@ -544,8 +521,8 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
     @Override
     public void init() {
-        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
+        //turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        //turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();

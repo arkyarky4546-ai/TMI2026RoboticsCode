@@ -60,7 +60,7 @@ public class intakeShoot {
     //teleop stuff
     private double intakePower;
     private final double WALL_SHOOT = 0.5;
-    private final double WALL_UP = 0.325;
+    private final double WALL_UP = 0.35;
     private ElapsedTime shootTimer = new ElapsedTime();
     private ElapsedTime debugTimer = new ElapsedTime();
     private boolean setHoodVelocityTurret;
@@ -76,8 +76,8 @@ public class intakeShoot {
     private boolean isReversing = false;
     private disAndColor colorShoot;
     private double currentPos = 0.0;
-    private double railDOWN = .5;
-    private double railUP= .7;
+    private double railDOWN = .43;
+    private double railUP= .8;
     private double lastError = 0;
     public static double Kp=0.0121;
     public static double Ki=0.00014;
@@ -173,6 +173,8 @@ public class intakeShoot {
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
        // shootsetVelocity(1000);
         hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
@@ -209,9 +211,10 @@ public class intakeShoot {
 
             }
             rail.setPosition(railDOWN);
+            intakesetPower(1);
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 150){
-                fastShootREAL(currentPos);
+            if(shooting.milliseconds() > 300){
+                simpleShoot();
                 shooting.reset();
             }
 
@@ -294,7 +297,7 @@ public class intakeShoot {
 
         }
     }
-    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean Auto) {
+    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean auto) {
 
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         double current = Math.abs(getVelocity());
@@ -303,7 +306,9 @@ public class intakeShoot {
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());
-        // shootsetPower(shooterPower);
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        shootsetPower(shooterPower);
         // shootsetVelocity(1000);
         hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
@@ -336,11 +341,14 @@ public class intakeShoot {
                 shootAc = false;
                 shooting.reset();
                 currentPos = spindexer.getPos();
+
             }
-            wallPos(WALL_SHOOT);
             rail.setPosition(railDOWN);
-            if(shooting.milliseconds() > 200){
+            intakesetPower(1);
+            wallPos(WALL_SHOOT);
+            if(shooting.milliseconds() > 500){
                 fastShootREAL(currentPos);
+                shooting.reset();
             }
 
         }
@@ -399,11 +407,11 @@ public class intakeShoot {
 
         else {
             // IDLE STATE (Driver let go of all buttons)
-            intakeMotor1.setPower(0);
-            intakeMotor2.setPower(0);
+            //intakeMotor1.setPower(0);
+            //intakeMotor2.setPower(0);
             shootAc = true;
-            wallPos(WALL_UP);
             rail.setPosition(railUP);
+            wallPos(WALL_UP);
             // IDLE CLEANUP SEQUENCE
             /*if (shootSequenceStep < 10) {
                 wallPos(WALL_SHOOT);

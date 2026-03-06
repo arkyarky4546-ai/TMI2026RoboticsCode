@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.math.MathFunctions;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
@@ -68,8 +69,8 @@ public class AutoTurret {
             targetPos = Range.clip(targetPos, 0.0, 1.0);
 //            servoLeft.setPosition(1 - targetPos);
 //            servoRight.setPosition(1 - targetPos);
-            servoLeft.setPosition(targetPos);
-            servoRight.setPosition(targetPos);
+            servoLeft.setPosition(MathFunctions.clamp(targetPos,0,1));
+            servoRight.setPosition(MathFunctions.clamp(targetPos,0,1));
             currentServoPosition = targetPos;
         }
     }
