@@ -18,16 +18,16 @@ import com.pedropathing.geometry.Pose;
 @TeleOp
 public class blueTeleopFlanker extends OpMode {
 
-
     public static double Kp = 0.0121;
     public static double Ki = 0.00014;
     public static double Kd = 0.0000;
     public static double Kf = 0.0000;
 
-
     public static double turretPos = 0.8;
     public static double recoil = 0.03;
     public static double wallPos = 0.0;
+
+    public double ceilingDOWN = 0.0;
 
     // --- ROBOT SUBSYSTEMS ---
     Drivetrain drivetrain;
@@ -99,8 +99,16 @@ public class blueTeleopFlanker extends OpMode {
             reset = false;
             shooterAndIntake.colorSort(greenPos, pattern);
         }
+
+        if(gamepad2.dpadUpWasPressed()){
+            ceilingDOWN += 0.1;
+        }
+        if(gamepad2.xWasPressed()){
+            ceilingDOWN -= 0.1;
+        }
+
         double currentHeading = drivetrain.getFollower().getPose().getHeading();
-      //  shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
+        //  shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
 
        /* double dynamicTurretAngle = shootThread.getTurretPos();
         double dynamicHoodPos = shootThread.getHoodPos();
@@ -175,21 +183,22 @@ public class blueTeleopFlanker extends OpMode {
             }
         }
 
-      //  shooterAndIntake.hoodPos(dynamicHoodPos);
+        //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
         shooterAndIntake.update(leftTrigger, leftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);
         //telemetry.addData("ShootFirst", shootFirst)
-    //    telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
+        //    telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
         telemetry.addData("Current Velocity", shooterAndIntake.getVelocity());
-      //  telemetry.addData("Dynamic Hood Pos", dynamicHoodPos);
+        //  telemetry.addData("Dynamic Hood Pos", dynamicHoodPos);
         telemetry.addData("Distance", drivetrain.getDistanceFromGoal());
         //telemetry.addData("Calculated Turret Angle", dynamicTurretAngle);
         telemetry.addData("Debug Mode", rightBumper);
-       // telemetry.addData("BL Vertex Has Ball", shooterAndIntake.getBLBallState());
-      //  telemetry.addData("ST Vertex Has Ball", shooterAndIntake.getSTBallState());
+        telemetry.addData("ceilingDOWN", ceilingDOWN);
+        // telemetry.addData("BL Vertex Has Ball", shooterAndIntake.getBLBallState());
+        //  telemetry.addData("ST Vertex Has Ball", shooterAndIntake.getSTBallState());
     }
 
     @Override
