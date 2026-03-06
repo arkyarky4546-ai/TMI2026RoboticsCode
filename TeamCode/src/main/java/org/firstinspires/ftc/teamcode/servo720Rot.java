@@ -41,6 +41,7 @@ public class servo720Rot {
 
     //doubles
     double distanceCM = 0.0;
+    double axonv2Offset = 355/360;
     private int green = 1;
     private int purple = 2;
     private double currentTarget = 0.0; // the original getPosition
@@ -84,8 +85,8 @@ public class servo720Rot {
         if(offset == 0) { // intake Pos
             ((ServoImplEx) servo2).setPwmEnable();
             currentTarget = positionHoldIntake[angle];
-            servo.setPosition(currentTarget);
-            servo2.setPosition(currentTarget + servo2Offset);
+            servo.setPosition(currentTarget * axonv2Offset);
+            servo2.setPosition(currentTarget);
         }
         /*if(offset == 1){ // shoot Pos
             servo.setPosition(positionHoldShoot[angle]);

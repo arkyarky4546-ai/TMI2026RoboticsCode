@@ -75,7 +75,9 @@ public class PIDTUNE extends OpMode {
     public static double TURN_Constant = 0.005;
     private ElapsedTime shootTimer1 = new ElapsedTime();
     double limelightPause = System.currentTimeMillis();
+    Servo ceiling;
     int index = 0;
+    double ceilingPos = .55;
     private ElapsedTime shootTimer = new ElapsedTime();
     public double PIDControl(double reference, double state){
         double error=reference-state;
@@ -121,10 +123,10 @@ public class PIDTUNE extends OpMode {
             intakeAndShoot.update(false, false, false, false, follower, telemetry);
         }*/
         if(gamepad2.aWasPressed()){
-            hoodPos-=.01;
+            ceilingPos-=.01;
         }
         if(gamepad2.yWasPressed()){
-            hoodPos+=.01;
+            ceilingPos+=.01;
         }
         if(gamepad2.xWasPressed()){
             turretPos-=.01;
@@ -175,13 +177,14 @@ public class PIDTUNE extends OpMode {
         }
         intakeAndShoot.hoodPos(hoodPos);
         //intakeAndShoot.shootsetVelocity(TargetVelocity);
+        ceiling.setPosition(ceilingPos);
         turretRight.setPosition(turretPos);
         turretLeft.setPosition(turretPos);
         telemetry.addData("velocity1", intakeAndShoot.getVelocity());
         telemetry.addData("hoodrecoil", recoil);
         // telemetry.addData("velocity2", );
         telemetry.addData("shootPower", TargetVelocity);
-        telemetry.addData("shooterHoodPos",hoodPos);
+        telemetry.addData("ceiling",ceilingPos);
         telemetry.addData("turretPos",turretPos);
         telemetry.addData("distance", distance);
         //telemetry.addData("target", TargetVelocity);
@@ -205,6 +208,8 @@ public class PIDTUNE extends OpMode {
                 "spindexRoter", "slave",
                  "wally", "color1", "color2", "shooterHood", follower);
         wallPos = 0.2;
+        ceiling = hardwareMap.get(Servo.class, "ceiling");
+        ceiling.setPosition(ceilingPos);
         intakeAndShoot.wallPos(wallPos);
         hood = hardwareMap.get(Servo.class, "shooterHood");
         push = hardwareMap.get(Servo.class, "push");

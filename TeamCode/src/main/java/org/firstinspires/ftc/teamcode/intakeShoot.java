@@ -61,7 +61,7 @@ public class intakeShoot {
     //teleop stuff
     private double intakePower;
     private final double WALL_SHOOT = 0.5;
-    private final double WALL_UP = 0.35;
+    private final double WALL_UP = 0.36;
     private ElapsedTime shootTimer = new ElapsedTime();
     private ElapsedTime debugTimer = new ElapsedTime();
     private boolean setHoodVelocityTurret;
@@ -79,8 +79,8 @@ public class intakeShoot {
     private double currentPos = 0.0;
     private double railDOWN = .43;
     private double railUP= .8;
-    public double ceilingDOWN = 0.63;
-    public double ceilingUP = 0.55;
+    private double ceilingDOWN = 0.692;
+    private double ceilingUP = 0.55;
     private double lastError = 0;
     public static double Kp=0.0121;
     public static double Ki=0.00014;
@@ -224,7 +224,7 @@ public class intakeShoot {
             intakesetPower(1);
             wallPos(WALL_SHOOT);
             if(shooting.milliseconds() > 300){
-                simpleShoot();
+                fastShootREAL(currentPos);
                 shooting.reset();
             }
 
