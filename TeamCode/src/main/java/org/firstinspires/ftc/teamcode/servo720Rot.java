@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -43,6 +44,7 @@ public class servo720Rot {
     private int green = 1;
     private int purple = 2;
     private double currentTarget = 0.0; // the original getPosition
+    public double servo2Offset = 0.0;
 
 
     public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String color1, String color2){ //jimmy modified
@@ -80,14 +82,24 @@ public class servo720Rot {
     //int angle means what position you want the servo to go to range between 0 to 6
     public void sSP(int angle, int offset){ //jimmy modified
         if(offset == 0) { // intake Pos
+            ((ServoImplEx) servo2).setPwmEnable();
             currentTarget = positionHoldIntake[angle];
-            servo.setPosition(positionHoldIntake[angle]);
-            servo2.setPosition(positionHoldIntake[angle]);
+            servo.setPosition(currentTarget);
+            servo2.setPosition(currentTarget + servo2Offset);
         }
         /*if(offset == 1){ // shoot Pos
             servo.setPosition(positionHoldShoot[angle]);
             servo2.setPosition(positionHoldShoot[angle]);
         }*/
+    }
+
+    public void update() {
+        // If the analog encoder confirms we are at the position, and servo2 is still powered on
+        if (isAtTarget() && ((ServoImplEx) servo2).isPwmEnabled()) {
+
+            // 2. Kill the power to servo2. It will go limp and stop fighting.
+            ((ServoImplEx) servo2).setPwmDisable();
+        }
     }
 
     public void sSPT() {
