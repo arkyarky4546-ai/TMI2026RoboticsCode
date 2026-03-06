@@ -28,13 +28,13 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     private final Pose scorePose1 = new Pose(84.14, -53.727, 2.22152); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(58.75, -16.1058 , 1.5549);
+    private final Pose acIntakePose1 = new Pose(58.75, -20.1058 , 1.5549);
     private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
     private final Pose hitPose = new Pose(58.845, -10.319 , 1.013);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(83.414, -20, 1.573238);
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(35.46, -20, 1.57494);
+    private final Pose acIntakePose3 = new Pose(35.46, -21, 1.57494);
     private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
     private final Pose curve1 = new Pose(72.28, -51.71, 2.299);
     private final Pose curve11 = new Pose(61.59, -41.17, 1.7936);
@@ -207,7 +207,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 3) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.1) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad,true);
@@ -252,7 +252,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > 2) {
+                    if(actionTimer.getElapsedTimeSeconds() > .9) {
                         isShoot = false;
                         follower.followPath(hiLoad,true);
 
@@ -269,7 +269,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
 
             case 6:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .67){
                     follower.followPath(scoreLoad15,true);
                     intakeAndShoot.setPos(0, intakePos);
                     setPathState(7);
@@ -293,7 +293,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
                     follower.followPath(hiLoad,true);
                     isShoot = false;
                     go = true;
@@ -322,7 +322,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     pattern = ppg;
 
                 }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85) {
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .65) {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
@@ -353,7 +353,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2) {
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
                     follower.followPath(acSecondLoad,true);
                     isShoot = false;
                     go = true;
@@ -455,7 +455,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     isShoot = true;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
                     //push.setPosition(kickZero);
                     go = true;
                     isShoot = false;

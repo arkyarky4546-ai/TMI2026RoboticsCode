@@ -75,6 +75,7 @@ public class blueTeleopFlanker extends OpMode {
         //shootThread.start();
 
         //shooterAndIntake.wallPos(0.2);
+
     }
 
     @Override

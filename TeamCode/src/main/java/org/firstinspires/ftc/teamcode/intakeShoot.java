@@ -79,7 +79,7 @@ public class intakeShoot {
     private double currentPos = 0.0;
     private double railDOWN = .43;
     private double railUP= .8;
-    private double ceilingDOWN = 0.692;
+    private double ceilingDOWN = 0.72;
     private double ceilingUP = 0.55;
     private double lastError = 0;
     public static double Kp=0.0121;
@@ -223,7 +223,7 @@ public class intakeShoot {
             ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 300){
+            if(shooting.milliseconds() > 200){
                 fastShootREAL(currentPos);
                 shooting.reset();
             }
@@ -361,7 +361,7 @@ public class intakeShoot {
             ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 500){
+            if(shooting.milliseconds() > 300){
                 fastShootREAL(currentPos);
                 shooting.reset();
             }

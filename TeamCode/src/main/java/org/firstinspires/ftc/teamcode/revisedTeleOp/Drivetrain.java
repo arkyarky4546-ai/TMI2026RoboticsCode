@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.revisedTeleOp;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -27,11 +29,13 @@ public class Drivetrain {
     private final int BLUE = 2;
     private boolean holdPos;
     private boolean field = false;
+    GoBildaPinpointDriver odometry;
+
 
     public Drivetrain(HardwareMap hardwareMap) {
         mode = 0;
         //TODO: determine auto starting pose
-        startingPose = new Pose(65, -97, Math.toRadians(0));
+        //startingPose = new Pose(65, -97, Math.toRadians(0));
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
@@ -41,7 +45,6 @@ public class Drivetrain {
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(8, -96))))
                 .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(0), 0.8))
                 .build();
-
         follower.startTeleopDrive();
 
         holdPos = false;
@@ -94,9 +97,9 @@ public class Drivetrain {
             field = !field;
         }
         else if(intakeFar){
-            Pose targetPose = new Pose(3, -3, Math.toRadians(-90));;
+            Pose targetPose = new Pose(33.801, -104.402, 3.139);;
             if(mode == RED){
-                targetPose = new Pose(3, -133, Math.toRadians(90));
+                targetPose = new Pose(33.25, -37.165, 3.137);
             }
             PathChain twoPointsOrSmthn = follower.pathBuilder()
                     .addPath(new BezierLine(follower.getPose(), targetPose))
@@ -106,9 +109,9 @@ public class Drivetrain {
             automatedDrive = true;
         }
         else if(shootFar){
-            Pose targetPose = new Pose(12, -88, Math.toRadians(-90));;
+            Pose targetPose = new Pose(48.294, -27.725, 0.831);;
             if(mode == RED){
-                targetPose = new Pose(12, -30, Math.toRadians(90));
+                targetPose = new Pose(51.037, -113.766, -1.064);
 
             }
             PathChain twoPointsOrSmthn = follower.pathBuilder()
@@ -155,24 +158,24 @@ public class Drivetrain {
 
     public void setModeRed(){
         mode = RED;
-        startingPose = new Pose(80, -126, Math.toRadians(30));
+        startingPose = new Pose(55.609, -127.123, -.8696);
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }
 
     public void setModeBlue(){
         mode = BLUE;
-        startingPose = new Pose(123, -22, Math.toRadians(45));
+        startingPose = new Pose(58.36, -10.4, .7367);
         follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
     }
 
     public void resetCurrentPose(){
         if(mode == BLUE){
-            follower.setPose(new Pose(8.125, -8.625, Math.toRadians(0))); //far left corner of the field
+            follower.setPose(new Pose(8.125, -132.94, .01975)); //far left corner of the field
         }
         else if(mode == RED){
-            follower.setPose(new Pose(8.125, -135.375, Math.toRadians(0))); //far right corner of the field
+            follower.setPose(new Pose(8.125, -8.625,0)); //far right corner of the field
         }
     }
 

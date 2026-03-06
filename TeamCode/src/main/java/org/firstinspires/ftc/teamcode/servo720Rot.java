@@ -41,7 +41,7 @@ public class servo720Rot {
 
     //doubles
     double distanceCM = 0.0;
-    double axonv2Offset = 355/360;
+    double axonv2Offset = 355.0/360.0;
     private int green = 1;
     private int purple = 2;
     private double currentTarget = 0.0; // the original getPosition
@@ -82,12 +82,12 @@ public class servo720Rot {
     //offset = 1 means shoot posotion so this references posHoldShoot array. offset = 0 means intake position
     //int angle means what position you want the servo to go to range between 0 to 6
     public void sSP(int angle, int offset){ //jimmy modified
-        if(offset == 0) { // intake Pos
-            ((ServoImplEx) servo2).setPwmEnable();
+        //if(offset == 0) { // intake Pos
+           // ((ServoImplEx) servo2).setPwmEnable();
             currentTarget = positionHoldIntake[angle];
-            servo.setPosition(currentTarget * axonv2Offset);
+            servo.setPosition(currentTarget);
             servo2.setPosition(currentTarget);
-        }
+        //}
         /*if(offset == 1){ // shoot Pos
             servo.setPosition(positionHoldShoot[angle]);
             servo2.setPosition(positionHoldShoot[angle]);
@@ -96,11 +96,11 @@ public class servo720Rot {
 
     public void update() {
         // If the analog encoder confirms we are at the position, and servo2 is still powered on
-        if (isAtTarget() && ((ServoImplEx) servo2).isPwmEnabled()) {
+        //if (isAtTarget() && ((ServoImplEx) servo2).isPwmEnabled()) {
 
             // 2. Kill the power to servo2. It will go limp and stop fighting.
-            ((ServoImplEx) servo2).setPwmDisable();
-        }
+            //((ServoImplEx) servo2).setPwmDisable();
+        //}
     }
 
     public void sSPT() {
