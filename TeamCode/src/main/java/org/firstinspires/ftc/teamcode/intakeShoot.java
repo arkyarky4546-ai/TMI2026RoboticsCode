@@ -536,14 +536,4 @@ public class intakeShoot {
     public double getGreen(){
         return colorShoot.foundGreen();
     }
-    public void setShootFar(){
-        setHoodVelocityTurret = !setHoodVelocityTurret;
-        if(mode == BLUE){
-            hoods.setPosition(0.4);
-            shootsetVelocity(1500);
-        }
-        else if(mode == RED){
-
-        }
-    }
 }

@@ -27,7 +27,6 @@ public class Drivetrain {
     private int mode;
     private final int RED = 1;
     private final int BLUE = 2;
-    private boolean holdPos;
     private boolean field = false;
     GoBildaPinpointDriver odometry;
 
@@ -46,11 +45,9 @@ public class Drivetrain {
                 .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(0), 0.8))
                 .build();
         follower.startTeleopDrive();
-
-        holdPos = false;
     }
 
-    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed, boolean intakeFar, boolean shootFar){
+    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed, boolean intakeFar, boolean shootFar, boolean holdPos){
         follower.update();
 
         if (!automatedDrive) {
@@ -201,8 +198,5 @@ public class Drivetrain {
             return 0;
         }
     }
-   public void setHoldMode(boolean hold){
-        holdPos = false;
-   }
 
 }
