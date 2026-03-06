@@ -163,7 +163,6 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 .addPath(new BezierLine(scorePose1,endPose1))
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), endPose1.getHeading())
                 .build();
-
     }
     public void autonomousPathUpdate() throws InterruptedException {//we can add a lot more paths
         switch (pathState) {
