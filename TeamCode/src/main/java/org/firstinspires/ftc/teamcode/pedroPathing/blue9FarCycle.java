@@ -264,9 +264,11 @@ public class blue9FarCycle extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+        // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
+        turretRight.setPosition(.98);
+        turretLeft.setPosition(.98);
         intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
         intakeAndShoot.intakesetPower(1);
 
@@ -277,7 +279,6 @@ public class blue9FarCycle extends OpMode {
             throw new RuntimeException(e);
 
         }
-
 
         //telemetry debugs and current position tracking
         telemetry.addData("x", follower.getPose().getX());
