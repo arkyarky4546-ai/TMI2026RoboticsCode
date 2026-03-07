@@ -318,7 +318,7 @@ public class intakeShoot {
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         double current = Math.abs(getVelocity());
 
-        shooterPower = PIDControl(Values.getSpeed(), current);
+        shooterPower = PIDControl(Values.getSpeed() + 50, current);
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());
@@ -326,7 +326,7 @@ public class intakeShoot {
         telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
         // shootsetVelocity(1000);
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos()-.005, 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
             spindexer.sSP(0,0);
