@@ -42,7 +42,7 @@ public class Red9far extends OpMode {
     double kickUp = 0.68;
     double TargetVelocity = 1200;
     double shooterPower = 0;
-    AutoTurret turret;
+   // AutoTurret turret;
     double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
@@ -79,6 +79,8 @@ public class Red9far extends OpMode {
     int[] ppg = {2,2,1};
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
+
+    public static int TESTVALUE = 0;
 
 
     public double PIDControl(double reference, double state){
@@ -136,7 +138,7 @@ public class Red9far extends OpMode {
                 break;
             case 1:
 
-                if(actionTimer.getElapsedTimeSeconds() > .65 && gate){
+                if(actionTimer.getElapsedTimeSeconds() > 2 && gate){
                     go = true;
                     isShoot = true;
                     gate= false;
@@ -151,7 +153,7 @@ public class Red9far extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.4) {
+                if(actionTimer.getElapsedTimeSeconds() > 5) {
                     isShoot = false;
 
                     follower.followPath(score1,true);
@@ -190,21 +192,21 @@ public class Red9far extends OpMode {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
-                        intakeAndShoot.fastShoot();
+                        //intakeAndShoot.fastShoot();
                         go = false;
 
                         //this is what I mean about the timer being used to delay stuff
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .5) {
+                    if(actionTimer.getElapsedTimeSeconds() > 1.5) {
                         isShoot = false;
                         follower.followPath(score1,true);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
                         //closed wall position
-
+                        intakeAndShoot.setPos(0, intakePos);
                         go = true;
                         intakeIndex = true;
                         actionTimer.resetTimer();
@@ -235,12 +237,13 @@ public class Red9far extends OpMode {
                 if(shootTimer.milliseconds() > 100 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
-                    intakeAndShoot.fastShoot();
+                   // intakeAndShoot.fastShoot();
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
-                    follower.followPath(acThirdLoad,true);
+                if(actionTimer.getElapsedTimeSeconds() > 1.5) {
+                    follower.followPath(score1,true);
+                    intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     go = true;
                     intakeIndex = true;
@@ -271,7 +274,7 @@ public class Red9far extends OpMode {
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85) {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
-                    follower.followPath(scoreLoad2,true);
+                    follower.followPath(scoreLoad1,true);
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
                     setPathState(9);
@@ -296,11 +299,12 @@ public class Red9far extends OpMode {
                 if(shootTimer.milliseconds() > 100 & go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
-                    intakeAndShoot.fastShoot();
+                    //intakeAndShoot.fastShoot();
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .5) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.5) {
+                    intakeAndShoot.setPos(0, intakePos);
                     follower.followPath(end,true);
                     isShoot = false;
                     go = true;
@@ -342,10 +346,10 @@ public class Red9far extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
-        // turretLeft.setPosition(1);
-        //turretRight.setPosition(1);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
+        //turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+         turretLeft.setPosition(.5);
+        turretRight.setPosition(.5);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, false);
         intakeAndShoot.intakesetPower(1);
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
@@ -366,8 +370,8 @@ public class Red9far extends OpMode {
 
     @Override
     public void init() {
-        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
+       // turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        //turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
@@ -380,7 +384,7 @@ public class Red9far extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave"
                 , "wally", "color1", "color2", "shooterHood", follower);
-
+        intakeAndShoot.setModeRed();
         //thing that controls the servo that goes up and down allowing balls to shoot
         // push = hardwareMap.get(Servo.class, "push");
         hood = hardwareMap.get(Servo.class, "shooterHood");

@@ -46,6 +46,9 @@ public class servo720Rot {
     private int purple = 2;
     private double currentTarget = 0.0; // the original getPosition
     public double servo2Offset = 0.0;
+    int[] ppg = {2,2,1};
+    int[] pgp = {2,1,2};
+    int[] gpp = {1,2,2};
 
 
     public servo720Rot(HardwareMap hardwareMap, String servoName, String servoName2, String color1, String color2){ //jimmy modified
@@ -165,6 +168,12 @@ public class servo720Rot {
     }
     public void sort ( double position, int[] pattern){ //up to the other thing prob intake and shoot to rotate and then get color and then store the position that the green ball is in
         int arrayGreenPos = 0;
+        if (pattern == ppg){
+            pattern = gpp;
+        }
+        else if (pattern == gpp){
+            pattern = ppg;
+        }
         int greenPos = 0;
         for(int i = 0; i < 3; i++){
             if(pattern[i] == 1){

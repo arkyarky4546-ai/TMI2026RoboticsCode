@@ -512,7 +512,9 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
         turretRight.setPosition(.98);
         turretLeft.setPosition(.98);
         intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
-        intakeAndShoot.intakesetPower(1);
+        if(!auto) {
+            intakeAndShoot.intakesetPower(1);
+        }
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
