@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.revisedTeleOp;
+/*package org.firstinspires.ftc.teamcode.revisedTeleOp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -135,4 +135,4 @@ public class blueTeleopBeast extends OpMode {
     public void stop(){
         shooterAndIntake.stopT();
     }
-}
+}*/
