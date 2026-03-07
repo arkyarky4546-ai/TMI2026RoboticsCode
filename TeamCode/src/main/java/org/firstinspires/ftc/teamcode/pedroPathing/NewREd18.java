@@ -16,34 +16,33 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "AutoMetaGateBlue", group = "Autonomous")
-public class AutoMetaTurret extends OpMode {
+@Autonomous(name = "Newred18", group = "Autonomous")
+public class NewREd18 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose startPose = new Pose(121,-16.28, .909); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(76.348, -58.33, 1.754); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
+    private final Pose startPose = new Pose(121.39,-123.02, 2.2236); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePose1 = new Pose(83.057, -89.94, -2.3429); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(59.404, -23.476 , 1.562);
+    private final Pose acIntakePose1 = new Pose(58.836, -119.178 , -1.571);
     private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(59.647, -11.804, 1.020);
+    private final Pose hitPose = new Pose(56.823, -129.853, -1.086);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(83.414, -20, 1.573238);
+    private final Pose acIntakePose2 = new Pose(81.75, -120, -1.545);
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(35.46, -21, 1.57494);
-    private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
-    private final Pose curve1 = new Pose(68.665, -49.253, 2.075);
-    private final Pose curve11 = new Pose(61.272, -39.112, 1.7684);
-    private final Pose curve2 = new Pose(82.4, -47.09, 1.87111);
-    private final Pose curve21 = new Pose(83.414, -38.8, 1.573238);
-    private final Pose curve3 = new Pose(60.6, -54.7, 2.26);
-    private final Pose curve31 = new Pose(42.6341, -43.3, 2.0555);
-    private final Pose hit1 = new Pose(60.907, -20.543, 1.183);
-    private final Pose hit = new Pose(66.145, -33.129, 1.566);
+    private final Pose acIntakePose3 = new Pose(32.213, -121.856, -1.589);
+    private final Pose endPose1 = new Pose(55.609, -127.123, -0.8696);
+    private final Pose curve1 = new Pose(71.292, -92.984, -2.0587);
+    private final Pose curve11 = new Pose(62.88, -100.336, -1.868);
+    private final Pose curve2 = new Pose(81.366, -96.297, -1.6349);
+    private final Pose curve21 = new Pose(81.750, -102.5538, -1.5788);
+    private final Pose curve3 = new Pose(56.557, -90.978, -2.487);
+    private final Pose curve31 = new Pose(36.967, -101.489, -1.896);
+    private final Pose hit = new Pose(70.154, -99.95, -1.8197);
+    private final Pose hit1 = new Pose(58.957, -112.072, -1.109);
 
     //paths
     private Path score1;
@@ -56,7 +55,7 @@ public class AutoMetaTurret extends OpMode {
     double kickUp = 0.68;
     double TargetVelocity = 1200;
     double shooterPower = 0;
-     AutoTurret turret;
+    // AutoTurret turret;
     double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
@@ -129,10 +128,8 @@ public class AutoMetaTurret extends OpMode {
                 .setLinearHeadingInterpolation(acIntakePose1.getHeading(), backPose.getHeading())
                 .build();
         scoreLoad15= follower.pathBuilder()
-                .addPath(new BezierLine(hitPose, hit1))
-                .setLinearHeadingInterpolation(hitPose.getHeading(), hit1.getHeading())
-                .addPath(new BezierCurve(hit1, hit, scorePose1))
-                .setLinearHeadingInterpolation(hit1.getHeading(), scorePose1.getHeading())
+                .addPath(new BezierCurve(hitPose, hit1, hit, scorePose1))
+                .setLinearHeadingInterpolation(hitPose.getHeading(), scorePose1.getHeading())
                 .build();
         hitLoad= follower.pathBuilder()
                 .addPath(new BezierCurve(scorePose1,hit, hit1, hitPose))
@@ -177,29 +174,25 @@ public class AutoMetaTurret extends OpMode {
                 intakeAndShoot.setPos(0,intakePos);
                 intakeIndex = false;
                 isShoot = false;
-                shootTimer.reset();
                 //go to the next case
                 setPathState(1);
 
                 break;
             case 1:
-
-                if(!follower.isBusy()){
+                if(follower.getPathCompletion() >90){
                     //reset action timer for holding the score position
                     actionTimer.resetTimer();
                     //method to hold a position
-                    //follower.holdPoint(scorePose1);
+                    follower.holdPoint(scorePose1);
                     //open wall position
-                    //shootTimer.reset();
+                    shootTimer.reset();
                     //push.setPosition(kickUp);
 
                     setPathState(2);}
                 break;
             case 2:
-                if(shootTimer.milliseconds() > 730){
-                    isShoot = true;
-                }
-               /* if(actionTimer.getElapsedTimeSeconds() > .35 && gate){
+
+                if(actionTimer.getElapsedTimeSeconds() > .1 && gate){
                     go = true;
                     isShoot = true;
                     gate= false;
@@ -213,11 +206,11 @@ public class AutoMetaTurret extends OpMode {
 
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
-                }*/
-                if(actionTimer.getElapsedTimeSeconds() > .2 && shootTimer.milliseconds() > 730) {
+                }
+                if(actionTimer.getElapsedTimeSeconds() > .7) {
                     isShoot = false;
 
-                    follower.followPath(acFirstLoad,true);
+                    follower.followPath(acFirstLoad);
                     go = true;
                     intakeAndShoot.setPos(0,intakePos);
                     //push servo is down now
@@ -236,19 +229,19 @@ public class AutoMetaTurret extends OpMode {
                 break;
             case 4:
 
-                if(actionTimer.getElapsedTimeSeconds() > .05) {
+                if(actionTimer.getElapsedTimeSeconds() > .0) {
                     intakeAndShoot.setPos(0,intakePos);
                     intakeIndex = false;
-                    follower.followPath(scoreLoad1,true);
+                    follower.followPath(scoreLoad1);
 
                     setPathState(5);
                 }
                 break;
             case 5:
-                if (follower.isBusy()){
+                if (follower.getPathCompletion() <.90){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy()){
+                if(follower.getPathCompletion() >.90){
                     if(go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
@@ -261,7 +254,7 @@ public class AutoMetaTurret extends OpMode {
                     }
                     if(actionTimer.getElapsedTimeSeconds() > .6) {
                         isShoot = false;
-                        follower.followPath(hiLoad,true);
+                        follower.followPath(hiLoad);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
@@ -277,21 +270,22 @@ public class AutoMetaTurret extends OpMode {
 
             case 6:
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .63){
-                    follower.followPath(scoreLoad15,true);
+                    follower.followPath(scoreLoad15);
 
                     intakeAndShoot.setPos(0, intakePos);
+                    auto = true;
                     actionTimer.resetTimer();
                     setPathState(7);
                 }
                 break;
             case 7:
-                if(actionTimer.getElapsedTimeSeconds()>.05){
+                if(actionTimer.getElapsedTimeSeconds()>.0){
                     auto = true;
                 }
                 if(actionTimer.getElapsedTimeSeconds()>.30){
                     auto = false;
                 }
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion() >.90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -308,7 +302,7 @@ public class AutoMetaTurret extends OpMode {
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .6) {
-                    follower.followPath(hiLoad,true);
+                    follower.followPath(hiLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
                     go = true;
@@ -340,7 +334,7 @@ public class AutoMetaTurret extends OpMode {
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .63) {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
-                    follower.followPath(scoreLoad15,true);
+                    follower.followPath(scoreLoad15);
                     actionTimer.resetTimer();
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
@@ -352,13 +346,13 @@ public class AutoMetaTurret extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(actionTimer.getElapsedTimeSeconds()>.05){
+                if(actionTimer.getElapsedTimeSeconds()>.00){
                     auto = true;
                 }
                 if(actionTimer.getElapsedTimeSeconds()> .3){
                     auto = false;
                 }
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion() > .90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -369,10 +363,10 @@ public class AutoMetaTurret extends OpMode {
                 }
                 break;
             case 11:
-                if (follower.isBusy()){
+                if (follower.getPathCompletion() <.90){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy()){
+                if(follower.getPathCompletion() >.90){
                     if(go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
@@ -385,7 +379,7 @@ public class AutoMetaTurret extends OpMode {
                     }
                     if(actionTimer.getElapsedTimeSeconds() > .6) {
                         isShoot = false;
-                        follower.followPath(hiLoad,true);
+                        follower.followPath(hiLoad);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
@@ -401,21 +395,22 @@ public class AutoMetaTurret extends OpMode {
 
             case 12:
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .63){
-                    follower.followPath(scoreLoad15,true);
+                    follower.followPath(scoreLoad15);
                     intakeAndShoot.setPos(0, intakePos);
+                    auto = true;
                     actionTimer.resetTimer();
                     auto = true;
                     setPathState(13);
                 }
                 break;
             case 13:
-                if(actionTimer.getElapsedTimeSeconds()>.05){
+                if(actionTimer.getElapsedTimeSeconds()>.0){
                     auto = true;
                 }
                 if(actionTimer.getElapsedTimeSeconds()>.3){
                     auto = false;
                 }
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion() >.90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -432,7 +427,7 @@ public class AutoMetaTurret extends OpMode {
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > .6) {
-                    follower.followPath(hiLoad,true);
+                    follower.followPath(hiLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
                     go = true;
@@ -464,7 +459,8 @@ public class AutoMetaTurret extends OpMode {
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .63) {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
-                    follower.followPath(scoreLoad15,true);
+                    follower.followPath(scoreLoad15);
+                    auto = true;
                     //intakeAndShoot.setPos(0,0);
                     actionTimer.resetTimer();
                     scan = true;
@@ -476,13 +472,13 @@ public class AutoMetaTurret extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(actionTimer.getElapsedTimeSeconds()>.05){
+                if(actionTimer.getElapsedTimeSeconds()>.00){
                     auto = true;
                 }
                 if(actionTimer.getElapsedTimeSeconds()>.3){
                     auto = false;
                 }
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion() >.90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -493,10 +489,10 @@ public class AutoMetaTurret extends OpMode {
                 }
                 break;
             case 17:
-                if (follower.isBusy()){
+                if (follower.getPathCompletion() <.90){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy()){
+                if(follower.getPathCompletion() >.90){
                     if(shootTimer.milliseconds() > 100 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
@@ -509,7 +505,7 @@ public class AutoMetaTurret extends OpMode {
                     }
                     if(actionTimer.getElapsedTimeSeconds() > .6) {
                         isShoot = false;
-                        follower.followPath(hiLoad,true);
+                        follower.followPath(hiLoad);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
@@ -532,13 +528,13 @@ public class AutoMetaTurret extends OpMode {
                 }
                 break;
             case 19:
-                if(actionTimer.getElapsedTimeSeconds()>.05){
+                if(actionTimer.getElapsedTimeSeconds()>.0){
                     auto = true;
                 }
                 if(actionTimer.getElapsedTimeSeconds()>.3){
                     auto = false;
                 }
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion() >.90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -591,6 +587,7 @@ public class AutoMetaTurret extends OpMode {
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
                     actionTimer.resetTimer();
+                    auto = true;
                     setPathState(22);
                 }
                 break;
@@ -599,13 +596,13 @@ public class AutoMetaTurret extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(actionTimer.getElapsedTimeSeconds()>.05){
+                if(actionTimer.getElapsedTimeSeconds()>.0){
                     auto = true;
                 }
                 if(actionTimer.getElapsedTimeSeconds()>.3){
                     auto = false;
                 }
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion() >.90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -662,13 +659,15 @@ public class AutoMetaTurret extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-         turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+        // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
-       // turretRight.setPosition(.98);
-        //turretLeft.setPosition(.98);
+        turretRight.setPosition(.91);
+        turretLeft.setPosition(.91);
         intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
-        intakeAndShoot.intakesetPower(1);
+        if(!auto) {
+            intakeAndShoot.intakesetPower(1);
+        }
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
@@ -688,8 +687,8 @@ public class AutoMetaTurret extends OpMode {
 
     @Override
     public void init() {
-        turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
+        //turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        //turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
@@ -702,7 +701,7 @@ public class AutoMetaTurret extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave"
                 , "wally", "color1", "color2", "shooterHood", follower);
-        intakeAndShoot.setModeBlue();
+        intakeAndShoot.setModeRed();
         //thing that controls the servo that goes up and down allowing balls to shoot
         // push = hardwareMap.get(Servo.class, "push");
         hood = hardwareMap.get(Servo.class, "shooterHood");

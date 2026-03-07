@@ -70,7 +70,7 @@ public class PIDTUNE extends OpMode {
     double kickUp = 0.65;
     double Integralsum=0;
     double hoodPos = .4;
-    double turretPos = .8;
+    double turretPos = .91;
     double recoil = .03;
     public static double TURN_Constant = 0.005;
     private ElapsedTime shootTimer1 = new ElapsedTime();
