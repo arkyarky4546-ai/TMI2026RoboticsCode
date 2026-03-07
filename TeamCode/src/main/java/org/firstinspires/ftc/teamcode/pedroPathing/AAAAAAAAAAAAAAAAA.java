@@ -93,6 +93,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     int[] ppg = {2,2,1};
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
+    boolean auto = false;
 
 
     public double PIDControl(double reference, double state){
@@ -178,7 +179,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
                 break;
             case 1:
-                if(!follower.isBusy()){
+                if(follower.getPathCompletion()>.9){
                     //reset action timer for holding the score position
                     actionTimer.resetTimer();
                     //method to hold a position
@@ -191,7 +192,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 break;
             case 2:
 
-                if(actionTimer.getElapsedTimeSeconds() > .35 && gate){
+                if(actionTimer.getElapsedTimeSeconds() > .1 && gate){
                     go = true;
                     isShoot = true;
                     gate= false;
@@ -206,7 +207,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.1) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad,true);
@@ -237,10 +238,10 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 }
                 break;
             case 5:
-                if (follower.isBusy()){
+                if (follower.getPathCompletion()<.9){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy()){
+                if(follower.getPathCompletion()>.9){
                     if(shootTimer.milliseconds() > 100 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
@@ -251,7 +252,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .9) {
+                    if(actionTimer.getElapsedTimeSeconds() > .75) {
                         isShoot = false;
                         follower.followPath(hiLoad,true);
 
@@ -270,13 +271,17 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
             case 6:
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8){
                     follower.followPath(scoreLoad15,true);
+                    auto = true;
+                    actionTimer.resetTimer();
                     intakeAndShoot.setPos(0, intakePos);
                     setPathState(7);
                 }
                 break;
             case 7:
-
-                if(!follower.isBusy()) {
+                if(actionTimer.getElapsedTimeSeconds()>.35){
+                    auto = false;
+                }
+                if(follower.getPathCompletion()>.9) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -292,7 +297,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     follower.followPath(hiLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -326,6 +331,8 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
+                    auto = true;
+                    actionTimer.resetTimer();
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
                     setPathState(10);
@@ -336,7 +343,10 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(!follower.isBusy()) {
+                if(actionTimer.getElapsedTimeSeconds()>.4){
+                    auto = false;
+                }
+                if(follower.getPathCompletion()>.9) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -353,7 +363,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     follower.followPath(acSecondLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -387,7 +397,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion()>.9) {
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
@@ -405,7 +415,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     go = true;
                     isShoot = false;
                     follower.followPath(acThirdLoad,true);
@@ -440,7 +450,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(!follower.isBusy()) {
+                if(follower.getPathCompletion()>.9) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -456,7 +466,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     isShoot = true;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     //push.setPosition(kickZero);
                     go = true;
                     isShoot = false;
@@ -501,7 +511,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
         //turretRight.setPosition(1);
         turretRight.setPosition(.98);
         turretLeft.setPosition(.98);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
         intakeAndShoot.intakesetPower(1);
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power

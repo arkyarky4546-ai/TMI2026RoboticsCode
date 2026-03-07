@@ -318,7 +318,7 @@ public class intakeShoot {
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         double current = Math.abs(getVelocity());
 
-        shooterPower = PIDControl(Values.getSpeed() + 50, current);
+        shooterPower = PIDControl(Values.getSpeed() + 70, current);
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());

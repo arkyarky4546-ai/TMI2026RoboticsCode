@@ -28,7 +28,7 @@ public class MetaGate extends OpMode {
     private final Pose scorePose1 = new Pose(76.348, -58.33, 1.754); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(59.404, -23.476 , 1.562);
+    private final Pose acIntakePose1 = new Pose(59.404, -21.476 , 1.562);
     private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
     private final Pose hitPose = new Pose(58.849, -11.384, 1.01029);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
@@ -172,7 +172,7 @@ public class MetaGate extends OpMode {
             case 0:
                 //the follower is now on the score1 path
                 follower.followPath(score1);
-                intakeAndShoot.setPos(0,intakePos);
+                intakeAndShoot.setPos(0, intakePos);
                 intakeIndex = false;
                 isShoot = false;
                 //go to the next case
@@ -180,7 +180,7 @@ public class MetaGate extends OpMode {
 
                 break;
             case 1:
-                if(follower.getPathCompletion() >.90){
+                if (follower.getPathCompletion() > .90) {
                     //reset action timer for holding the score position
                     actionTimer.resetTimer();
                     //method to hold a position
@@ -189,17 +189,18 @@ public class MetaGate extends OpMode {
                     shootTimer.reset();
                     //push.setPosition(kickUp);
 
-                    setPathState(2);}
+                    setPathState(2);
+                }
                 break;
             case 2:
 
-                if(actionTimer.getElapsedTimeSeconds() > .1 && gate){
+                if (actionTimer.getElapsedTimeSeconds() > .1 && gate) {
                     go = true;
                     isShoot = true;
-                    gate= false;
+                    gate = false;
 
                 }
-                if( shootTimer.milliseconds()> 100 && go) {
+                if (shootTimer.milliseconds() > 100 && go) {
                     //push.setPosition(kickUp);
                     //shooting every 800 milliseconds
                     isShoot = true;
@@ -208,12 +209,12 @@ public class MetaGate extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .7) {
+                if (actionTimer.getElapsedTimeSeconds() > .7) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad);
                     go = true;
-                    intakeAndShoot.setPos(0,intakePos);
+                    intakeAndShoot.setPos(0, intakePos);
                     //push servo is down now
                     //push.setPosition(kickZero);
                     //closed wall position
@@ -222,7 +223,7 @@ public class MetaGate extends OpMode {
                 }
                 break;
             case 3:
-                if(!follower.isBusy()) {
+                if (!follower.isBusy()) {
                     follower.holdPoint(acIntakePose1);
                     actionTimer.resetTimer();
                     setPathState(4);
@@ -230,8 +231,8 @@ public class MetaGate extends OpMode {
                 break;
             case 4:
 
-                if(actionTimer.getElapsedTimeSeconds() > .0) {
-                    intakeAndShoot.setPos(0,intakePos);
+                if (actionTimer.getElapsedTimeSeconds() > .0) {
+                    intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1);
 
@@ -239,11 +240,11 @@ public class MetaGate extends OpMode {
                 }
                 break;
             case 5:
-                if (follower.getPathCompletion() <.90){
+                if (follower.getPathCompletion() < .90) {
                     actionTimer.resetTimer();
                 }
-                if(follower.getPathCompletion() >.90){
-                    if(go) {
+                if (follower.getPathCompletion() > .90) {
+                    if (go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
@@ -253,14 +254,14 @@ public class MetaGate extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .65) {
+                    if (actionTimer.getElapsedTimeSeconds() > .7) {
                         isShoot = false;
                         follower.followPath(hiLoad);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
                         //closed wall position
-                        intakeAndShoot.setPos(0,intakePos);
+                        intakeAndShoot.setPos(0, intakePos);
                         go = true;
                         intakeIndex = true;
                         actionTimer.resetTimer();
@@ -270,7 +271,7 @@ public class MetaGate extends OpMode {
 
 
             case 6:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8){
+                if (!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8) {
                     follower.followPath(scoreLoad15);
 
                     intakeAndShoot.setPos(0, intakePos);
@@ -280,13 +281,13 @@ public class MetaGate extends OpMode {
                 }
                 break;
             case 7:
-                if(actionTimer.getElapsedTimeSeconds()>.0){
+                if (actionTimer.getElapsedTimeSeconds() > .0) {
                     auto = true;
                 }
-                if(actionTimer.getElapsedTimeSeconds()>.30){
+                if (actionTimer.getElapsedTimeSeconds() > .35) {
                     auto = false;
                 }
-                if(follower.getPathCompletion() >.90) {
+                if (follower.getPathCompletion() > .90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -296,15 +297,15 @@ public class MetaGate extends OpMode {
                 }
                 break;
             case 8:
-                if(go) {
+                if (go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .65) {
+                if (actionTimer.getElapsedTimeSeconds() > .7) {
                     follower.followPath(hiLoad);
-                    intakeAndShoot.setPos(0,intakePos);
+                    intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     go = true;
                     intakeIndex = true;
@@ -332,7 +333,7 @@ public class MetaGate extends OpMode {
                     pattern = ppg;
 
                 }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8) {
+                if (!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8) {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15);
@@ -347,13 +348,13 @@ public class MetaGate extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(actionTimer.getElapsedTimeSeconds()>.00){
+                if (actionTimer.getElapsedTimeSeconds() > .00) {
                     auto = true;
                 }
-                if(actionTimer.getElapsedTimeSeconds()> .3){
+                if (actionTimer.getElapsedTimeSeconds() > .35) {
                     auto = false;
                 }
-                if(follower.getPathCompletion() > .90) {
+                if (follower.getPathCompletion() > .90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -364,11 +365,11 @@ public class MetaGate extends OpMode {
                 }
                 break;
             case 11:
-                if (follower.getPathCompletion() <.90){
+                if (follower.getPathCompletion() < .90) {
                     actionTimer.resetTimer();
                 }
-                if(follower.getPathCompletion() >.90){
-                    if(go) {
+                if (follower.getPathCompletion() > .90) {
+                    if (go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
@@ -378,14 +379,14 @@ public class MetaGate extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .65) {
+                    if (actionTimer.getElapsedTimeSeconds() > .7) {
                         isShoot = false;
-                        follower.followPath(hiLoad);
+                        follower.followPath(acSecondLoad);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
                         //closed wall position
-                        intakeAndShoot.setPos(0,intakePos);
+                        intakeAndShoot.setPos(0, intakePos);
                         go = true;
                         intakeIndex = true;
                         actionTimer.resetTimer();
@@ -395,23 +396,14 @@ public class MetaGate extends OpMode {
 
 
             case 12:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8){
-                    follower.followPath(scoreLoad15);
+                if (!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .2) {
+                    follower.followPath(scoreLoad2);
                     intakeAndShoot.setPos(0, intakePos);
-                    auto = true;
-                    actionTimer.resetTimer();
-                    auto = true;
                     setPathState(13);
                 }
                 break;
             case 13:
-                if(actionTimer.getElapsedTimeSeconds()>.0){
-                    auto = true;
-                }
-                if(actionTimer.getElapsedTimeSeconds()>.3){
-                    auto = false;
-                }
-                if(follower.getPathCompletion() >.90) {
+                if (follower.getPathCompletion() > .90) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -421,15 +413,15 @@ public class MetaGate extends OpMode {
                 }
                 break;
             case 14:
-                if(go) {
+                if (go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .65) {
-                    follower.followPath(hiLoad);
-                    intakeAndShoot.setPos(0,intakePos);
+                if (actionTimer.getElapsedTimeSeconds() > .7) {
+                    follower.followPath(end);
+                    intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
                     go = true;
                     intakeIndex = true;
@@ -440,203 +432,6 @@ public class MetaGate extends OpMode {
 
                 break;
             case 15:
-                /*if(scan){
-                    scan = false;
-                    turretLeft.setPosition();
-                    turretRight.setPosition();
-                }*/
-               /* if(Lime.getPatternFromLimelight() == 0){
-                    pattern = gpp;
-
-                }
-                else if(Lime.getPatternFromLimelight() == 1){
-                    pattern = pgp;
-
-                }
-                else if(Lime.getPatternFromLimelight() == 2){
-                    pattern = ppg;
-
-                }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8) {
-                    intakeAndShoot.setPos(0, intakePos);
-                    // intakeAndShoot.findGreen();
-                    follower.followPath(scoreLoad15);
-                    auto = true;
-                    //intakeAndShoot.setPos(0,0);
-                    actionTimer.resetTimer();
-                    scan = true;
-                    setPathState(16);
-                }
-                break;
-            case 16:
-                /*if(intakeAndShoot.findGreen() != 0.0){
-                    intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
-
-                }*/
-                if(actionTimer.getElapsedTimeSeconds()>.00){
-                    auto = true;
-                }
-                if(actionTimer.getElapsedTimeSeconds()>.3){
-                    auto = false;
-                }
-                if(follower.getPathCompletion() >.90) {
-
-                    actionTimer.resetTimer();
-                    shootTimer.reset();
-                    follower.holdPoint(scorePose1);
-                    //intakeAndShoot.setPos(0,0);
-                    //push.setPosition(kickUp);
-                    setPathState(17);
-                }
-                break;
-            case 17:
-                if (follower.getPathCompletion() <.90){
-                    actionTimer.resetTimer();
-                }
-                if(follower.getPathCompletion() >.90){
-                    if(shootTimer.milliseconds() > 100 && go) {
-                        isShoot = true;
-                        // push.setPosition(kickUp);
-                        //shooting every 800 milliseconds
-                        go = false;
-
-                        //this is what I mean about the timer being used to delay stuff
-                        shootTimer.reset();
-
-                    }
-                    if(actionTimer.getElapsedTimeSeconds() > .65) {
-                        isShoot = false;
-                        follower.followPath(hiLoad);
-
-                        //push servo is down now
-                        // push.setPosition(kickZero);
-                        //closed wall position
-                        intakeAndShoot.setPos(0,intakePos);
-                        go = true;
-                        intakeIndex = true;
-                        actionTimer.resetTimer();
-                        setPathState(18);
-                    }
-                }
-
-
-            case 18:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8){
-                    follower.followPath(scoreLoad15,true);
-                    intakeAndShoot.setPos(0, intakePos);
-                    actionTimer.resetTimer();
-                    setPathState(19);
-                }
-                break;
-            case 19:
-                if(actionTimer.getElapsedTimeSeconds()>.0){
-                    auto = true;
-                }
-                if(actionTimer.getElapsedTimeSeconds()>.3){
-                    auto = false;
-                }
-                if(follower.getPathCompletion() >.90) {
-
-                    actionTimer.resetTimer();
-                    shootTimer.reset();
-                    follower.holdPoint(scorePose1);
-                    // push.setPosition(kickUp);
-                    setPathState(20);
-                }
-                break;
-            case 20:
-                if(go) {
-                    //push.setPosition(kickUp);
-                    isShoot = true;
-                    go = false;
-                    shootTimer.reset();
-                }
-                if(actionTimer.getElapsedTimeSeconds() > .65) {
-                    follower.followPath(hiLoad,true);
-                    intakeAndShoot.setPos(0,intakePos);
-                    isShoot = false;
-                    go = true;
-                    intakeIndex = true;
-                    //push.setPosition(kickZero);
-                    actionTimer.resetTimer();
-                    setPathState(21);
-                }
-
-                break;
-            case 21:
-                /*if(scan){
-                    scan = false;
-                    turretLeft.setPosition();
-                    turretRight.setPosition();
-                }*/
-               /* if(Lime.getPatternFromLimelight() == 0){
-                    pattern = gpp;
-
-                }
-                else if(Lime.getPatternFromLimelight() == 1){
-                    pattern = pgp;
-
-                }
-                else if(Lime.getPatternFromLimelight() == 2){
-                    pattern = ppg;
-
-                }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8) {
-                    intakeAndShoot.setPos(0, intakePos);
-                    // intakeAndShoot.findGreen();
-                    follower.followPath(scoreLoad15,true);
-                    //intakeAndShoot.setPos(0,0);
-                    scan = true;
-                    actionTimer.resetTimer();
-                    auto = true;
-                    setPathState(22);
-                }
-                break;
-            case 22:
-                /*if(intakeAndShoot.findGreen() != 0.0){
-                    intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
-
-                }*/
-                if(actionTimer.getElapsedTimeSeconds()>.0){
-                    auto = true;
-                }
-                if(actionTimer.getElapsedTimeSeconds()>.3){
-                    auto = false;
-                }
-                if(follower.getPathCompletion() >.90) {
-
-                    actionTimer.resetTimer();
-                    shootTimer.reset();
-                    follower.holdPoint(scorePose1);
-                    //intakeAndShoot.setPos(0,0);
-                    //push.setPosition(kickUp);
-                    setPathState(23);
-                }
-                break;
-            case 23:
-                if(go) {
-                    //push.setPosition(kickUp);
-                    go = false;
-                    isShoot = true;
-                    shootTimer.reset();
-                }
-                if(actionTimer.getElapsedTimeSeconds() > .65) {
-                    //push.setPosition(kickZero);
-                    go = true;
-                    isShoot = false;
-                    intakeAndShoot.setPos(0,intakePos);
-                    follower.followPath(end,true);
-                    setPathState(24);
-                }
-                break;
-
-            case 24:
-                if(!follower.isBusy()){
-                    intakeAndShoot.setPos(0, intakePos);
-                    setPathState(25);
-                }
-                break;
-            case 25:
                 break;
         }
     }
