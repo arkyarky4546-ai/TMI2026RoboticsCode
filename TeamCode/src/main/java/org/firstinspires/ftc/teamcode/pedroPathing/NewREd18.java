@@ -25,7 +25,7 @@ public class NewREd18 extends OpMode {
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose startPose = new Pose(121.39,-123.02, 2.2236); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose startPose = new Pose(122.39,-127.42, 2.2036); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(83.057, -89.94, -2.3429); // Scoring Pose of our robot. (Random for right now idk where we will score)
     private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(58.836, -119.178 , -1.571);
@@ -193,7 +193,7 @@ public class NewREd18 extends OpMode {
                 break;
             case 2:
 
-                if(actionTimer.getElapsedTimeSeconds() > .1 && gate){
+                if(actionTimer.getElapsedTimeSeconds() > .05 && gate){
                     go = true;
                     isShoot = true;
                     gate= false;
@@ -208,7 +208,7 @@ public class NewREd18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .78) {
+                if(actionTimer.getElapsedTimeSeconds() > .81) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad,true);
@@ -243,7 +243,7 @@ public class NewREd18 extends OpMode {
                     actionTimer.resetTimer();
                 }
                 if(follower.getPathCompletion()>.9){
-                    if(shootTimer.milliseconds() > 100 && go) {
+                    if(shootTimer.milliseconds() > 50 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
@@ -253,7 +253,7 @@ public class NewREd18 extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .8) {
+                    if(actionTimer.getElapsedTimeSeconds() > .82) {
                         isShoot = false;
                         follower.followPath(hiLoad,true);
 
@@ -298,7 +298,7 @@ public class NewREd18 extends OpMode {
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .78) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     follower.followPath(hiLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -364,7 +364,7 @@ public class NewREd18 extends OpMode {
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .78) {
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
                     follower.followPath(acSecondLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;

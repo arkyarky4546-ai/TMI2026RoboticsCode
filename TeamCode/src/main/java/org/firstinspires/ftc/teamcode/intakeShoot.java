@@ -248,7 +248,7 @@ public class intakeShoot {
 
             }
             rail.setPosition(railDOWN);
-            ceiling.setPosition(ceilingDOWN);
+           simpleShoot();
             intakesetPower(1);
             wallPos(WALL_SHOOT);
             if(!far){
@@ -265,7 +265,6 @@ public class intakeShoot {
 
                 shooting.reset();
             }
-
         }
         /*else if (shootActive) {
             shootsetVelocity(Values.getSpeed());
@@ -503,7 +502,7 @@ public class intakeShoot {
         telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
         // shootsetVelocity(1000);
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - .06, 0.0, 1));
+        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() +.06, 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
             spindexer.sSP(0,0);
@@ -542,7 +541,7 @@ public class intakeShoot {
             ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 500){
+            if(shooting.milliseconds() > 600){
                 simpleShoot();
                 shooting.reset();
             }
