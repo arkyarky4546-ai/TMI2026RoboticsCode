@@ -116,7 +116,7 @@ public class PIDTUNE extends OpMode {
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-            intakeAndShoot.update(false, false, true, false, follower, telemetry);
+            intakeAndShoot.update(false, false, false, true, false, follower, telemetry);
             //intakeAndShoot.simpleShoot();
         }
         /*else{

@@ -113,11 +113,11 @@ public class ColorTest extends OpMode {
                 intakeAndShoot.setPos(0, 0);
         }
         if (gamepad2.right_trigger > 0.5) {
-            intakeAndShoot.update(false, false, true, false, follower, telemetry);
+            intakeAndShoot.update(false, false, false, true, false, follower, telemetry);
             //intakeAndShoot.simpleShoot();
         }
         else{
-            intakeAndShoot.update(true, false, false, false, follower, telemetry);
+            intakeAndShoot.update(true, false, false, false, false, follower, telemetry);
         }
         if(gamepad2.aWasPressed()){
             intakeAndShoot.simpleShoot();
