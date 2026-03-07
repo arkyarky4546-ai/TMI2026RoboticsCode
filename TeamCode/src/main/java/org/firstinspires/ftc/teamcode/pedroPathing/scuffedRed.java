@@ -15,8 +15,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
-@Autonomous(name = "NewREd18", group = "Autonomous")
-public class NewREd18 extends OpMode {
+
+@Autonomous(name = "scuffedRed", group = "Autonomous")
+public class scuffedRed extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
     public static double curve = -92.297;
@@ -206,7 +207,7 @@ public class NewREd18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .81) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.3) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad,true);
@@ -251,7 +252,7 @@ public class NewREd18 extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .82) {
+                    if(actionTimer.getElapsedTimeSeconds() > 1.2) {
                         isShoot = false;
                         follower.followPath(hiLoad,true);
 
@@ -296,7 +297,7 @@ public class NewREd18 extends OpMode {
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.2) {
                     follower.followPath(hiLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -362,7 +363,7 @@ public class NewREd18 extends OpMode {
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.2) {
                     follower.followPath(acSecondLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -414,7 +415,7 @@ public class NewREd18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.2) {
                     go = true;
                     isShoot = false;
                     follower.followPath(acThirdLoad,true);
@@ -465,7 +466,7 @@ public class NewREd18 extends OpMode {
                     isShoot = true;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.2) {
                     //push.setPosition(kickZero);
                     go = true;
                     isShoot = false;
@@ -510,7 +511,7 @@ public class NewREd18 extends OpMode {
         //turretRight.setPosition(1);
         turretRight.setPosition(TURRETPOS);
         turretLeft.setPosition(TURRETPOS);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto, false);
         if(!auto) {
             intakeAndShoot.intakesetPower(1);
         }

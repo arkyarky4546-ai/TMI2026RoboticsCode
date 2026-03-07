@@ -252,7 +252,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .75) {
+                    if(actionTimer.getElapsedTimeSeconds() > .8) {
                         isShoot = false;
                         follower.followPath(hiLoad,true);
 
@@ -269,7 +269,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
 
             case 6:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
                     follower.followPath(scoreLoad15,true);
                     auto = true;
                     actionTimer.resetTimer();
@@ -327,7 +327,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     pattern = ppg;
 
                 }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .8) {
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
@@ -363,7 +363,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     follower.followPath(acSecondLoad,true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -415,7 +415,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     go = true;
                     isShoot = false;
                     follower.followPath(acThirdLoad,true);
@@ -466,7 +466,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     isShoot = true;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     //push.setPosition(kickZero);
                     go = true;
                     isShoot = false;

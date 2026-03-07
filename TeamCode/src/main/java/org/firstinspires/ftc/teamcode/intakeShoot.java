@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -14,7 +13,6 @@ import org.firstinspires.ftc.teamcode.revisedTeleOp.SensorThread;
 import org.firstinspires.ftc.teamcode.revisedTeleOp.sensCalc;
 import org.firstinspires.ftc.teamcode.revisedTeleOp.sensCalc1;
 import org.firstinspires.ftc.teamcode.servo720Rot;
-@Config
 //added jimmy's code
 public class intakeShoot {
 
@@ -351,8 +349,9 @@ public class intakeShoot {
         spindexer.update();
     }
     public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean auto) {
-
-        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        if(mode == BLUE) {
+            Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        }
         double current = Math.abs(getVelocity());
 
         shooterPower = PIDControl(Values.getSpeed(), current);
@@ -363,7 +362,7 @@ public class intakeShoot {
         telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
         // shootsetVelocity(1000);
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - .06, 0.0, 1));
+        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
             spindexer.sSP(0,0);
@@ -494,8 +493,12 @@ public class intakeShoot {
         spindexer.update();
     }
     public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean auto, boolean far) {
-
-        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        if(mode == BLUE) {
+            Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        }
+        else{
+            Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+        }
         double current = Math.abs(getVelocity());
 
         shooterPower = PIDControl(Values.getSpeed(), current);
@@ -545,7 +548,7 @@ public class intakeShoot {
             ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 600){
+            if(shooting.milliseconds() > 300){
                 simpleShoot();
                 shooting.reset();
             }
