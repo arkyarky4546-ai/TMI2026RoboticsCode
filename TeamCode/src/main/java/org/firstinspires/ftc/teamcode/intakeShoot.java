@@ -78,7 +78,7 @@ public class intakeShoot {
     private boolean isReversing = false;
     private disAndColor colorShoot;
     private double currentPos = 0.0;
-    private double railDOWN = .5;
+    private double railDOWN = .512;
     private double railUP= .38;
     private double ceilingDOWN = 0.80;
     private double ceilingUP = 0.55;
@@ -248,22 +248,26 @@ public class intakeShoot {
 
             }
             rail.setPosition(railDOWN);
-           simpleShoot();
             intakesetPower(1);
             wallPos(WALL_SHOOT);
+            ceiling.setPosition(ceilingDOWN);
             if(!far){
                 if(shooting.milliseconds() > 200){
                     fastShootREAL(currentPos);
+                    rail.setPosition(railDOWN);
+                    shooting.reset();
                 }
 
-                shooting.reset();
+
             }
             else{
                 if(shooting.milliseconds() > 300){
+                    shooting.reset();
+                    rail.setPosition(railDOWN);
                     simpleShoot();
                 }
 
-                shooting.reset();
+
             }
         }
         /*else if (shootActive) {

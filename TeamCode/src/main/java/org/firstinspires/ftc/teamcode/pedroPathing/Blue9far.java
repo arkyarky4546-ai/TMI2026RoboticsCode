@@ -348,7 +348,7 @@ public class Blue9far extends OpMode {
         //turretRight.setPosition(1);
         intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
         intakeAndShoot.intakesetPower(1);
-
+//.96
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
             autonomousPathUpdate(); //updating our cases so that we can change paths

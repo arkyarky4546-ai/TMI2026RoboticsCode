@@ -91,7 +91,8 @@ public class servo720Rot {
             servo.setPosition(currentTarget);
             servo2.setPosition(currentTarget);
         //}
-        /*if(offset == 1){ // shoot Pos
+        /*if(offset == 1){ // shoot Posaa
+
             servo.setPosition(positionHoldShoot[angle]);
             servo2.setPosition(positionHoldShoot[angle]);
         }*/
