@@ -16,7 +16,7 @@ import com.pedropathing.geometry.Pose;
 
 @Configurable
 @TeleOp
-public class blueTeleopFlanker extends OpMode {
+public class redTeleopFlanker extends OpMode {
 
     public static double Kp = 0.0121;
     public static double Ki = 0.00014;
@@ -51,12 +51,12 @@ public class blueTeleopFlanker extends OpMode {
     @Override
     public void init() {
         drivetrain = new Drivetrain(hardwareMap);
-        drivetrain.setModeBlue();
+        drivetrain.setModeRed();
         Lime = new LimeLight(hardwareMap);
 
         // Initialize the new AutoTurret
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
+        turret.setModeRed();
 
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.pipelineSwitch(6);
@@ -66,7 +66,7 @@ public class blueTeleopFlanker extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave",
                 "wally", "color1", "color2", "shooterHood", drivetrain.getFollower());
-        shooterAndIntake.setModeBlue();
+        shooterAndIntake.setModeRed();
 
         shooterCalculator = new Shooter();
         double initialHeading = drivetrain.getFollower().getPose().getHeading();

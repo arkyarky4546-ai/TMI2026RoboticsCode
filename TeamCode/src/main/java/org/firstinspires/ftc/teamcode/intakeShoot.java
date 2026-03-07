@@ -172,7 +172,7 @@ public class intakeShoot {
 
     }
 
-    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
+    public void update(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
 
         Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         double current = Math.abs(getVelocity());
@@ -194,11 +194,14 @@ public class intakeShoot {
             shootSequenceStep = 0;
             ceiling.setPosition(ceilingUP);
         }
-        else if (intakeOut) {
+        else if (intakeOut || gateIntakeOut) {
             intakesetPower(-intakePower);
             wallPos(WALL_UP);
             shootSequenceStep = 0;
             ceiling.setPosition(ceilingUP);
+            if(gateIntakeOut){
+                rail.setPosition(railUP);
+            }
         }
 
         else if (debugActive) {
