@@ -529,6 +529,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+
         telemetry.update();
     }
 

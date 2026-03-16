@@ -85,6 +85,7 @@ public class intakeShoot {
     public static double Ki=0.00014;
     public static double Kd=0.0000;
     public static double Kf=.0000;
+    public boolean nIsTrue = false;
     ElapsedTime timer=new ElapsedTime();
     ElapsedTime intakeOutTimer = new ElapsedTime();
     double lasterror=0;
@@ -184,6 +185,7 @@ public class intakeShoot {
         }
 
         double current = Math.abs(getVelocity());
+
         try{
             if(follower.getPose().getX() < 30) {
                 far = true;
@@ -198,9 +200,11 @@ public class intakeShoot {
 
         }
         catch (NullPointerException e){
-            ;
+            ;nIsTrue = true;
         }
-
+        telemetry.addData("Theospeed", Values.getSpeed());
+        telemetry.addData("Acspeed", current);
+        telemetry.addData("nIsTrue", nIsTrue);
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());
