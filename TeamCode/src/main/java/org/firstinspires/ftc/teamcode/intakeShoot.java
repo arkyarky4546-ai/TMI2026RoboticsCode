@@ -78,7 +78,7 @@ public class intakeShoot {
     private double currentPos = 0.0;
     private double railDOWN = .512;
     private double railUP= .38;
-    private double ceilingDOWN = 0.80;
+    private double ceilingDOWN = 0.82;
     private double ceilingUP = 0.55;
     private double lastError = 0;
     public static double Kp=0.0121;
