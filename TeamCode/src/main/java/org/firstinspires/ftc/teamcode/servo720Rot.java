@@ -61,8 +61,9 @@ public class servo720Rot {
         colorSensors[0] = hardwareMap.get(NormalizedColorSensor.class, color1);
         colorSensors[1] = hardwareMap.get(NormalizedColorSensor.class, color2);
         //these are the various shoot and intake positions (since the gear ratio is 5/2, I chose the positions in order to have 720 degrees of rotation)
-        positionHoldShoot = new double[] {0.0740442655936 , 0.222132796781 , 0.370221327968 , 0.518309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
-        positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.450704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
+        //positionHoldShoot = new double[] {0.0740442655936 , 0.222132796781 , 0.370221327968 , 0.518309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
+        positionHoldShoot = new double[] {0.0240442655936 , 0.172132796781 , 0.320221327968 , 0.47309859155 , 0.666398390342 , 0.814486921529 , 0.962575452716};
+        positionHoldIntake = new double[] {0 , 0.150234741784 , 0.300469483568 , 0.40704225352 , 0.600938967136 , 0.75117370892 , 0.901408450704};
     }
 
     //jimmy add
@@ -85,17 +86,17 @@ public class servo720Rot {
     //offset = 1 means shoot posotion so this references posHoldShoot array. offset = 0 means intake position
     //int angle means what position you want the servo to go to range between 0 to 6
     public void sSP(int angle, int offset){ //jimmy modified
-        //if(offset == 0) { // intake Pos
+        if(offset == 0) { // intake Pos
            // ((ServoImplEx) servo2).setPwmEnable();
             currentTarget = positionHoldIntake[angle];
             servo.setPosition(currentTarget);
             servo2.setPosition(currentTarget);
-        //}
-        /*if(offset == 1){ // shoot Posaa
+        }
+        if(offset == 1){ // shoot Posaa
 
             servo.setPosition(positionHoldShoot[angle]);
             servo2.setPosition(positionHoldShoot[angle]);
-        }*/
+        }
     }
 
     public void update() {
@@ -192,7 +193,7 @@ public class servo720Rot {
         if(greenPos < 0){
             greenPos = 3 + greenPos;
         }
-        sSP(greenPos,0);
+        sSP(greenPos,1);
     }
     //this gets the nearest open position so you can easily rotate to it mode is either 1 or 0, 1 for shoot and 0 for intake
     /*public int getFree(int mode, double currentPos) {
@@ -294,6 +295,18 @@ public class servo720Rot {
         }
         currentIndex = (currentIndex + 1) % 7;
         sSP(currentIndex, 0);
+    }
+    public void regRot2 (double Pos){ //jimmy modified
+        int currentIndex = 0;
+        for(int i = 0; i < 7; i++){
+            if(positionHoldShoot[i] <= Pos * 1.1 && positionHoldShoot[i] > Pos * .9){
+                // if (isAtTarget()) {
+                currentIndex = i;
+                break;
+            }
+        }
+        currentIndex = (currentIndex + 1) % 7;
+        sSP(currentIndex, 1);
     }
     public void fastRot (double Pos){
         int currentIndex = 0;

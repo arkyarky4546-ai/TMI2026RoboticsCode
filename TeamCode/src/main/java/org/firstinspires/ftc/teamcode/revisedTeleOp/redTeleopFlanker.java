@@ -47,6 +47,7 @@ public class redTeleopFlanker extends OpMode {
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
     private boolean reset = true;
+    private boolean jorkIt = false;
 
     @Override
     public void init() {
@@ -111,7 +112,9 @@ public class redTeleopFlanker extends OpMode {
         if(aim){
             turret.updateAuto(drivetrain.getFollower(), telemetry, shooterAndIntake.turretAngle(), aim);
         }
-
+        if(gamepad2.xWasPressed()){
+            jorkIt = !jorkIt;
+        }
         if(gamepad2.dpadDownWasPressed()){
             aim = !aim;
             if(Lime.getPatternFromLimelight() == 0){
@@ -170,7 +173,7 @@ public class redTeleopFlanker extends OpMode {
 
         //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
-        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry);
+        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, jorkIt);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);

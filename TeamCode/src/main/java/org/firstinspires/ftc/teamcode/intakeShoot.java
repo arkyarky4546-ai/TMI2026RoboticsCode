@@ -26,6 +26,7 @@ public class intakeShoot {
 
     private Servo wall;
     private Servo ceiling;
+    private Servo rail1;
     //doubles
     //variable that controls shooting power
     private double shootPower;
@@ -57,11 +58,14 @@ public class intakeShoot {
     private shooterThread Values;
     private Servo hoods;
     private Shooter shooter = new Shooter();
+    private double recoil = .025;
+    private boolean shootingBall = false;
 
     //teleop stuff
     private double intakePower;
     private final double WALL_SHOOT = 0.5;
     private final double WALL_UP = 0.36;
+    private final double WALL_UP1 = 0.2;
     private ElapsedTime shootTimer = new ElapsedTime();
     private ElapsedTime debugTimer = new ElapsedTime();
     private boolean setHoodVelocityTurret;
@@ -79,13 +83,18 @@ public class intakeShoot {
     private double currentPos = 0.0;
     private double railDOWN = .512;
     private double railUP= .38;
-    private double ceilingDOWN = 0.82;
+    private double railUP1= .644;
+    private double ceilingDOWN = 0.69;
     private double ceilingUP = 0.55;
     private double lastError = 0;
     public static double Kp=0.0121;
     public static double Ki=0.00014;
     public static double Kd=0.0000;
     public static double Kf=.0000;
+    private double currentValue = 0.0;
+    private boolean shootReset = false;
+    ElapsedTime recoilTimer=new ElapsedTime();
+
     public boolean nIsTrue = false;
     ElapsedTime timer=new ElapsedTime();
     ElapsedTime intakeOutTimer = new ElapsedTime();
@@ -98,6 +107,8 @@ public class intakeShoot {
     public static double SPINOFFSET = 50;
     public static double SHOOTOFFSET = 0;
     public static double HOODOFFSET = .00;
+    private boolean sortWall = false;
+    private ElapsedTime oscillationTimer = new ElapsedTime();
 
     public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String wallName, String colorS1, String colorS2, String shooterHood, Follower follower) {
         //constructor this is where everything is initialized
@@ -110,6 +121,7 @@ public class intakeShoot {
         disBL = hardwareMap.get(DistanceSensor.class, "disBL");
         disST = hardwareMap.get(DistanceSensor.class, "disST");
         rail = hardwareMap.get(Servo.class, "rail");
+        rail1 = hardwareMap.get(Servo.class, "rail1");
         ceiling = hardwareMap.get(Servo.class, "ceiling");
 
         //starting all the timers
@@ -135,6 +147,7 @@ public class intakeShoot {
         setHoodVelocityTurret = false;
         ceiling.setPosition(ceilingUP);
         rail.setPosition(railUP);
+        rail1.setPosition(railUP1);
 
     }
     public double PIDControl(double reference, double state){
@@ -149,34 +162,8 @@ public class intakeShoot {
         return output;
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
-    public void update(double intakePower, int pathstate, boolean intake, Follower follower){
-        Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
-        if(pathstate == 16) {
-            shootPower = 0;
-            intakePower = 0;
-        }
-        else {
-            //using PID and a targetVelocity in order to keep the right motor velocity
-            //shootsetVelocity(Values.getSpeed());
-        }
-        //setting the power of the shooter and intake here
-        //shootsetPower(shootPower);
-        intakesetPower(intakePower);
 
-        //hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
-        //this is where the automatic intake takes place, if a ball has been intaked, it triggers our main distance sensor and rotates using my custom class
-        /*distance = sensors.getIntakeDistance();
-        if((distance < 10) && Intaketimer.milliseconds() > 263 && intake){
-            //spindexer.sSP(spindexer.getFree(0, spindexer.getPos()),0);
-            simpleShoot();
-            Intaketimer.reset();
-
-        }*/
-        spindexer.update();
-
-    }
-
-    public void update(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry) {
+    public void update(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         }
@@ -190,12 +177,17 @@ public class intakeShoot {
             if(follower.getPose().getX() < 30) {
                 far = true;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
-                hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
+                if(!shootingBall) {
+                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
+                }
             }
             else{
                 far = false;
                 shooterPower = PIDControl(Values.getSpeed(), current);
-                hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+                if(!shootingBall) {
+                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+                }
+
             }
 
         }
@@ -214,7 +206,7 @@ public class intakeShoot {
        // shootsetVelocity(1000);
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
-            spindexer.sSP(0,0);
+            //spindexer.sSP(0,0);
             intakesetPower(intakePower);
             wallPos(WALL_UP);
             shootSequenceStep = 0;
@@ -227,6 +219,7 @@ public class intakeShoot {
             ceiling.setPosition(ceilingUP);
             if(gateIntakeOut){
                 rail.setPosition(railUP);
+                rail1.setPosition(railUP1);
             }
         }
 
@@ -243,6 +236,8 @@ public class intakeShoot {
             }
         }
         else if(shootActive){
+
+            shootingBall = true;
             if(shootAc){
                 shootAc = false;
                 shooting.reset();
@@ -250,22 +245,47 @@ public class intakeShoot {
 
             }
             rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
             ceiling.setPosition(ceilingDOWN);
+            if(!far) {
+                if (recoilTimer.milliseconds() > 40 && currentValue - .1 < hoods.getPosition() && shootReset) {
+                    hoods.setPosition(hoods.getPosition() - recoil);
+                    recoilTimer.reset();
+                }
+            }
+            else {
+                if (recoilTimer.milliseconds() > 30 && currentValue - .15 < hoods.getPosition() && shootReset) {
+                    hoods.setPosition(hoods.getPosition() - recoil);
+                    recoilTimer.reset();
+                }
+            }
             if(!far){
-                if(shooting.milliseconds() > 200){
+                if(shooting.milliseconds() > 500){
+                    if(!shootReset){
+                        shootReset = true;
+                        recoilTimer.reset();
+                        currentValue = Values.getHoodPos();
+                    }
                     fastShootREAL(currentPos);
                     rail.setPosition(railDOWN);
-                    shooting.reset();
+                    rail1.setPosition(railDOWN);
+                    //shooting.reset();
                 }
 
 
             }
             else{
-                if(shooting.milliseconds() > 300){
+                if(shooting.milliseconds() > 500){
                     shooting.reset();
+                    if(!shootReset){
+                        shootReset = true;
+                        recoilTimer.reset();
+                        currentValue = Values.getHoodPos();
+                    }
                     rail.setPosition(railDOWN);
+                    rail1.setPosition(railDOWN);
                     simpleShoot();
                 }
 
@@ -324,15 +344,29 @@ public class intakeShoot {
                 }
             }
         }*/
-
         else {
             // IDLE STATE (Driver let go of all buttons)
             intakeMotor1.setPower(0);
             intakeMotor2.setPower(0);
             shootAc = true;
+            shootReset = false;
+            shootingBall = false;
             rail.setPosition(railUP);
-            wallPos(WALL_UP);
+            rail1.setPosition(railUP1);
+
             ceiling.setPosition(ceilingUP);
+            if (sort){
+                if(!sortWall) {
+                    sortWall = true;
+                    spindexer.sSP(0, 1);
+                }
+                wallPos(WALL_UP1);
+            }
+            else if (!sort) {
+                spindexer.sSP(0, 0);
+                sortWall = false;
+                wallPos(WALL_UP);
+            }
             // IDLE CLEANUP SEQUENCE
             /*if (shootSequenceStep < 10) {
                 wallPos(WALL_SHOOT);
@@ -402,6 +436,7 @@ public class intakeShoot {
 
             }
             rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
             ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
@@ -475,8 +510,16 @@ public class intakeShoot {
             outake = false;
             shootAc = true;
             rail.setPosition(railUP);
+            rail1.setPosition(railUP1);
             wallPos(WALL_UP);
             ceiling.setPosition(ceilingUP);
+            if(oscillationTimer.milliseconds() > 300){
+                spindexer.sSP(0,1);
+                oscillationTimer.reset();
+            }
+            else{
+                spindexer.sSP(0,0);
+            }
             // IDLE CLEANUP SEQUENCE
             /*if (shootSequenceStep < 10) {
                 wallPos(WALL_SHOOT);
@@ -549,6 +592,7 @@ public class intakeShoot {
 
             }
             rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
             ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
@@ -622,6 +666,7 @@ public class intakeShoot {
             outake = false;
             shootAc = true;
             rail.setPosition(railUP);
+            rail1.setPosition(railUP);
             wallPos(WALL_UP);
             ceiling.setPosition(ceilingUP);
             // IDLE CLEANUP SEQUENCE
@@ -639,7 +684,13 @@ public class intakeShoot {
             else if (shootSequenceStep == 12) {
                 // safe zone
             }*/
-
+            if(oscillationTimer.milliseconds() > 500){
+                spindexer.sSP(0,1);
+                oscillationTimer.reset();
+            }
+            else{
+                spindexer.sSP(0,0);
+            }
         }
         spindexer.update();
     }
@@ -688,6 +739,9 @@ public class intakeShoot {
     public void simpleShoot(){
         spindexer.regRot1(spindexer.getPos());
     }
+    public void simpleShoot1(){
+        spindexer.regRot2(spindexer.getPos());
+    }
     //sets servo positions
     public void setPos(int angle, int offset){
         spindexer.sSP(angle, offset);
@@ -716,7 +770,7 @@ public class intakeShoot {
         if (spindexer.getColors() == 1){
             return spindexer.getPos();
         }
-        simpleShoot();
+        simpleShoot1();
         return 0.0;
     }
     public void colorSort(double Position, int[]Pattern){

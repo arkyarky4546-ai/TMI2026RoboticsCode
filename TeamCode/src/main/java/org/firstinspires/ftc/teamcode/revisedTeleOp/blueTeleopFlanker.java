@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.shooterThread;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
 @TeleOp
@@ -47,6 +48,10 @@ public class blueTeleopFlanker extends OpMode {
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
     private boolean reset = true;
+    private boolean jorkIt = false;
+    private boolean sort = false;
+    private boolean sorting = false;
+    private ElapsedTime shootTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -89,16 +94,29 @@ public class blueTeleopFlanker extends OpMode {
             drivetrain.resetCurrentPoseGoal();
         }
         if(gamepad2.yWasPressed()){
+            sort = true;
             greenPos = shooterAndIntake.getGreen();
         }
         if(gamepad2.aWasPressed()){
+            sort = true;
+            sorting = true;
             reset = false;
             shooterAndIntake.simpleShoot();
         }
-        if(gamepad2.bWasPressed()){
+        if(gamepad2.xWasPressed()){
+            //sort  = false;
             reset = false;
+            if(sorting){
+                sorting = false;
+                shootTimer.reset();
+            }
             shooterAndIntake.colorSort(greenPos, pattern);
+
+
         }
+       /* if (!sorting && shootTimer.milliseconds() > 1000 && shootTimer.milliseconds() < 1050){
+            shooterAndIntake.colorSort(greenPos, pattern);
+        }*/
 
         double currentHeading = drivetrain.getFollower().getPose().getHeading();
         //  shootThread.update(drivetrain.getFollower(), ShooterConstants.GOAL_POSE_BLUE, currentHeading);
@@ -146,6 +164,7 @@ public class blueTeleopFlanker extends OpMode {
             reset = true;
             rightTrigger = true;
             shootFirst = false;
+            sort = false;
 
             // Feed the dynamically calculated velocity instead of the static TargetVelocity
             //shooterAndIntake.shootsetVelocity(dynamicFlywheelSpeed);
@@ -159,7 +178,7 @@ public class blueTeleopFlanker extends OpMode {
             shootFirst = true;
             //shooterAndIntake.wallPos(.2127);
             if(reset) {
-                shooterAndIntake.setPos(0, 0);
+                //shooterAndIntake.setPos(0, 0);
             }
             // Only allow intake if the right trigger is NOT pressed
             if(gamepad1.left_trigger > 0.75){
@@ -170,10 +189,11 @@ public class blueTeleopFlanker extends OpMode {
 
         //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
-        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry);
+        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);
+        telemetry.addData("sort", sort);
         //telemetry.addData("ShootFirst", shootFirst)
         //    telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
         telemetry.addData("Current Velocity", shooterAndIntake.getVelocity());

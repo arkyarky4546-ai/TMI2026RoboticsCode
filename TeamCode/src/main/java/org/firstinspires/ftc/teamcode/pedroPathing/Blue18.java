@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+/*package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -302,7 +302,7 @@ public class Blue18 extends OpMode {
                     scan = false;
                     turretLeft.setPosition();
                     turretRight.setPosition();
-                }*/
+                }
                 if(Lime.getPatternFromLimelight() == 0){
                     pattern = gpp;
 
@@ -497,7 +497,7 @@ public class Blue18 extends OpMode {
     public double getRecoil(){
         double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
         return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.1900;
-    }*/
+    }
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
@@ -577,4 +577,4 @@ public class Blue18 extends OpMode {
     public void stop() {
         intakeAndShoot.stopT();
     }
-}
+}*/
