@@ -460,7 +460,7 @@ public class MetaGate extends OpMode {
         //turretRight.setPosition(1);
         turretRight.setPosition(.91);
         turretLeft.setPosition(.91);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto, false);
         if(!auto) {
             intakeAndShoot.intakesetPower(1);
         }

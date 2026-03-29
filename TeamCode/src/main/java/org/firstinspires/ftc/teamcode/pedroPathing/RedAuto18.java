@@ -506,7 +506,7 @@ public class RedAuto18 extends OpMode {
         turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, true, false);
         intakeAndShoot.intakesetPower(1);
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power

@@ -141,7 +141,7 @@ public class ExodusAuto extends OpMode {
         turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, false);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, false, false);
         intakeAndShoot.intakesetPower(1);
 //.96
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power

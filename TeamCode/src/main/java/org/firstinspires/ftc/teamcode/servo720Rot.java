@@ -189,10 +189,7 @@ public class servo720Rot {
                 break;
             }
         }
-        greenPos = (arrayGreenPos - greenPos);
-        if(greenPos < 0){
-            greenPos = 3 + greenPos;
-        }
+        greenPos = ((arrayGreenPos - greenPos) % 4 + 4) % 4;
         sSP(greenPos,1);
     }
     //this gets the nearest open position so you can easily rotate to it mode is either 1 or 0, 1 for shoot and 0 for intake

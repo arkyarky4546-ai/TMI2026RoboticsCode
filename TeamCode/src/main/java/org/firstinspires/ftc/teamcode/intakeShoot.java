@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.MathFunctions;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -87,10 +88,11 @@ public class intakeShoot {
     private double ceilingDOWN = 0.69;
     private double ceilingUP = 0.55;
     private double lastError = 0;
-    public static double Kp=0.0121;
-    public static double Ki=0.00014;
-    public static double Kd=0.0000;
-    public static double Kf=.0000;
+    public static double kV = 0.00045;
+
+    public static double kS = .155
+            ,kP = 0.012;
+
     private double currentValue = 0.0;
     private boolean shootReset = false;
     ElapsedTime recoilTimer=new ElapsedTime();
@@ -101,6 +103,8 @@ public class intakeShoot {
     double lasterror=0;
     double Integralsum=0;
     double shooterPower = .5;
+    private double cpm = 28;
+
     boolean outake = false;
     boolean far = false;
     Servo rail;
@@ -117,6 +121,8 @@ public class intakeShoot {
         wall = hardwareMap.get(Servo.class, wallName);
         shootMotor1 = hardwareMap.get(DcMotorEx.class, shoot1);
         shootMotor2 = hardwareMap.get(DcMotorEx.class, shoot2);
+        shootMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shootMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         hoods = hardwareMap.get(Servo.class, shooterHood);
         disBL = hardwareMap.get(DistanceSensor.class, "disBL");
         disST = hardwareMap.get(DistanceSensor.class, "disST");
@@ -150,16 +156,12 @@ public class intakeShoot {
         rail1.setPosition(railUP1);
 
     }
-    public double PIDControl(double reference, double state){
-        double error=reference-state;
-        double dt = timer.seconds();
-        Integralsum+=error*dt;
-        double derivative=(error-lasterror)/dt;
-        lasterror=error;
-        timer.reset();
+    public double PIDControl(double targ, double state){
+        double error=targ-state;
+        double feedForward = kV*targ + kS;
+        double fb = error * kP;
 
-        double output=(error*Kp)+(derivative*Kd)+(Integralsum*Ki)+(reference*Kf);
-        return output;
+        return feedForward +fb;
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
 
@@ -178,14 +180,14 @@ public class intakeShoot {
                 far = true;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
+                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, .57));
                 }
             }
             else{
                 far = false;
                 shooterPower = PIDControl(Values.getSpeed(), current);
                 if(!shootingBall) {
-                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, .57));
                 }
 
             }
@@ -208,7 +210,7 @@ public class intakeShoot {
         if (intakeActive) {
             //spindexer.sSP(0,0);
             intakesetPower(intakePower);
-            wallPos(WALL_UP);
+            //wallPos(WALL_UP);
             shootSequenceStep = 0;
             ceiling.setPosition(ceilingUP);
         }
@@ -254,6 +256,7 @@ public class intakeShoot {
                     hoods.setPosition(hoods.getPosition() - recoil);
                     recoilTimer.reset();
                 }
+
             }
             else {
                 if (recoilTimer.milliseconds() > 30 && currentValue - .15 < hoods.getPosition() && shootReset) {
@@ -351,8 +354,7 @@ public class intakeShoot {
             shootAc = true;
             shootReset = false;
             shootingBall = false;
-            rail.setPosition(railUP);
-            rail1.setPosition(railUP1);
+
 
             ceiling.setPosition(ceilingUP);
             if (sort){
@@ -361,11 +363,15 @@ public class intakeShoot {
                     spindexer.sSP(0, 1);
                 }
                 wallPos(WALL_UP1);
+                rail.setPosition(railDOWN);
+                rail1.setPosition(railDOWN);
             }
             else if (!sort) {
                 spindexer.sSP(0, 0);
                 sortWall = false;
                 wallPos(WALL_UP);
+                rail.setPosition(railUP);
+                rail1.setPosition(railUP1);
             }
             // IDLE CLEANUP SEQUENCE
             /*if (shootSequenceStep < 10) {
@@ -386,34 +392,65 @@ public class intakeShoot {
         }
         spindexer.update();
     }
-    public void update(boolean intakeActive, boolean intakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean auto) {
+    public void update1(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean auto, boolean sort) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         }
+        else{
+            Values.update(follower, ShooterConstants.GOAL_POSE_RED, follower.getHeading());
+        }
+
         double current = Math.abs(getVelocity());
 
-        shooterPower = PIDControl(Values.getSpeed(), current);
+        try{
+            if(follower.getPose().getX() < 30) {
+                far = true;
+                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
+                if(!shootingBall) {
+                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
+                }
+            }
+            else{
+                far = false;
+                shooterPower = PIDControl(Values.getSpeed(), current);
+                if(!shootingBall) {
+                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+                }
+
+            }
+
+        }
+        catch (NullPointerException e){
+            ;nIsTrue = true;
+        }
+        telemetry.addData("Theospeed", Values.getSpeed());
+        telemetry.addData("Acspeed", current);
+        telemetry.addData("nIsTrue", nIsTrue);
         telemetry.addData("turretAngle", Values.getTurretPos());
         telemetry.addData("speed", Values.getSpeed());
         telemetry.addData("hoodAngle", Values.getHoodPos());
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
+        intakesetPower(intakePower);
         // shootsetVelocity(1000);
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
-            spindexer.sSP(0,0);
+            //spindexer.sSP(0,0);
             intakesetPower(intakePower);
-            wallPos(WALL_UP);
+            //wallPos(WALL_UP);
             shootSequenceStep = 0;
             ceiling.setPosition(ceilingUP);
         }
-        else if (intakeOut) {
+        else if (intakeOut || gateIntakeOut) {
             intakesetPower(-intakePower);
             wallPos(WALL_UP);
             shootSequenceStep = 0;
             ceiling.setPosition(ceilingUP);
+            if(gateIntakeOut){
+                rail.setPosition(railUP);
+                rail1.setPosition(railUP1);
+            }
         }
 
         else if (debugActive) {
@@ -429,6 +466,8 @@ public class intakeShoot {
             }
         }
         else if(shootActive){
+
+            shootingBall = true;
             if(shootAc){
                 shootAc = false;
                 shooting.reset();
@@ -437,18 +476,51 @@ public class intakeShoot {
             }
             rail.setPosition(railDOWN);
             rail1.setPosition(railDOWN);
-            ceiling.setPosition(ceilingDOWN);
             intakesetPower(1);
             wallPos(WALL_SHOOT);
-            if(shooting.milliseconds() > 200){
-                fastShootREAL(currentPos);
-                shooting.reset();
+            ceiling.setPosition(ceilingDOWN);
+            if(!far) {
+                if (recoilTimer.milliseconds() > 40 && currentValue - .1 < hoods.getPosition() && shootReset) {
+                    hoods.setPosition(hoods.getPosition() - recoil);
+                    recoilTimer.reset();
+                }
             }
+            else {
+                if (recoilTimer.milliseconds() > 30 && currentValue - .15 < hoods.getPosition() && shootReset) {
+                    hoods.setPosition(hoods.getPosition() - recoil);
+                    recoilTimer.reset();
+                }
+            }
+            if(!far){
+                if(shooting.milliseconds() > 200){
+                    if(!shootReset){
+                        shootReset = true;
+                        recoilTimer.reset();
+                        currentValue = Values.getHoodPos();
+                    }
+                    fastShootREAL(currentPos);
+                    rail.setPosition(railDOWN);
+                    rail1.setPosition(railDOWN);
+                    //shooting.reset();
+                }
 
-        }
-        else if (auto){
-            intakesetPower(-1);
-                //intakesetPower(-.5)
+
+            }
+            else{
+                if(shooting.milliseconds() > 200){
+                    shooting.reset();
+                    if(!shootReset){
+                        shootReset = true;
+                        recoilTimer.reset();
+                        currentValue = Values.getHoodPos();
+                    }
+                    rail.setPosition(railDOWN);
+                    rail1.setPosition(railDOWN);
+                    simpleShoot();
+                }
+
+
+            }
         }
         /*else if (shootActive) {
             shootsetVelocity(Values.getSpeed());
@@ -502,23 +574,31 @@ public class intakeShoot {
                 }
             }
         }*/
-
         else {
             // IDLE STATE (Driver let go of all buttons)
             //intakeMotor1.setPower(0);
             //intakeMotor2.setPower(0);
-            outake = false;
             shootAc = true;
-            rail.setPosition(railUP);
-            rail1.setPosition(railUP1);
-            wallPos(WALL_UP);
+            shootReset = false;
+            shootingBall = false;
+
+
             ceiling.setPosition(ceilingUP);
-            if(oscillationTimer.milliseconds() > 300){
-                spindexer.sSP(0,1);
-                oscillationTimer.reset();
+            if (sort){
+                if(!sortWall) {
+                    sortWall = true;
+                    spindexer.sSP(0, 1);
+                }
+                wallPos(WALL_UP1);
+                rail.setPosition(railDOWN);
+                rail1.setPosition(railDOWN);
             }
-            else{
-                spindexer.sSP(0,0);
+            else if (!sort) {
+                spindexer.sSP(0, 0);
+                sortWall = false;
+                wallPos(WALL_UP);
+                rail.setPosition(railUP);
+                rail1.setPosition(railUP1);
             }
             // IDLE CLEANUP SEQUENCE
             /*if (shootSequenceStep < 10) {
@@ -786,4 +866,8 @@ public class intakeShoot {
     public double getGreen(){
         return colorShoot.foundGreen();
     }
+    //public double flywheel(){
+
+    //}
+
 }

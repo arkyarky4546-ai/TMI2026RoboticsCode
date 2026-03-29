@@ -510,7 +510,7 @@ public class NewREd18 extends OpMode {
         //turretRight.setPosition(1);
         turretRight.setPosition(TURRETPOS);
         turretLeft.setPosition(TURRETPOS);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto, false);
         if(!auto) {
             intakeAndShoot.intakesetPower(1);
         }

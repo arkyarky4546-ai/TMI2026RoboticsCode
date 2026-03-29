@@ -269,7 +269,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
 
             case 6:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2){
                     follower.followPath(scoreLoad15,true);
                     auto = true;
                     actionTimer.resetTimer();
@@ -327,7 +327,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     pattern = ppg;
 
                 }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2){
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15,true);
@@ -511,7 +511,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
         //turretRight.setPosition(1);
         turretRight.setPosition(.98);
         turretLeft.setPosition(.98);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
+        intakeAndShoot.update1(false,false, false, isShoot, false, follower, telemetry, auto,false);
         if(!auto) {
             intakeAndShoot.intakesetPower(1);
         }

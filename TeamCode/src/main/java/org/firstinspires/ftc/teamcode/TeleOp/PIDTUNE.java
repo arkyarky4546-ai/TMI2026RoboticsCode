@@ -135,10 +135,10 @@ public class PIDTUNE extends OpMode {
             turretPos+=.01;
         }
         if(gamepad2.dpadUpWasPressed()){
-            TargetVelocity+=25;
+            hoodPos+=.01;
         }
         if(gamepad2.dpadDownWasPressed()){
-            TargetVelocity-=25;
+            hoodPos-=.01;
         }
         if(gamepad2.dpadLeftWasPressed()){
             intakeAndShoot.wallPos(.5);
@@ -190,7 +190,7 @@ public class PIDTUNE extends OpMode {
         //telemetry.addData("target", TargetVelocity);
         telemetry.addData("6767676767", Math.sqrt(Math.pow(138-follower.getPose().getX(),2) + Math.pow(6+follower.getPose().getY(),2)));
         //telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("p", Kp);
+        telemetry.addData("hoodPos", hoodPos);
         telemetry.addData("d", Kd);
         telemetry.addData("i", Ki);
         telemetry.addData("f", Kf);

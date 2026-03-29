@@ -667,7 +667,7 @@ public class AutoMetaTurret extends OpMode {
         //turretRight.setPosition(1);
        // turretRight.setPosition(.98);
         //turretLeft.setPosition(.98);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto);
+        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, auto,false);
         intakeAndShoot.intakesetPower(1);
 
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
