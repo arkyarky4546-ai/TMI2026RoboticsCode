@@ -69,8 +69,8 @@ public class AutoTurret {
             targetPos = Range.clip(targetPos, 0.0, 1.0);
 //            servoLeft.setPosition(1 - targetPos);
 //            servoRight.setPosition(1 - targetPos);
-            servoLeft.setPosition(MathFunctions.clamp(targetPos,0,1));
-            servoRight.setPosition(MathFunctions.clamp(targetPos,0,1));
+            servoLeft.setPosition(Range.clip(targetPos, 0.0, 1.0));
+            servoRight.setPosition(Range.clip(targetPos, 0.0, 1.0));
             currentServoPosition = targetPos;
         }
     }

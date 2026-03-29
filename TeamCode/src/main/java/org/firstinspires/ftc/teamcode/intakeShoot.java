@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -180,14 +181,14 @@ public class intakeShoot {
                 far = true;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, .57));
+                    hoods.setPosition(Range.clip(Values.getHoodPos() - HOODOFFSET, 0.0, .57));
                 }
             }
             else{
                 far = false;
                 shooterPower = PIDControl(Values.getSpeed(), current);
                 if(!shootingBall) {
-                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, .57));
+                    hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
                 }
 
             }
@@ -407,14 +408,14 @@ public class intakeShoot {
                 far = true;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
+                    hoods.setPosition(Range.clip(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
                 }
             }
             else{
                 far = false;
                 shooterPower = PIDControl(Values.getSpeed(), current);
                 if(!shootingBall) {
-                    hoods.setPosition(MathFunctions.clamp(Values.getHoodPos(), 0.0, 1));
+                    hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, 1));
                 }
 
             }
@@ -636,7 +637,7 @@ public class intakeShoot {
         telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
         // shootsetVelocity(1000);
-        hoods.setPosition(MathFunctions.clamp(Values.getHoodPos() +.06, 0.0, 1));
+        hoods.setPosition(Range.clip(Values.getHoodPos() +.06, 0.0, 1));
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
             spindexer.sSP(0,0);
@@ -804,11 +805,11 @@ public class intakeShoot {
         intakeMotor2.setPower(-power);
     }
     public void wallPos(double pos){
-        wall.setPosition(MathFunctions.clamp(pos,0,1));
+        wall.setPosition(Range.clip(pos,0,1));
     }
 
     public void hoodPos(double pos){
-        hoods.setPosition(MathFunctions.clamp(pos, 0, 1));
+        hoods.setPosition(Range.clip(pos, 0, 1));
     }
 
     //method to shoot balls and rotate from my class

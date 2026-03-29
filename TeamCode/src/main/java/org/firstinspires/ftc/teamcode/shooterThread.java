@@ -33,7 +33,10 @@ public class shooterThread extends Thread {
                 Speed =ShooterConstants.getFlyWheelTicksFromVelocity(params.flywheelSpeed);
                 turret = params.turretAngle;
             }
-
+            else{
+                Speed = 1100;
+                hood = .4;
+            }
             try {
                 Thread.sleep(10); //something called cpu spinning
             } catch (InterruptedException e) {

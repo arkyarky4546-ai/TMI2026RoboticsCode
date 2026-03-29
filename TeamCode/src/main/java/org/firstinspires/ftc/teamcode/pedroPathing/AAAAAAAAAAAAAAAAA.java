@@ -266,7 +266,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                         setPathState(6);
                     }
                 }
-
+                break;
 
             case 6:
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2){

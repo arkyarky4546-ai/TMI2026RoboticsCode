@@ -42,6 +42,9 @@ public class Shooter {
         double g = 32.174 * 12; //gravity in inches/second
         //need to make a vector from the robot to the goal from follower I think
         double x = robotToGoalVector.getMagnitude() - ShooterConstants.Pass_Through_Radius;
+        if (x <= 0) {
+            return new ShotParameters(-1, -1, -1);
+        }
         double y = ShooterConstants.Score_Height;
         double a = ShooterConstants.Score_Angle; //radians
         //calculate initial launch components
