@@ -52,6 +52,7 @@ public class blueTeleopFlanker extends OpMode {
     private boolean sort = false;
     private boolean sorting = false;
     private ElapsedTime shootTimer = new ElapsedTime();
+    private boolean patternFound = false;
 
     @Override
     public void init() {
@@ -132,12 +133,17 @@ public class blueTeleopFlanker extends OpMode {
 
         if(gamepad2.dpadDownWasPressed()){
             aim = !aim;
+        }
+        if(!patternFound){
             if(Lime.getPatternFromLimelight() == 0){
                 pattern = gpp;
+                patternFound = true;
             } else if(Lime.getPatternFromLimelight() == 1){
                 pattern = pgp;
+                patternFound = true;
             } else if(Lime.getPatternFromLimelight() == 2){
                 pattern = ppg;
+                patternFound = true;
             }
         }
         /*else if(!aim && gamepad1.dpad_left){
@@ -203,6 +209,17 @@ public class blueTeleopFlanker extends OpMode {
         telemetry.addData("Debug Mode", rightBumper);
         // telemetry.addData("BL Vertex Has Ball", shooterAndIntake.getBLBallState());
         //  telemetry.addData("ST Vertex Has Ball", shooterAndIntake.getSTBallState());
+        telemetry.addData("Pattern Found: ", patternFound);
+        if(pattern[0] == ppg[0] && pattern[1] == ppg[1] && pattern[2] == ppg[2]){
+            telemetry.addData("Pattern: ppg", 0);
+        }
+        if(pattern[0] == pgp[0] && pattern[1] == pgp[1] && pattern[2] == pgp[2]){
+            telemetry.addData("Pattern: pgp", 0);
+        }
+        if(pattern[0] == gpp[0] && pattern[1] == gpp[1] && pattern[2] == gpp[2]) {
+            telemetry.addData("Pattern: gpp", 0);
+        }
+        telemetry.addData("greenPos: ", greenPos);
     }
 
     @Override

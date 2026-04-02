@@ -32,6 +32,6 @@ public class LimeLight {
                 }
             }
         }
-        return 0; //By defalt, return pattern #21, avoiding incorrect value that would ruin the program
+        return -1;
     }
 }
