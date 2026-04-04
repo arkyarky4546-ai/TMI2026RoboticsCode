@@ -166,7 +166,7 @@ public class intakeShoot {
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
 
-    public void update(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort) {
+    public void update(boolean intakeActive, boolean patternCycle, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort, boolean intakeout1) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         }
@@ -215,7 +215,7 @@ public class intakeShoot {
             shootSequenceStep = 0;
             ceiling.setPosition(ceilingUP);
         }
-        else if (intakeOut || gateIntakeOut) {
+        else if (gateIntakeOut) {
             intakesetPower(-intakePower);
             wallPos(WALL_UP);
             shootSequenceStep = 0;
@@ -224,6 +224,16 @@ public class intakeShoot {
                 rail.setPosition(railUP);
                 rail1.setPosition(railUP1);
             }
+        }
+        else if (intakeout1) {
+            intakesetPower(-intakePower);
+            //wallPos(WALL_UP);
+            //shootSequenceStep = 0;
+            //ceiling.setPosition(ceilingUP);
+            //if(gateIntakeOut){
+            //    rail.setPosition(railUP);
+              //  rail1.setPosition(railUP1);
+            //}
         }
 
         else if (debugActive) {
@@ -266,7 +276,7 @@ public class intakeShoot {
                 }
             }
             if(!far){
-                if(shooting.milliseconds() > 500){
+                if(shooting.milliseconds() > 200){
                     if(!shootReset){
                         shootReset = true;
                         recoilTimer.reset();
@@ -393,7 +403,7 @@ public class intakeShoot {
         }
         spindexer.update();
     }
-    public void update1(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean auto, boolean sort) {
+    public void update1(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry,boolean auto, boolean sort) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         }
@@ -408,14 +418,14 @@ public class intakeShoot {
                 far = true;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(Range.clip(Values.getHoodPos() - HOODOFFSET, 0.0, 1));
+                    hoods.setPosition(Range.clip(Values.getHoodPos() - HOODOFFSET, 0.0, .57));
                 }
             }
             else{
                 far = false;
                 shooterPower = PIDControl(Values.getSpeed(), current);
                 if(!shootingBall) {
-                    hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, 1));
+                    hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
                 }
 
             }
@@ -481,10 +491,11 @@ public class intakeShoot {
             wallPos(WALL_SHOOT);
             ceiling.setPosition(ceilingDOWN);
             if(!far) {
-                if (recoilTimer.milliseconds() > 40 && currentValue - .1 < hoods.getPosition() && shootReset) {
+                if (recoilTimer.milliseconds() > 37 && currentValue - .15 < hoods.getPosition() && shootReset) {
                     hoods.setPosition(hoods.getPosition() - recoil);
                     recoilTimer.reset();
                 }
+
             }
             else {
                 if (recoilTimer.milliseconds() > 30 && currentValue - .15 < hoods.getPosition() && shootReset) {
@@ -508,7 +519,7 @@ public class intakeShoot {
 
             }
             else{
-                if(shooting.milliseconds() > 200){
+                if(shooting.milliseconds() > 500){
                     shooting.reset();
                     if(!shootReset){
                         shootReset = true;

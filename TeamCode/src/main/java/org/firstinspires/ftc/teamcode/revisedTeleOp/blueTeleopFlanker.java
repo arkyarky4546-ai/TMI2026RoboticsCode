@@ -47,7 +47,9 @@ public class blueTeleopFlanker extends OpMode {
     int[] ppg = {2,2,1};
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
+    int[][] entire = {ppg, pgp, gpp};
     private boolean reset = true;
+    private int patternIndex = 0;
     private boolean jorkIt = false;
     private boolean sort = false;
     private boolean sorting = false;
@@ -152,16 +154,21 @@ public class blueTeleopFlanker extends OpMode {
         else if(!aim && gamepad1.dpad_right){
             turret.manualRight();
         } */
-        else if(gamepad2.dpadUpWasPressed()){
-            turret.setCenter();
-            aim = false;
-        }
 
         boolean leftTrigger = false;
         boolean rightTrigger = false;
 
         boolean gateLeftBumper = gamepad1.left_bumper;
-        boolean leftBumper = gamepad2.left_bumper;
+        if(gamepad2.leftBumperWasPressed()){
+            if(patternIndex >2){
+                patternIndex  = 0;
+            }
+            else{
+                patternIndex += 1;
+            }
+            pattern = entire[patternIndex];
+        }
+
         boolean rightBumper = gamepad2.right_bumper;
 
 
@@ -176,8 +183,6 @@ public class blueTeleopFlanker extends OpMode {
             //shooterAndIntake.shootsetVelocity(dynamicFlywheelSpeed);
 
             // Override and disable intake while shooting
-            leftTrigger = false;
-            leftBumper = false;
 
         } else {
             // Not Shooting (Allow Intake and Default States)
@@ -195,7 +200,7 @@ public class blueTeleopFlanker extends OpMode {
 
         //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
-        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort);
+        shooterAndIntake.update(leftTrigger, gamepad2.leftBumperWasPressed(), gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort, gamepad2.dpad_up);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);

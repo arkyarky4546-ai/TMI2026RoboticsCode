@@ -147,8 +147,7 @@ public class ShooterAndIntakeClean {
         }
     }
 
-    public double shooterPIDControl(double reference, double state){ //current velocity, target velocity
-        //Hey guys, the real PID is actually target velocity - current velocity
+    public double shooterPIDControl(double reference, double state){
         double error=reference-state;
         double dt = PIDTimer.seconds();
         Integralsum+=error*dt;
