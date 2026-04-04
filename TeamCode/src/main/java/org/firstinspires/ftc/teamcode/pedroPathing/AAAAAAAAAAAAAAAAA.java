@@ -33,14 +33,14 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(83.414, -20, 1.573238);
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(37, -20, 1.58);
+    private final Pose acIntakePose3 = new Pose(34, -20, 1.58);
     private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
     private final Pose curve1 = new Pose(72.28, -51.71, 2.299);
     private final Pose curve11 = new Pose(61.59, -41.17, 1.7936);
     private final Pose curve2 = new Pose(84.4, -47.09, 1.77111);
     private final Pose curve21 = new Pose(83.714, -38.8, 1.573238);
     private final Pose curve3 = new Pose(61, -55, 2.5);
-    private final Pose curve31 = new Pose(45, -45, 2.17);
+    private final Pose curve31 = new Pose(45, -47, 2.17);
     private final Pose hit1 = new Pose(62.739872, -26.1, 1.2511);
     private final Pose hit = new Pose(74.20, -41.41, 2.307);
     private final Pose scorePoseEnd = new Pose(102.815, -60.135, 1.967);
@@ -180,7 +180,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
                 break;
             case 1:
-                if(follower.getPathCompletion()>.93){
+                if(follower.getPathCompletion()>.9){
                     //reset action timer for holding the score position
                     actionTimer.resetTimer();
                     //method to hold a position
