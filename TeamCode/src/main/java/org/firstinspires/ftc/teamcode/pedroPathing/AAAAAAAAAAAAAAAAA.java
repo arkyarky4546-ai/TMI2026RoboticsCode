@@ -181,7 +181,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
 
                 break;
             case 1:
-                if(follower.getPathCompletion()>.9){
+                if(follower.getPathCompletion()>.95){
                     //reset action timer for holding the score position
                     actionTimer.resetTimer();
                     //method to hold a position
@@ -240,10 +240,10 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 }
                 break;
             case 5:
-                if (follower.getPathCompletion()<.9){
+                if (follower.getPathCompletion()<.95){
                     actionTimer.resetTimer();
                 }
-                if(follower.getPathCompletion()>.9){
+                if(follower.getPathCompletion()>.95){
                     if(shootTimer.milliseconds() > 100 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
@@ -286,7 +286,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds()>.35){
                     auto = false;
                 }
-                if(follower.getPathCompletion()>.9) {
+                if(follower.getPathCompletion()>.95) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -335,7 +335,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15);
@@ -354,7 +354,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds()>.4){
                     auto = false;
                 }
-                if(follower.getPathCompletion()>.9) {
+                if(follower.getPathCompletion()>.95) {
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -405,7 +405,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(follower.getPathCompletion()>.9) {
+                if(follower.getPathCompletion()>.95) {
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
@@ -459,7 +459,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(follower.getPathCompletion()>.9) {
+                if(follower.getPathCompletion()>.95) {
                     auto = false;
                     actionTimer.resetTimer();
                     shootTimer.reset();

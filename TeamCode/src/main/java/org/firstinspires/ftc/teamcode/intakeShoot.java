@@ -46,7 +46,7 @@ public class intakeShoot {
 
     //ints
     private int shootMode = 1;
-    private int index;
+    int index;
     private int intakeMode = 0;
     double temp = 0.0;
     private int arrayShootIntakeTrack;
@@ -428,7 +428,7 @@ public class intakeShoot {
             }
             else{
                 far = false;
-                shooterPower = PIDControl(Values.getSpeed(), current);
+                shooterPower = PIDControl(Values.getSpeed() + 50, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
                 }
@@ -519,7 +519,7 @@ public class intakeShoot {
                 }
             }
             if(!far){
-                if(shooting.milliseconds() > 10){
+                if(shooting.milliseconds() > 200){
                     if(!shootReset){
                         shootReset = true;
                         recoilTimer.reset();
@@ -855,6 +855,9 @@ public class intakeShoot {
     }
     public double getVelocity(){
         return Math.abs(shootMotor2.getVelocity());
+    }
+    public void slow(int index){
+        spindexer.sSSlowP(index);
     }
     public void stopT(){
         // sensors.stopThread();

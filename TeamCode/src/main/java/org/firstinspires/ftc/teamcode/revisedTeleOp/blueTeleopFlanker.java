@@ -43,6 +43,7 @@ public class blueTeleopFlanker extends OpMode {
     private double greenPos = 0.0;
 
     boolean shootFirst = true;
+    int index = 1;
     boolean aim = true;
     int[] pattern = {1,2,2};
     int[] ppg = {2,2,1};
@@ -55,6 +56,7 @@ public class blueTeleopFlanker extends OpMode {
     private boolean sort = false;
     private boolean sorting = false;
     private ElapsedTime shootTimer = new ElapsedTime();
+    private ElapsedTime spin = new ElapsedTime();
     private boolean patternFound = false;
     private Servo turretRight;
 
@@ -102,11 +104,22 @@ public class blueTeleopFlanker extends OpMode {
             sort = true;
             greenPos = shooterAndIntake.getGreen();
         }
-        if(gamepad2.aWasPressed()){
+        if(gamepad2.a){
             sort = true;
             sorting = true;
             reset = false;
-            shooterAndIntake.simpleShoot();
+            if(spin.milliseconds() < 500) {
+                shooterAndIntake.slow(index);
+            }
+            else{
+                spin.reset();
+                if(index > 5){
+                    index = 0;
+                }
+                else{
+                    index +=1;
+                }
+            }
         }
         if(gamepad2.xWasPressed()){
             //sort  = false;

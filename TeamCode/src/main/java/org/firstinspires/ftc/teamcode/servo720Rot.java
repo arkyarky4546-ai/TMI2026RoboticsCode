@@ -168,6 +168,18 @@ public class servo720Rot {
 
         return finalColor;
     }
+    public void sSSlowP(int index){
+        double pos = positionHoldIntake[index];
+        if(getPos() < pos){
+            servo2.setPosition(getPos() + 0.04);
+            servo.setPosition(getPos() + 0.01);
+        }
+        else{
+            servo2.setPosition(pos);
+            servo2.setPosition(pos);
+        }
+
+    }
     public void sort ( double position, int[] pattern){ //up to the other thing prob intake and shoot to rotate and then get color and then store the position that the green ball is in
         int arrayGreenPos = 0;
         if (pattern == ppg){
