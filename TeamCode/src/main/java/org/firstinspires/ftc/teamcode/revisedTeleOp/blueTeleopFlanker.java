@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.shooterThread;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
@@ -55,13 +56,14 @@ public class blueTeleopFlanker extends OpMode {
     private boolean sorting = false;
     private ElapsedTime shootTimer = new ElapsedTime();
     private boolean patternFound = false;
+    private Servo turretRight;
 
     @Override
     public void init() {
         drivetrain = new Drivetrain(hardwareMap);
         drivetrain.setModeBlue();
         Lime = new LimeLight(hardwareMap);
-
+        turretRight = hardwareMap.get(Servo.class, "turretRight");
         // Initialize the new AutoTurret
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
         turret.setModeBlue();
@@ -200,11 +202,12 @@ public class blueTeleopFlanker extends OpMode {
 
         //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
-        shooterAndIntake.update(leftTrigger, gamepad2.leftBumperWasPressed(), gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort, gamepad2.dpad_up);
+        shooterAndIntake.update(leftTrigger, false, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort, gamepad2.dpad_up, false);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);
         telemetry.addData("sort", sort);
+        telemetry.addData("turret angle", turretRight.getPosition());
         //telemetry.addData("ShootFirst", shootFirst)
         //    telemetry.addData("Target Velocity (Dynamic)", dynamicFlywheelSpeed);
         telemetry.addData("Current Velocity", shooterAndIntake.getVelocity());

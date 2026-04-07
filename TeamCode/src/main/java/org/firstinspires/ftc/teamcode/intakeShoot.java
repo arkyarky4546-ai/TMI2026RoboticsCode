@@ -166,7 +166,7 @@ public class intakeShoot {
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
 
-    public void update(boolean intakeActive, boolean patternCycle, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort, boolean intakeout1) {
+    public void update(boolean intakeActive, boolean patternCycle, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort, boolean intakeout1, boolean gatePause) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
         }
@@ -181,7 +181,7 @@ public class intakeShoot {
                 far = true;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(Range.clip(Values.getHoodPos() - HOODOFFSET, 0.0, .57));
+                    hoods.setPosition(Range.clip(Values.getHoodPos() + HOODOFFSET, 0.0, .57));
                 }
             }
             else{
@@ -225,6 +225,11 @@ public class intakeShoot {
                 rail1.setPosition(railUP1);
             }
         }
+        else if(patternCycle){
+            intakesetPower(-intakePower);
+            rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
+        }
         else if (intakeout1) {
             intakesetPower(-intakePower);
             //wallPos(WALL_UP);
@@ -263,14 +268,14 @@ public class intakeShoot {
             wallPos(WALL_SHOOT);
             ceiling.setPosition(ceilingDOWN);
             if(!far) {
-                if (recoilTimer.milliseconds() > 40 && currentValue - .1 < hoods.getPosition() && shootReset) {
+                if (recoilTimer.milliseconds() > 40 && currentValue - .13 < hoods.getPosition() && shootReset) {
                     hoods.setPosition(hoods.getPosition() - recoil);
                     recoilTimer.reset();
                 }
 
             }
             else {
-                if (recoilTimer.milliseconds() > 30 && currentValue - .15 < hoods.getPosition() && shootReset) {
+                if (recoilTimer.milliseconds() > 30 && currentValue - .13 < hoods.getPosition() && shootReset) {
                     hoods.setPosition(hoods.getPosition() - recoil);
                     recoilTimer.reset();
                 }
@@ -416,7 +421,7 @@ public class intakeShoot {
         try{
             if(follower.getPose().getX() < 30) {
                 far = true;
-                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
+                shooterPower = PIDControl(Values.getSpeed() + 50, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos() - HOODOFFSET, 0.0, .57));
                 }
@@ -443,7 +448,14 @@ public class intakeShoot {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         shootsetPower(shooterPower);
-        intakesetPower(intakePower);
+        if(!auto) {
+            intakesetPower(intakePower);
+        }
+        if (auto){
+            intakesetPower(-intakePower);
+            rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
+        }
         // shootsetVelocity(1000);
         colorShoot.upColor(spindexer.getPos());
         if (intakeActive) {
@@ -462,6 +474,9 @@ public class intakeShoot {
                 rail.setPosition(railUP);
                 rail1.setPosition(railUP1);
             }
+        }
+        if (auto){
+            intakesetPower(-intakePower);
         }
 
         else if (debugActive) {
@@ -504,7 +519,7 @@ public class intakeShoot {
                 }
             }
             if(!far){
-                if(shooting.milliseconds() > 200){
+                if(shooting.milliseconds() > 10){
                     if(!shootReset){
                         shootReset = true;
                         recoilTimer.reset();

@@ -173,7 +173,7 @@ public class redTeleopFlanker extends OpMode {
 
         //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
-        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, jorkIt,gamepad2.left_bumper);
+        shooterAndIntake.update(leftTrigger, leftBumper, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, jorkIt,gamepad2.left_bumper, false);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);

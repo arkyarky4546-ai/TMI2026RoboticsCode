@@ -39,8 +39,8 @@ public class AutoTurret {
         //servoLeft.setPwmRange(new PwmControl.PwmRange(500, 2500));
         servoRight = hardwareMap.get(Servo.class, rightServoName);
         //servoRight.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        servoLeft.setPosition(CENTER_POSITION);
-        servoRight.setPosition(CENTER_POSITION);
+        //servoLeft.setPosition(CENTER_POSITION);
+        //servoRight.setPosition(CENTER_POSITION);
         autoAiming = true;
     }
 
@@ -71,6 +71,27 @@ public class AutoTurret {
 //            servoRight.setPosition(1 - targetPos);
             servoLeft.setPosition(Range.clip(targetPos, 0.0, 1.0));
             servoRight.setPosition(Range.clip(targetPos, 0.0, 1.0));
+            currentServoPosition = targetPos;
+        }
+    }
+    public void updateAutoAutoBlue(Follower follower, Telemetry telemetry, double Angle, boolean aim) {
+        if(aim) {
+            double servoAngleNeeded = Angle * gearRatio / 360; //356
+            //double targetPos = (servoAngleNeeded) + (1 - CENTER_POSITION);
+            targetPos = (servoAngleNeeded) + (CENTER_POSITION);
+
+//            if (targetPos < 0) {
+//                targetPos += 360 / 355;
+//            }
+
+            if (targetPos > 1) {
+                targetPos -= 360 / 355;
+            }
+            targetPos = Range.clip(targetPos, .8, 1.0);
+//            servoLeft.setPosition(1 - targetPos);
+//            servoRight.setPosition(1 - targetPos);
+            servoLeft.setPosition(Range.clip(targetPos, .8, 1.0));
+            servoRight.setPosition(Range.clip(targetPos, .8, 1.0));
             currentServoPosition = targetPos;
         }
     }
