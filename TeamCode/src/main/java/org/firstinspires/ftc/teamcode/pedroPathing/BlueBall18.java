@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "AAAAAAAAAAAAAAAAA", group = "Autonomous")
-public class AAAAAAAAAAAAAAAAA extends OpMode {
+@Autonomous(name = "BlueBall18", group = "Autonomous")
+public class BlueBall18 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
@@ -25,14 +25,14 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
     private final Pose startPose = new Pose(128.8,-24.5, -2.35720214); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
     private final Pose scorePose1 = new Pose(84.14, -53.727, 2.22152); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
-    private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(58.75, -20.1058 , 1.5549);
-    private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(60.3, -10 , .92);
+   // private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
+    //private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(58.75, -18.1058 , 1.5549);
+    //private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
+    private final Pose hitPose = new Pose(60.4, -11 , .9852);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(83.414, -18, 1.573238);
-    private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
+    //private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
     private final Pose acIntakePose3 = new Pose(34, -20, 1.58);
     private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
     private final Pose curve1 = new Pose(72.28, -51.71, 2.299);
@@ -51,21 +51,21 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     private PathChain firstLoad, secondLoad, acFirstLoad, acSecondLoad, end, scoreLoad1, scoreLoad2, thirdLoad, acThirdLoad, scoreLoad3, backLoad1, hitLoad, scoreLoad15, hiLoad;
 
     //doubles
-    double hoodPos = .25;
-    double turTurn = 0.867;
-    double kickZero = 0.85;
-    double kickUp = 0.68;
-    double TargetVelocity = 1200;
-    double shooterPower = 0;
+    //double hoodPos = .25;
+    //double turTurn = 0.867;
+    //double kickZero = 0.85;
+    //double kickUp = 0.68;
+    //double TargetVelocity = 1200;
+    //double shooterPower = 0;
    // AutoTurret turret;
-    double recoil = 0;
+    //double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
     public static double Kp=0.0121;
     public static double Ki=0.00014;
     public static double Kd=0.0000;
     public static double Kf=.0000;
-    double savePosition = 0.0;
+    //double savePosition = 0.0;
 
     //timer
     private ElapsedTime shootTimer = new ElapsedTime();
@@ -83,18 +83,18 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
     boolean go = false;
     private Boolean scan = true;
     boolean gate = true;
-    boolean intake = false;
-    boolean shoot = false;
+    //boolean intake = false;
+    //boolean shoot = false;
     AutoTurret turret;
     //ints
-    int index = 0;
-    int shootPos = 1;
+    //int index = 0;
+    //int shootPos = 1;
     int intakePos = 0;
     LimeLight Lime;
-    int[] pattern = {1,2,2};
-    int[] ppg = {2,2,1};
-    int[] pgp = {2,1,2};
-    int[] gpp = {1,2,2};
+    //int[] pattern = {1,2,2};
+    //int[] ppg = {2,2,1};
+   // int[] pgp = {2,1,2};
+    //int[] gpp = {1,2,2};
     boolean auto = false;
 
 
@@ -211,7 +211,6 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     follower.holdPoint(scorePose1);
                     //open wall position
                     shootTimer.reset();
-                    //push.setPosition(kickUp);
 
                     setPathState(2);}
                 break;
@@ -223,8 +222,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     gate= false;
 
                 }
-                if(shootTimer.milliseconds() > 300 && go) {
-                    //push.setPosition(kickUp);
+                if(shootTimer.milliseconds() > 200 && go) {
                     //shooting every 800 milliseconds
                     isShoot = true;
                     go = false;
@@ -232,14 +230,13 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.3) {
+                if(actionTimer.getElapsedTimeSeconds() > 1) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad);
                     go = true;
                     intakeAndShoot.setPos(0,intakePos);
                     //push servo is down now
-                    //push.setPosition(kickZero);
                     //closed wall position
                     intakeIndex = true;
                     setPathState(3);
@@ -269,7 +266,6 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(follower.getPathCompletion()>.9){
                     if(shootTimer.milliseconds() > 200 && go) {
                         isShoot = true;
-                        // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
                         go = false;
 
@@ -277,12 +273,11 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > 1.1) {
+                    if(actionTimer.getElapsedTimeSeconds() > .9) {
                         isShoot = false;
                         follower.followPath(hiLoad);
 
                         //push servo is down now
-                        // push.setPosition(kickZero);
                         //closed wall position
                         intakeAndShoot.setPos(0,intakePos);
                         go = true;
@@ -297,7 +292,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
                     follower.followPath(scoreLoad15);
                     auto = true;
                     actionTimer.resetTimer();
@@ -315,24 +310,21 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
-                    // push.setPosition(kickUp);
                     setPathState(8);
                 }
                 break;
             case 8:
                 if(shootTimer.milliseconds() > 200 && go) {
-                    //push.setPosition(kickUp);
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
                     follower.followPath(hiLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
                     go = true;
                     intakeIndex = true;
-                    //push.setPosition(kickZero);
                     actionTimer.resetTimer();
                     setPathState(9);
                 }
@@ -359,7 +351,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1){
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15);
@@ -384,24 +376,21 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     shootTimer.reset();
                     follower.holdPoint(scorePose1);
                     //intakeAndShoot.setPos(0,0);
-                    //push.setPosition(kickUp);
                     setPathState(11);
                 }
                 break;
             case 11:
                 if(shootTimer.milliseconds() > 200 & go) {
-                    //push.setPosition(kickUp);
                     isShoot = true;
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
                     follower.followPath(acSecondLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
                     go = true;
                     intakeIndex = true;
-                    //push.setPosition(kickZero);
                     actionTimer.resetTimer();
                     setPathState(12);
                 }
@@ -432,14 +421,12 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 if(follower.getPathCompletion()>.9){
                     actionTimer.resetTimer();
                     shootTimer.reset();
-                   follower.holdPoint(scorePose1);
-                    //push.setPosition(kickUp);
+                    follower.holdPoint(scorePose1);
                     setPathState(15);
                 }
                 break;
             case 15:
                 if(shootTimer.milliseconds() > 200 && go) {
-                    //push.setPosition(kickUp);
                     go = false;
                     isShoot = true;
 
@@ -447,13 +434,12 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
                     go = true;
                     isShoot = false;
                     follower.followPath(acThirdLoad);
                     intakeAndShoot.setPos(0, intakePos);
                     //push servo is down now
-                    //push.setPosition(kickZero);
                     //closed wall position
                     intakeIndex = true;
                     setPathState(16);
@@ -487,21 +473,18 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                     auto = false;
                     actionTimer.resetTimer();
                     shootTimer.reset();
-                   follower.holdPoint(scorePoseEnd);
-                    //push.setPosition(kickUp);
+                    follower.holdPoint(scorePoseEnd);
                     setPathState(19);
                 }
                 break;
             case 19:
                 if(shootTimer.milliseconds() > 200 && go) {
-                    //push.setPosition(kickUp);
                     go = false;
                     isShoot = true;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
-                    //push.setPosition(kickZero);
-                   follower.holdPoint(scorePoseEnd);
+                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                    follower.holdPoint(scorePoseEnd);
                     go = true;
                     isShoot = false;
                     intakeAndShoot.setPos(0,intakePos);
@@ -517,18 +500,7 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
         pathState = pState;
         pathTimer.resetTimer();
     }
-    /*public double shooterPowerSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
-        return 0.0000145 * Math.pow(distanceFromGoal, 4) - 0.00584813 * Math.pow(distanceFromGoal, 3) + 0.834897 * Math.pow(distanceFromGoal, 2) - 45.38315 * Math.pow(distanceFromGoal, 1) + 1930.07059;
-    }
-    public double hoodPosSet(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144+ follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(10, -9) * 2.0571 * Math.pow(distanceFromGoal, 4) - Math.pow(10, -7)*8.57305 * Math.pow(distanceFromGoal, 3) + 0.000313995 * Math.pow(distanceFromGoal, 2) - 0.0237158 * Math.pow(distanceFromGoal, 1) + 0.88;
-    }
-    public double getRecoil(){
-        double distanceFromGoal = Math.pow((Math.pow((144-follower.getPose().getX()),2) + Math.pow((144 + follower.getPose().getY()),2)) , .5);
-        return  -Math.pow(10, -9) * 5.66719 * Math.pow(distanceFromGoal, 4) + 0.00000199279 * Math.pow(distanceFromGoal, 3) -0.00024284 * Math.pow(distanceFromGoal, 2) +0.0127555 * Math.pow(distanceFromGoal, 1) -0.1900;
-    }*/
+
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
@@ -580,7 +552,6 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
                 , "wally", "color1", "color2", "shooterHood", follower);
         intakeAndShoot.setModeBlue();
         //thing that controls the servo that goes up and down allowing balls to shoot
-        // push = hardwareMap.get(Servo.class, "push");
         hood = hardwareMap.get(Servo.class, "shooterHood");
         //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
@@ -590,17 +561,6 @@ public class AAAAAAAAAAAAAAAAA extends OpMode {
         turretLeft.setPosition(.99);
         turretRight.setPosition(.99);
         Lime = new LimeLight(hardwareMap);
-
-
-
-
-        //setting the basic positions of the hood and stuff
-        //hood.setPosition(hoodPos);
-        //turretLeft.setPosition(turTurn);
-        //turretRight.setPosition(turTurn);
-        //intakeAndShoot.setPos(0,0);
-
-
         buildPaths();
     }
 
