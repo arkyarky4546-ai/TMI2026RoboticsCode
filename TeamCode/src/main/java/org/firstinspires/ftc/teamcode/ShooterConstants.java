@@ -27,6 +27,6 @@ public class ShooterConstants {
     public static double getFlyWheelTicksFromVelocity(double velocity){
         //return MathFunctions.clamp(94.501 * velocity/12 - 187.96 + flyOff, flyMin, flyMax);
         //return MathFunctions.clamp(-Math.sqrt(-4201.68067227*velocity + 1162629.75779) + 1470.58823529, flyMin, flyMax);
-        return MathFunctions.clamp(5.81395348837*(velocity-49.1) + 200, flyMin, flyMax);
+        return MathFunctions.clamp(5.81395348837*(velocity-49.1) + 250, flyMin, flyMax); //changed to 250 from 200
     }
 }
