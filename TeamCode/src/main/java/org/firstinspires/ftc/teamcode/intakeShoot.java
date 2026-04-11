@@ -111,6 +111,7 @@ public class intakeShoot {
     Servo rail;
     public static double SPINOFFSET = 50;
     public static double SHOOTOFFSET = 0;
+    public static double SHOOTOFFSET1 = 0;
     public static double HOODOFFSET = .00;
     private boolean sortWall = false;
     private ElapsedTime oscillationTimer = new ElapsedTime();
@@ -169,9 +170,13 @@ public class intakeShoot {
     public void update(boolean intakeActive, boolean patternCycle, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort, boolean intakeout1, boolean gatePause) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+            SHOOTOFFSET = 25;
+            SHOOTOFFSET1 = 25;
         }
         else{
             Values.update(follower, ShooterConstants.GOAL_POSE_RED, follower.getHeading());
+            SHOOTOFFSET = 50;
+            SHOOTOFFSET1 = 25;
         }
 
         double current = Math.abs(getVelocity());
@@ -186,7 +191,7 @@ public class intakeShoot {
             }
             else{
                 far = false;
-                shooterPower = PIDControl(Values.getSpeed(), current);
+                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET1, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
                 }
@@ -411,9 +416,11 @@ public class intakeShoot {
     public void update1(boolean intakeActive, boolean intakeOut, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry,boolean auto, boolean sort) {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+            SHOOTOFFSET = 25;
         }
         else{
             Values.update(follower, ShooterConstants.GOAL_POSE_RED, follower.getHeading());
+            SHOOTOFFSET = 50;
         }
 
         double current = Math.abs(getVelocity());
@@ -428,7 +435,7 @@ public class intakeShoot {
             }
             else{
                 far = false;
-                shooterPower = PIDControl(Values.getSpeed() + 50, current);
+                shooterPower = PIDControl(Values.getSpeed() + 20 + SHOOTOFFSET, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
                 }
@@ -534,7 +541,7 @@ public class intakeShoot {
 
             }
             else{
-                if(shooting.milliseconds() > 500){
+                if(shooting.milliseconds() > 600){
                     shooting.reset();
                     if(!shootReset){
                         shootReset = true;

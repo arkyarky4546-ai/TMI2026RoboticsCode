@@ -16,25 +16,25 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "DoneBLue9", group = "Autonomous")
-public class DoneBlue9 extends OpMode {
+@Autonomous(name = "rdbatchRed", group = "Autonomous")
+public class rdbatchRed extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
-    private final Pose startPose = new Pose(7.525,-39.721, 1.549); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose acIntakePose1 = new Pose(9.154, -9.340, 1.5798);
-    private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90)); //
-    private final Pose acIntakePose3 = new Pose(35.345, -21.1236, 1.542);
-    private final Pose endPose1 = new Pose(22.922, -34.253, 0.4825);
-    private final Pose cur = new Pose(19.525, -44.956, 0.8875);
-    private final Pose cur1 = new Pose(29.963, -39.621, 1.1389);
+    private final Pose startPose = new Pose(7.472,-101.3386, -1.579); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose acIntakePose1 = new Pose(8.9, -130.686, -1.586);
+    private final Pose acIntakePose0 = new Pose(9.154, -130.686, -1.786);
+    private final Pose acIntakePose3 = new Pose(33.721, -119.1925, -1.5897);
+    private final Pose endPose1 = new Pose(23.541, -106.283, -0.5112);
+    private final Pose cur = new Pose(18.923, -100.404, -0.7675);
+    private final Pose cur1 = new Pose(30.181, -103.7076, -1.2068);
 
     //paths
-    private Path score1;
-    private PathChain  acFirstLoad, end, scoreLoad1, scoreLoad2, acThirdLoad, curve;
+    private Path score0;
+    private PathChain  acFirstLoad, end, scoreLoad1, scoreLoad2, acThirdLoad, curve, score1;
 
     //doubles
     double hoodPos = .25;
@@ -43,7 +43,7 @@ public class DoneBlue9 extends OpMode {
     double kickUp = 0.68;
     double TargetVelocity = 1200;
     double shooterPower = 0;
-    // AutoTurret turret;
+    //AutoTurret turret;
     double recoil = 0;
     private double IntegralSum = 0;
     private double lastError = 0;
@@ -51,6 +51,7 @@ public class DoneBlue9 extends OpMode {
     public static double Ki=0.00014;
     public static double Kd=0.0000;
     public static double Kf=.0000;
+    boolean auto = false;
     double savePosition = 0.0;
 
     //timer
@@ -66,6 +67,7 @@ public class DoneBlue9 extends OpMode {
     //booleans
     boolean intakeIndex = true;
     boolean isShoot = false;
+    boolean gatePause = false;
     boolean go = false;
     private Boolean scan = true;
     boolean gate = true;
@@ -81,8 +83,6 @@ public class DoneBlue9 extends OpMode {
     int[] pgp = {2,1,2};
     int[] gpp = {1,2,2};
 
-    public static int TESTVALUE = 0;
-
 
     public double PIDControl(double reference, double state){
         double error=reference-state;
@@ -94,13 +94,16 @@ public class DoneBlue9 extends OpMode {
         return (error*Kp)+(derivative*Kd)+(IntegralSum*Ki)+(reference*Kf);
     }
     public void buildPaths() {//this is where we build the path stuff using our positions
-        score1 = new Path(new BezierLine(startPose, acIntakePose1));
-        score1.setLinearHeadingInterpolation(startPose.getHeading(), acIntakePose1.getHeading());
+        score0 = new Path(new BezierLine(startPose, acIntakePose0));
+        score0.setLinearHeadingInterpolation(startPose.getHeading(), acIntakePose0.getHeading());
         scoreLoad1= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose1, startPose))
                 .setLinearHeadingInterpolation(acIntakePose1.getHeading(), startPose.getHeading())
                 .build();
-
+        score1= follower.pathBuilder()
+                .addPath(new BezierLine(startPose, acIntakePose1))
+                .setLinearHeadingInterpolation(startPose.getHeading(), acIntakePose1.getHeading())
+                .build();
         scoreLoad2= follower.pathBuilder()
                 .addPath(new BezierLine(acIntakePose3, startPose))
                 .setLinearHeadingInterpolation(acIntakePose3.getHeading(), startPose.getHeading())
@@ -139,7 +142,7 @@ public class DoneBlue9 extends OpMode {
                 break;
             case 1:
 
-                if(actionTimer.getElapsedTimeSeconds() > 2 && gate){
+                if(actionTimer.getElapsedTimeSeconds() > 2.5 && gate){
                     go = true;
                     isShoot = true;
                     gate= false;
@@ -154,10 +157,10 @@ public class DoneBlue9 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 3.5) {
+                if(actionTimer.getElapsedTimeSeconds() > 4.5) {
                     isShoot = false;
 
-                    follower.followPath(score1,true);
+                    follower.followPath(score0,true);
                     go = true;
                     intakeAndShoot.setPos(0,intakePos);
                     //push servo is down now
@@ -169,6 +172,7 @@ public class DoneBlue9 extends OpMode {
                 break;
             case 2:
                 if(!follower.isBusy()) {
+                    isShoot = false;
                     //follower.holdPoint(acIntakePose1);
                     actionTimer.resetTimer();
                     setPathState(3);
@@ -176,39 +180,45 @@ public class DoneBlue9 extends OpMode {
                 break;
             case 3:
 
-                if(actionTimer.getElapsedTimeSeconds() > .05) {
-                    intakeAndShoot.setPos(0,intakePos);
+                if(actionTimer.getElapsedTimeSeconds() > .8) {
+                    // intakeAndShoot.setPos(0,intakePos);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
 
+                    gatePause = true;
                     setPathState(4);
                 }
+
                 break;
             case 4:
                 if (follower.isBusy()){
+                    auto = true;
                     actionTimer.resetTimer();
+                    shootTimer.reset();
                 }
                 if(!follower.isBusy()){
-                    if(shootTimer.milliseconds() > 100 && go) {
+                    auto = false;
+                    if(shootTimer.milliseconds() > 500 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
-                        //intakeAndShoot.fastShoot();
+                        intakeAndShoot.fastShoot();
                         go = false;
 
                         //this is what I mean about the timer being used to delay stuff
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > 2.5) {
+                    if(actionTimer.getElapsedTimeSeconds() > 2) {
                         isShoot = false;
                         follower.followPath(score1,true);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
                         //closed wall position
-                        intakeAndShoot.setPos(0, intakePos);
+
                         go = true;
+                        gatePause = false;
                         intakeIndex = true;
                         actionTimer.resetTimer();
                         setPathState(5);
@@ -217,7 +227,9 @@ public class DoneBlue9 extends OpMode {
 
 
             case 5:
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .65){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2){
+                    auto = true;
+                    gatePause = true;
                     follower.followPath(scoreLoad1,true);
                     intakeAndShoot.setPos(0, intakePos);
                     setPathState(6);
@@ -226,7 +238,7 @@ public class DoneBlue9 extends OpMode {
             case 6:
 
                 if(!follower.isBusy()) {
-
+                    auto = false;
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(startPose);
@@ -235,17 +247,17 @@ public class DoneBlue9 extends OpMode {
                 }
                 break;
             case 7:
-                if(shootTimer.milliseconds() > 100 && go) {
+                if(shootTimer.milliseconds() > 500 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
-                    // intakeAndShoot.fastShoot();
+                    intakeAndShoot.fastShoot();
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2.5) {
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
                     follower.followPath(score1,true);
-                    intakeAndShoot.setPos(0, intakePos);
                     isShoot = false;
+                    gatePause = false;
                     go = true;
                     intakeIndex = true;
                     //push.setPosition(kickZero);
@@ -272,8 +284,10 @@ public class DoneBlue9 extends OpMode {
                     pattern = ppg;
 
                 }*/
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .85) {
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2) {
                     intakeAndShoot.setPos(0, intakePos);
+                    auto = true;
+                    gatePause = true;
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad1,true);
                     //intakeAndShoot.setPos(0,0);
@@ -287,7 +301,7 @@ public class DoneBlue9 extends OpMode {
 
                 }*/
                 if(!follower.isBusy()) {
-
+                    auto = false;
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(startPose);
@@ -297,18 +311,18 @@ public class DoneBlue9 extends OpMode {
                 }
                 break;
             case 10:
-                if(shootTimer.milliseconds() > 100 & go) {
+                if(shootTimer.milliseconds() > 500 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
-                    //intakeAndShoot.fastShoot();
+                    intakeAndShoot.fastShoot();
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2.5) {
-                    intakeAndShoot.setPos(0, intakePos);
-                    follower.followPath(end,true);
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
+                    follower.followPath(acThirdLoad,true);
                     isShoot = false;
                     go = true;
+                    gatePause = false;
                     intakeIndex = true;
                     //push.setPosition(kickZero);
                     actionTimer.resetTimer();
@@ -316,14 +330,78 @@ public class DoneBlue9 extends OpMode {
                 }
 
                 break;
-
             case 11:
-                if(!follower.isBusy()){
+                /*if(scan){
+                    scan = false;
+                    turretLeft.setPosition();
+                    turretRight.setPosition();
+                }*/
+               /* if(Lime.getPatternFromLimelight() == 0){
+                    pattern = gpp;
+
+                }
+                else if(Lime.getPatternFromLimelight() == 1){
+                    pattern = pgp;
+
+                }
+                else if(Lime.getPatternFromLimelight() == 2){
+                    pattern = ppg;
+
+                }*/
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.2) {
                     intakeAndShoot.setPos(0, intakePos);
+                    auto = true;
+                    gatePause = true;
+                    // intakeAndShoot.findGreen();
+                    follower.followPath(scoreLoad2,true);
+                    //intakeAndShoot.setPos(0,0);
+                    scan = true;
                     setPathState(12);
                 }
                 break;
             case 12:
+                /*if(intakeAndShoot.findGreen() != 0.0){
+                    intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
+
+                }*/
+                if(!follower.isBusy()) {
+                    auto = false;
+                    actionTimer.resetTimer();
+                    shootTimer.reset();
+                    follower.holdPoint(startPose);
+                    //intakeAndShoot.setPos(0,0);
+                    //push.setPosition(kickUp);
+                    setPathState(13);
+                }
+                break;
+            case 13:
+                if(shootTimer.milliseconds() > 400 & go) {
+                    //push.setPosition(kickUp);
+                    isShoot = true;
+                    intakeAndShoot.fastShoot();
+                    go = false;
+                    shootTimer.reset();
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 2) {
+                    follower.followPath(end,true);
+                    isShoot = false;
+                    go = true;
+                    gatePause = false;
+                    intakeIndex = true;
+                    //push.setPosition(kickZero);
+                    actionTimer.resetTimer();
+                    setPathState(14);
+                }
+
+                break;
+
+            case 14:
+                if(!follower.isBusy()){
+                    intakeAndShoot.setPos(0, intakePos);
+                    setPathState(15);
+                }
+                break;
+            case 15:
                 break;
         }
     }
@@ -347,12 +425,16 @@ public class DoneBlue9 extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        //turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
-        turretLeft.setPosition(.96);
-        turretRight.setPosition(.96);
-        intakeAndShoot.update(false,false, isShoot, false, follower, telemetry, false,true);
-        intakeAndShoot.intakesetPower(1);
-
+        turretLeft.setPosition(.51);
+        turretRight.setPosition(.51);
+        //  turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+        // turretLeft.setPosition(1);
+        //turretRight.setPosition(1);
+        intakeAndShoot.update(false,auto, false , isShoot,false,  follower, telemetry, false, false, gatePause);
+        if(!auto) {
+            intakeAndShoot.intakesetPower(1);
+        }
+//.96
         //intakeAndShoot.update(1, pathState, telemetry, intakeIndex); //updating our shooter power and intake power
         try {
             autonomousPathUpdate(); //updating our cases so that we can change paths
@@ -371,8 +453,8 @@ public class DoneBlue9 extends OpMode {
 
     @Override
     public void init() {
-        // turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        //turret.setModeBlue();
+        //  turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        //   turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
@@ -385,14 +467,15 @@ public class DoneBlue9 extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave"
                 , "wally", "color1", "color2", "shooterHood", follower);
-        intakeAndShoot.setModeBlue();
+
         //thing that controls the servo that goes up and down allowing balls to shoot
         // push = hardwareMap.get(Servo.class, "push");
         hood = hardwareMap.get(Servo.class, "shooterHood");
         //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
-
+        turretLeft.setPosition(.51);
+        turretRight.setPosition(.51);
         Lime = new LimeLight(hardwareMap);
         hood.setPosition(.4);
 

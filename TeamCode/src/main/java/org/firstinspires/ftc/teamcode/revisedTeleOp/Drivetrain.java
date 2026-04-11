@@ -62,13 +62,24 @@ public class Drivetrain {
                     true // Robot Centric
             );
 
-                //This is how it looks with slowMode on
-            else follower.setTeleOpDrive(
-                   left_stick_x,
-                    -left_stick_y ,
-                    -right_stick_x,
-                    false // Robot Centric
-            );
+             else {   //This is how it looks with slowMode on
+                if (mode == RED) {
+                    follower.setTeleOpDrive(
+                            -left_stick_x,
+                            left_stick_y,
+                            -right_stick_x,
+                            false // Robot Centric
+                    );
+                } else if (mode == BLUE) {
+                    follower.setTeleOpDrive(
+                            left_stick_x,
+                            -left_stick_y,
+                            -right_stick_x,
+                            false // Robot Centric
+                    );
+
+                }
+            }
         }
 
         //Automated PathFollowing

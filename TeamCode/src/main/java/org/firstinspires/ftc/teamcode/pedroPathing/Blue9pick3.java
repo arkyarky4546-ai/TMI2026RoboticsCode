@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "Blue9far", group = "Autonomous")
-public class Blue9far extends OpMode {
+@Autonomous(name = "Blue9pick3", group = "Autonomous")
+public class Blue9pick3 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
@@ -25,8 +25,8 @@ public class Blue9far extends OpMode {
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
 
     private final Pose startPose = new Pose(7.525,-39.721, 1.549); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose acIntakePose1 = new Pose(9.154, -8.340, 1.5798);
-    private final Pose acIntakePose0 = new Pose(16.154, -8.340, 1.5798);
+    private final Pose acIntakePose1 = new Pose(8.9, -8.340, 1.5798);
+    private final Pose acIntakePose0 = new Pose(9.154, -8.340, 1.7798);
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90)); //
     private final Pose acIntakePose3 = new Pose(35.345, -21.1236, 1.542);
     private final Pose endPose1 = new Pose(22.922, -34.253, 0.4825);
@@ -173,6 +173,7 @@ public class Blue9far extends OpMode {
                 break;
             case 2:
                 if(!follower.isBusy()) {
+                    isShoot = false;
                     //follower.holdPoint(acIntakePose1);
                     actionTimer.resetTimer();
                     setPathState(3);
@@ -181,14 +182,14 @@ public class Blue9far extends OpMode {
             case 3:
 
                 if(actionTimer.getElapsedTimeSeconds() > .8) {
-                    intakeAndShoot.setPos(0,intakePos);
+                    // intakeAndShoot.setPos(0,intakePos);
                     intakeIndex = false;
                     follower.followPath(scoreLoad1,true);
 
                     gatePause = true;
-
+                    setPathState(4);
                 }
-                setPathState(4);
+
                 break;
             case 4:
                 if (follower.isBusy()){
@@ -319,7 +320,7 @@ public class Blue9far extends OpMode {
                     shootTimer.reset();
                 }
                 if(actionTimer.getElapsedTimeSeconds() > 2) {
-                    follower.followPath(score1,true);
+                    follower.followPath(acThirdLoad,true);
                     isShoot = false;
                     go = true;
                     gatePause = false;
@@ -353,7 +354,7 @@ public class Blue9far extends OpMode {
                     auto = true;
                     gatePause = true;
                     // intakeAndShoot.findGreen();
-                    follower.followPath(scoreLoad1,true);
+                    follower.followPath(scoreLoad2,true);
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
                     setPathState(12);
@@ -386,7 +387,7 @@ public class Blue9far extends OpMode {
                     follower.followPath(end,true);
                     isShoot = false;
                     go = true;
-                     gatePause = false;
+                    gatePause = false;
                     intakeIndex = true;
                     //push.setPosition(kickZero);
                     actionTimer.resetTimer();
@@ -425,9 +426,9 @@ public class Blue9far extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turretLeft.setPosition(.97);
-        turretRight.setPosition(.97);
-      //  turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
+        turretLeft.setPosition(.965);
+        turretRight.setPosition(.965);
+        //  turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         // turretLeft.setPosition(1);
         //turretRight.setPosition(1);
         intakeAndShoot.update(false,auto, false , isShoot,false,  follower, telemetry, false, false, gatePause);
@@ -453,8 +454,8 @@ public class Blue9far extends OpMode {
 
     @Override
     public void init() {
-      //  turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-     //   turret.setModeBlue();
+        //  turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
+        //   turret.setModeBlue();
         //initializin all the different timers that we are going to use
         pathTimer = new Timer();
         actionTimer = new Timer();
@@ -474,8 +475,8 @@ public class Blue9far extends OpMode {
         //stuff that rotates the turret
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
-        turretLeft.setPosition(.97);
-        turretRight.setPosition(.97);
+        turretLeft.setPosition(.965);
+        turretRight.setPosition(.965);
         Lime = new LimeLight(hardwareMap);
         hood.setPosition(.4);
 

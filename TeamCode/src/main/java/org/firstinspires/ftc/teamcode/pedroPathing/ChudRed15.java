@@ -16,34 +16,33 @@ import org.firstinspires.ftc.teamcode.AutoTurret;
 import org.firstinspires.ftc.teamcode.LimeLight;
 import org.firstinspires.ftc.teamcode.intakeShoot;
 
-@Autonomous(name = "Chud15Blue", group = "Autonomous")
-public class Chud15Blue extends OpMode {
+@Autonomous(name = "Chud15Red", group = "Autonomous")
+public class ChudRed15 extends OpMode {
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
-
+    public static double curve = -90.297;
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(128.8,-24.5, -2.35720214); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
-    private final Pose scorePose1 = new Pose(84.14, -53.727, 2.22152); // Scoring Pose of our robot. (Random for right now idk where we will score)
-    //private final Pose scorePose2 = new Pose(79.67, -47.87, 2.836465);
-    //private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
-    private final Pose acIntakePose1 = new Pose(56.75, -10.1058 , 1.5549);
-    //private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(59.76, -10.164 , 1.02);
+    private final Pose startPose = new Pose(122.39,-127.42, 2.2036); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose scorePoseEnd = new Pose(113, -89.64, -2.7429);
+    private final Pose scorePose1 = new Pose(83.057, -89.94, -2.3429); // Scoring Pose of our robot. (Random for right now idk where we will score)
+    private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
+    private final Pose acIntakePose1 = new Pose(58.836, -125.178 , -1.571);
+    private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
+    private final Pose hitPose = new Pose(59.923, -132.853, -1.046);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
-    private final Pose acIntakePose2 = new Pose(83.414, -16, 1.573238);
-    //private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(34, -20, 1.58);
-    private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
-    private final Pose curve1 = new Pose(72.28, -51.71, 2.299);
-    private final Pose curve11 = new Pose(61.59, -41.17, 1.7936);
-    private final Pose curve2 = new Pose(84.4, -47.09, 1.77111);
-    private final Pose curve21 = new Pose(83.714, -38.8, 1.573238);
-    private final Pose curve3 = new Pose(61, -55, 2.5);
-    private final Pose curve31 = new Pose(45, -47, 2.17);
-    private final Pose hit1 = new Pose(59.8, -24.8, 1.32);
-    private final Pose hit = new Pose(71.5, -38.8, 1.739);
-    private final Pose scorePoseEnd = new Pose(113, -54.6, 2.54);
+    private final Pose acIntakePose2 = new Pose(81.75, -121, -1.545);
+    private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
+    private final Pose acIntakePose3 = new Pose(32.213, -121.856, -1.589);
+    private final Pose endPose1 = new Pose(55.609, -127.123, -0.8696);
+    private final Pose curve1 = new Pose(71.292, -92.984, -2.0587);
+    private final Pose curve11 = new Pose(62.88, -100.336, -1.868);
+    private final Pose curve2 = new Pose(81.366,  -89.99, -1.6349);
+    private final Pose curve21 = new Pose(81.750, -101.5538, -1.5788);
+    private final Pose curve3 = new Pose(56.557, -90.978, -2.487);
+    private final Pose curve31 = new Pose(36.967, -101.489, -1.896);
+    private final Pose hit = new Pose(70.154, -99.95, -1.8197);
+    private final Pose hit1 = new Pose(58.957, -112.072, -1.109);
 
 
     //paths
@@ -150,7 +149,7 @@ public class Chud15Blue extends OpMode {
                 // .setTranslationalConstraint(.95)
                 .build();
         acSecondLoad= follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose1, curve2, curve21, acIntakePose2))
+                .addPath(new BezierCurve(scorePose1,curve2, acIntakePose2))
                 .setLinearHeadingInterpolation(scorePose1.getHeading(), acIntakePose2.getHeading())
                 //  .setHeadingConstraint(.95)
                 //  .setTranslationalConstraint(.95)
@@ -232,7 +231,7 @@ public class Chud15Blue extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.4) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.15) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad);
@@ -263,11 +262,11 @@ public class Chud15Blue extends OpMode {
                 }
                 break;
             case 5:
-                if(follower.getPathCompletion()<.92){
+                if(follower.getPathCompletion()<.96){
                     actionTimer.resetTimer();
                 }
-                if(follower.getPathCompletion()>.92){
-                    if(shootTimer.milliseconds() > 600 && go) {
+                if(follower.getPathCompletion()>.97){
+                    if(shootTimer.milliseconds() > 700 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
@@ -277,7 +276,7 @@ public class Chud15Blue extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                    if(actionTimer.getElapsedTimeSeconds() > 1.7) {
                         isShoot = false;
                         follower.followPath(hiLoad, .7, true);
 
@@ -297,7 +296,7 @@ public class Chud15Blue extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() >.95){
                     follower.followPath(scoreLoad15);
                     //auto = true;
                     actionTimer.resetTimer();
@@ -313,7 +312,7 @@ public class Chud15Blue extends OpMode {
                     auto = false;
                 }
 
-                if(follower.getPathCompletion()>.9){
+                if(follower.getPathCompletion()>.93){
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -323,13 +322,13 @@ public class Chud15Blue extends OpMode {
                 }
                 break;
             case 8:
-                if(shootTimer.milliseconds() > 700 && go) {
+                if(shootTimer.milliseconds() > 800 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.81) {
                     follower.followPath(hiLoad, .7, true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -362,7 +361,7 @@ public class Chud15Blue extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .95){
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15);
@@ -383,7 +382,7 @@ public class Chud15Blue extends OpMode {
                 if(actionTimer.getElapsedTimeSeconds()>=.9){
                     auto = false;
                 }
-                if(follower.getPathCompletion()>.9){
+                if(follower.getPathCompletion()>.93){
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -394,14 +393,14 @@ public class Chud15Blue extends OpMode {
                 }
                 break;
             case 11:
-                if(shootTimer.milliseconds() > 600 & go) {
+                if(shootTimer.milliseconds() > 820 & go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.7) {
-                    follower.followPath(acSecondLoad);
+                if(actionTimer.getElapsedTimeSeconds() > 1.82) {
+                    follower.followPath(acSecondLoad, .7, true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
                     go = true;
@@ -434,7 +433,7 @@ public class Chud15Blue extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(follower.getPathCompletion()>.9){
+                if(follower.getPathCompletion()>.93){
                     actionTimer.resetTimer();
                     shootTimer.reset();
                     follower.holdPoint(scorePoseEnd);
@@ -452,7 +451,7 @@ public class Chud15Blue extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.7) {
                     go = true;
                     isShoot = false;
                     follower.holdPoint(scorePoseEnd);
@@ -475,7 +474,7 @@ public class Chud15Blue extends OpMode {
 
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
                     // intakeAndShoot.findGreen();
-                   // auto = true;
+                    // auto = true;
                     follower.followPath(scoreLoad3);
                     intakeAndShoot.setPos(0, intakePos);
                     actionTimer.resetTimer();
@@ -545,8 +544,8 @@ public class Chud15Blue extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turretLeft.setPosition(.985);
-        turretRight.setPosition(.985);
+        turretLeft.setPosition(.47);
+        turretRight.setPosition(.47);
         // turret.updateAutoAutoBlue(follower,telemetry, intakeAndShoot.turretAngle(),true);
         // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
         // turretLeft.setPosition(1);
@@ -590,7 +589,7 @@ public class Chud15Blue extends OpMode {
                 "shoot1", "shoot2",
                 "spindexRoter", "slave"
                 , "wally", "color1", "color2", "shooterHood", follower);
-        intakeAndShoot.setModeBlue();
+        intakeAndShoot.setModeRed();
         //thing that controls the servo that goes up and down allowing balls to shoot
         // push = hardwareMap.get(Servo.class, "push");
         hood = hardwareMap.get(Servo.class, "shooterHood");
@@ -598,9 +597,9 @@ public class Chud15Blue extends OpMode {
         turretRight = hardwareMap.get(Servo.class, "turretRight");
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
-        turret.setModeBlue();
-        turretLeft.setPosition(.985);
-        turretRight.setPosition(.985);
+        turret.setModeRed();
+        turretLeft.setPosition(.47);
+        turretRight.setPosition(.47);
         Lime = new LimeLight(hardwareMap);
 
 

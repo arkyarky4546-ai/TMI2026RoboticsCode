@@ -29,11 +29,11 @@ public class BlueBall18 extends OpMode {
     //private final Pose intakePose1 = new Pose(54, -44, Math.toRadians(90));//this is where we should intake the BALLS idk where it is at this time so change late
     private final Pose acIntakePose1 = new Pose(58.75, -18.1058 , 1.5549);
     //private final Pose intakePose2 = new Pose(65, -47, Math.toRadians(90));
-    private final Pose hitPose = new Pose(60.4, -11 , .9852);
+    private final Pose hitPose = new Pose(60.1, -11 , .9852);
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(83.414, -18, 1.573238);
     //private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(34, -20, 1.58);
+    private final Pose acIntakePose3 = new Pose(34, -15, 1.58);
     private final Pose endPose1 = new Pose(58.368539, -10.4, .73678);
     private final Pose curve1 = new Pose(72.28, -51.71, 2.299);
     private final Pose curve11 = new Pose(61.59, -41.17, 1.7936);
@@ -222,7 +222,7 @@ public class BlueBall18 extends OpMode {
                     gate= false;
 
                 }
-                if(shootTimer.milliseconds() > 200 && go) {
+                if(shootTimer.milliseconds() > 150 && go) {
                     //shooting every 800 milliseconds
                     isShoot = true;
                     go = false;
@@ -230,7 +230,7 @@ public class BlueBall18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1) {
+                if(actionTimer.getElapsedTimeSeconds() > .81) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad);
@@ -264,7 +264,7 @@ public class BlueBall18 extends OpMode {
                     actionTimer.resetTimer();
                 }
                 if(follower.getPathCompletion()>.9){
-                    if(shootTimer.milliseconds() > 200 && go) {
+                    if(shootTimer.milliseconds() > 150 && go) {
                         isShoot = true;
                         //shooting every 800 milliseconds
                         go = false;
@@ -273,7 +273,7 @@ public class BlueBall18 extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .9) {
+                    if(actionTimer.getElapsedTimeSeconds() > .81) {
                         isShoot = false;
                         follower.followPath(hiLoad);
 
@@ -292,20 +292,23 @@ public class BlueBall18 extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.05){
                     follower.followPath(scoreLoad15);
-                    auto = true;
+                    //auto = true;
                     actionTimer.resetTimer();
                     intakeAndShoot.setPos(0, intakePos);
                     setPathState(7);
                 }
                 break;
             case 7:
-                if(actionTimer.getElapsedTimeSeconds()>.35){
+                if(actionTimer.getElapsedTimeSeconds()>.25 && actionTimer.getElapsedTimeSeconds()<.5){
+                    auto = true;
+                }
+                if(actionTimer.getElapsedTimeSeconds()>=.9){
                     auto = false;
                 }
 
-                if(follower.getPathCompletion()>.9){
+                if(follower.getPathCompletion()>.85){
 
                     actionTimer.resetTimer();
                     shootTimer.reset();
@@ -314,12 +317,12 @@ public class BlueBall18 extends OpMode {
                 }
                 break;
             case 8:
-                if(shootTimer.milliseconds() > 200 && go) {
+                if(shootTimer.milliseconds() > 150 && go) {
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                if(actionTimer.getElapsedTimeSeconds() > .81) {
                     follower.followPath(hiLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -355,7 +358,6 @@ public class BlueBall18 extends OpMode {
                     intakeAndShoot.setPos(0, intakePos);
                     // intakeAndShoot.findGreen();
                     follower.followPath(scoreLoad15);
-                    auto = true;
                     actionTimer.resetTimer();
                     //intakeAndShoot.setPos(0,0);
                     scan = true;
@@ -367,7 +369,10 @@ public class BlueBall18 extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
-                if(actionTimer.getElapsedTimeSeconds()>.4){
+                if(actionTimer.getElapsedTimeSeconds()>.25 && actionTimer.getElapsedTimeSeconds()<.5){
+                    auto = true;
+                }
+                if(actionTimer.getElapsedTimeSeconds()>=.9){
                     auto = false;
                 }
                 if(follower.getPathCompletion()>.9){
@@ -380,12 +385,12 @@ public class BlueBall18 extends OpMode {
                 }
                 break;
             case 11:
-                if(shootTimer.milliseconds() > 200 & go) {
+                if(shootTimer.milliseconds() > 150 & go) {
                     isShoot = true;
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     follower.followPath(acSecondLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -426,7 +431,7 @@ public class BlueBall18 extends OpMode {
                 }
                 break;
             case 15:
-                if(shootTimer.milliseconds() > 200 && go) {
+                if(shootTimer.milliseconds() > 150 && go) {
                     go = false;
                     isShoot = true;
 
@@ -434,7 +439,7 @@ public class BlueBall18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .9) {
+                if(actionTimer.getElapsedTimeSeconds() > .85) {
                     go = true;
                     isShoot = false;
                     follower.followPath(acThirdLoad);
@@ -456,7 +461,7 @@ public class BlueBall18 extends OpMode {
 
                 if(actionTimer.getElapsedTimeSeconds() > .05) {
                     // intakeAndShoot.findGreen();
-                    auto = true;
+                    //auto = true;
                     follower.followPath(scoreLoad3);
                     intakeAndShoot.setPos(0, intakePos);
                     intakeIndex = false;
@@ -469,6 +474,12 @@ public class BlueBall18 extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
+                if(actionTimer.getElapsedTimeSeconds()>.25 && actionTimer.getElapsedTimeSeconds()<.5){
+                    auto = true;
+                }
+                if(actionTimer.getElapsedTimeSeconds()>=.9){
+                    auto = false;
+                }
                 if(follower.getPathCompletion()>.9){
                     auto = false;
                     actionTimer.resetTimer();
@@ -478,7 +489,7 @@ public class BlueBall18 extends OpMode {
                 }
                 break;
             case 19:
-                if(shootTimer.milliseconds() > 200 && go) {
+                if(shootTimer.milliseconds() > 150 && go) {
                     go = false;
                     isShoot = true;
                     shootTimer.reset();
@@ -505,8 +516,8 @@ public class BlueBall18 extends OpMode {
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
 
         follower.update();
-        turretLeft.setPosition(1);
-        turretRight.setPosition(1);
+        turretLeft.setPosition(.985);
+        turretRight.setPosition(.985);
        // turret.updateAutoAutoBlue(follower,telemetry, intakeAndShoot.turretAngle(),true);
        // turret.updateAuto(follower, telemetry, intakeAndShoot.turretAngle(), scan);
        // turretLeft.setPosition(1);
@@ -558,8 +569,8 @@ public class BlueBall18 extends OpMode {
         turretLeft = hardwareMap.get(Servo.class, "turretLeft");
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
         turret.setModeBlue();
-        turretLeft.setPosition(.99);
-        turretRight.setPosition(.99);
+        turretLeft.setPosition(.985);
+        turretRight.setPosition(.985);
         Lime = new LimeLight(hardwareMap);
         buildPaths();
     }
