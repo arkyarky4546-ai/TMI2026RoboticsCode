@@ -296,6 +296,9 @@ public class ChudRed15 extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
+                else if (!follower.isBusy()&& actionTimer.getElapsedTimeSeconds() <.9){
+                    follower.holdPoint(hitPose);
+                }
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() >.95){
                     follower.followPath(scoreLoad15);
                     //auto = true;
@@ -360,6 +363,9 @@ public class ChudRed15 extends OpMode {
                 }*/
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
+                }
+                else if (!follower.isBusy()&& actionTimer.getElapsedTimeSeconds() <.9){
+                    follower.holdPoint(hitPose);
                 }
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > .95){
                     intakeAndShoot.setPos(0, intakePos);

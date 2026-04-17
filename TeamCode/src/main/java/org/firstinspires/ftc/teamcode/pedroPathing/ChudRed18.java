@@ -33,7 +33,7 @@ public class ChudRed18 extends OpMode {
     private final Pose backPose = new Pose(84, -24, Math.toRadians(90));
     private final Pose acIntakePose2 = new Pose(81.75, -124, -1.545);
     private final Pose intakePose3 = new Pose(35, -47, Math.toRadians(90));
-    private final Pose acIntakePose3 = new Pose(32.213, -121.856, -1.589);
+    private final Pose acIntakePose3 = new Pose(32.213, -123.856, -1.589);
     private final Pose endPose1 = new Pose(55.609, -127.123, -0.8696);
     private final Pose curve1 = new Pose(71.292, -92.984, -2.0587);
     private final Pose curve11 = new Pose(62.88, -100.336, -1.868);
@@ -41,8 +41,8 @@ public class ChudRed18 extends OpMode {
     private final Pose curve21 = new Pose(81.750, -101.5538, -1.5788);
     private final Pose curve3 = new Pose(56.557, -90.978, -2.487);
     private final Pose curve31 = new Pose(36.967, -101.489, -1.896);
-    private final Pose hit = new Pose(70.154, -99.95, -1.8197);
-    private final Pose hit1 = new Pose(58.957, -112.072, -1.109);
+    private final Pose hit = new Pose(70.154, -97.95, -1.8197);
+    private final Pose hit1 = new Pose(62.957, -112.072, -1.229);
 
 
     //paths
@@ -229,7 +229,7 @@ public class ChudRed18 extends OpMode {
                     //this is what I mean about the timer being used to delay stuff
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .81) {
+                if(actionTimer.getElapsedTimeSeconds() > .78) {
                     isShoot = false;
 
                     follower.followPath(acFirstLoad);
@@ -263,7 +263,7 @@ public class ChudRed18 extends OpMode {
                     actionTimer.resetTimer();
                 }
                 if(follower.getPathCompletion()>.9){
-                    if(shootTimer.milliseconds() > 150 && go) {
+                    if(shootTimer.milliseconds() > 140 && go) {
                         isShoot = true;
                         //shooting every 800 milliseconds
                         go = false;
@@ -272,7 +272,7 @@ public class ChudRed18 extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > .81) {
+                    if(actionTimer.getElapsedTimeSeconds() > .78) {
                         isShoot = false;
                         follower.followPath(hiLoad);
 
@@ -291,7 +291,7 @@ public class ChudRed18 extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
-                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
+                if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.01){
                     follower.followPath(scoreLoad15);
                     //auto = true;
                     actionTimer.resetTimer();
@@ -316,7 +316,7 @@ public class ChudRed18 extends OpMode {
                 }
                 break;
             case 8:
-                if(shootTimer.milliseconds() > 150 && go) {
+                if(shootTimer.milliseconds() > 140 && go) {
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
@@ -384,12 +384,12 @@ public class ChudRed18 extends OpMode {
                 }
                 break;
             case 11:
-                if(shootTimer.milliseconds() > 150 & go) {
+                if(shootTimer.milliseconds() > 140 & go) {
                     isShoot = true;
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > .85) {
+                if(actionTimer.getElapsedTimeSeconds() > .83) {
                     follower.followPath(acSecondLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -430,7 +430,7 @@ public class ChudRed18 extends OpMode {
                 }
                 break;
             case 15:
-                if(shootTimer.milliseconds() > 150 && go) {
+                if(shootTimer.milliseconds() > 140 && go) {
                     go = false;
                     isShoot = true;
 
@@ -488,7 +488,7 @@ public class ChudRed18 extends OpMode {
                 }
                 break;
             case 19:
-                if(shootTimer.milliseconds() > 150 && go) {
+                if(shootTimer.milliseconds() > 120 && go) {
                     go = false;
                     isShoot = true;
                     shootTimer.reset();

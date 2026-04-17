@@ -28,6 +28,7 @@ public class Drivetrain {
     private final int RED = 1;
     private final int BLUE = 2;
     private boolean field = false;
+
     GoBildaPinpointDriver odometry;
 
 
@@ -47,9 +48,14 @@ public class Drivetrain {
         follower.startTeleopDrive();
     }
 
-    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed, boolean intakeFar, boolean shootFar, boolean holdPos){
+    public void update(double left_stick_y, double left_stick_x, double right_stick_x, boolean xWasPressed, boolean bWasPressed, boolean yWasPressed, boolean intakeFar, boolean shootFar, boolean holdPos, boolean slow){
         follower.update();
-
+        if(slow){
+            slowMode = true;
+        }
+        else{
+            slowMode = false;
+        }
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors
@@ -62,19 +68,38 @@ public class Drivetrain {
                     true // Robot Centric
             );
 
+
              else {   //This is how it looks with slowMode on
-                if (mode == RED) {
+                if (mode == RED && !slowMode) {
                     follower.setTeleOpDrive(
                             -left_stick_x,
                             left_stick_y,
                             -right_stick_x,
                             false // Robot Centric
                     );
-                } else if (mode == BLUE) {
+                } else if (mode == BLUE && !slowMode) {
                     follower.setTeleOpDrive(
                             left_stick_x,
                             -left_stick_y,
                             -right_stick_x,
+                            false // Robot Centric
+                    );
+
+                }
+                else if (mode == RED && slowMode) {
+                    follower.setTeleOpDrive(
+                            -left_stick_x *slowModeMultiplier,
+                            left_stick_y *slowModeMultiplier,
+                            -right_stick_x *slowModeMultiplier,
+                            false // Robot Centric
+                    );
+
+                }
+                else if (mode == BLUE && slowMode) {
+                    follower.setTeleOpDrive(
+                            left_stick_x *slowModeMultiplier,
+                            -left_stick_y *slowModeMultiplier,
+                            -right_stick_x *slowModeMultiplier,
                             false // Robot Centric
                     );
 

@@ -297,6 +297,9 @@ public class Chud15Blue extends OpMode {
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
                 }
+                else if (!follower.isBusy()&& actionTimer.getElapsedTimeSeconds() <1){
+                    follower.holdPoint(hitPose);
+                }
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
                     follower.followPath(scoreLoad15);
                     //auto = true;
@@ -361,6 +364,9 @@ public class Chud15Blue extends OpMode {
                 }*/
                 if(follower.isBusy()){
                     actionTimer.resetTimer();
+                }
+                else if (!follower.isBusy()&& actionTimer.getElapsedTimeSeconds() <1){
+                    follower.holdPoint(hitPose);
                 }
                 if(!follower.isBusy() && actionTimer.getElapsedTimeSeconds() > 1.1){
                     intakeAndShoot.setPos(0, intakePos);
@@ -434,6 +440,12 @@ public class Chud15Blue extends OpMode {
                     intakeAndShoot.colorSort(intakeAndShoot.findGreen(), pattern);
 
                 }*/
+                if(actionTimer.getElapsedTimeSeconds()>.22 && actionTimer.getElapsedTimeSeconds()<.5){
+                    auto = true;
+                }
+                if(actionTimer.getElapsedTimeSeconds()>=.7){
+                    auto = false;
+                }
                 if(follower.getPathCompletion()>.9){
                     actionTimer.resetTimer();
                     shootTimer.reset();

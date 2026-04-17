@@ -58,6 +58,7 @@ public class redTeleopFlanker extends OpMode {
     private ElapsedTime shootTimer = new ElapsedTime();
     private ElapsedTime spin = new ElapsedTime();
     private boolean patternFound = false;
+    private boolean slow = false;
     private Servo turretRight;
 
     @Override
@@ -92,13 +93,16 @@ public class redTeleopFlanker extends OpMode {
     @Override
     public void loop() {
         // --- DRIVETRAIN ---
-        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad2.bWasPressed(), gamepad1.yWasPressed(), gamepad2.dpadRightWasPressed(), gamepad2.dpadLeftWasPressed(), gamepad1.dpad_left);
+        drivetrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.xWasPressed(), gamepad2.bWasPressed(), gamepad1.yWasPressed(), gamepad2.dpadRightWasPressed(), gamepad2.dpadLeftWasPressed(), gamepad1.dpad_left, slow);
 
         if(gamepad1.a){
             drivetrain.resetCurrentPose();
         }
         if(gamepad1.b){
             drivetrain.resetCurrentPoseGoal();
+        }
+        else if(gamepad1.dpadRightWasPressed()){
+            slow = !slow;
         }
         if(gamepad2.yWasPressed()){
             sort = true;
