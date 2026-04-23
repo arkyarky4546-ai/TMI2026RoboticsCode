@@ -23,11 +23,16 @@ public class SkeletonAuto extends OpMode {
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(128.8,-24.5, -2.35720214); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose startPose = new Pose(119.68,-19.9, -2.254); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+
+   private final Pose shootPose = new Pose(89.64,-54.57,-2.318);
+   private final Pose firstLoad = new Pose(82.02,-27.2,1.56);
 
     //paths
     private Path score1;
-    private PathChain firstLoad;
+    private PathChain load1;
+
+    private PathChain score2;
     private double IntegralSum = 0;
     private double lastError = 0;
     public static double Kp=0.0121;
@@ -52,6 +57,7 @@ public class SkeletonAuto extends OpMode {
     boolean go = false;
     private Boolean scan = true;
     boolean gate = true;
+    boolean shoot = false;
     //boolean intake = false;
     //boolean shoot = false;
     AutoTurret turret;
@@ -77,14 +83,19 @@ public class SkeletonAuto extends OpMode {
         return (error*Kp)+(derivative*Kd)+(IntegralSum*Ki)+(reference*Kf);
     }
     public void buildPaths() {//this is where we build the path stuff using our positions
-        score1 = new Path(new BezierLine(startPose, scorePose1));
-        score1.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
+        score1 = new Path(new BezierLine(startPose, shootPose));
+        score1.setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading());
 
-       end = follower.pathBuilder()
-                .addPath(new BezierLine(scorePose1,endPose1))
-                .setLinearHeadingInterpolation(scorePose1.getHeading(), endPose1.getHeading())
+        load1 = follower.pathBuilder()
+                .addPath(new BezierLine(shootPose,firstLoad))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), firstLoad.getHeading())
                 //  .setHeadingConstraint(.95)
                 //  .setTranslationalConstraint(.95)
+                .build();
+        
+        score2 = follower.pathBuilder()
+                .addPath(new BezierLine(firstLoad,shootPose))
+                .setLinearHeadingInterpolation(firstLoad.getHeading(),shootPose.getHeading())
                 .build();
     }
     public void autonomousPathUpdate() throws InterruptedException {//we can add a lot more paths
@@ -96,10 +107,57 @@ public class SkeletonAuto extends OpMode {
                 intakeAndShoot.setPos(0,intakePos);
                 intakeIndex = false;
                 isShoot = false;
+                actionTimer.resetTimer();
                 //go to the next case
                 setPathState(1);
 
                 break;
+            case 1:
+                if(!follower.isBusy()&& shoot == false){
+                    shoot = true;
+                   actionTimer.resetTimer();
+                    isShoot=true;
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 2){
+                    follower.followPath(load1);
+                    actionTimer.resetTimer();
+                    shoot = false;
+                    isShoot = false;
+                    intakeAndShoot.setPos(0,intakePos);
+                    setPathState(2);
+                }
+                break;
+
+            case 2:
+                if(!follower.isBusy()&& shoot == false) {
+                    actionTimer.resetTimer();
+                    shoot = true;
+                }
+                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                    follower.followPath(score2);
+                    shoot = false;
+                    setPathState(3);
+                }
+                break;
+
+            case 3:
+                if(!follower.isBusy()&& shoot == false){
+                    shoot = true;
+                    actionTimer.resetTimer();
+                    isShoot=true;
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 2){
+                    actionTimer.resetTimer();
+                    shoot = false;
+                    isShoot = false;
+                    intakeAndShoot.setPos(0,intakePos);
+                    setPathState(4);
+                }
+                break;
+
+            case 4:
+                break;
+
 
         }
     }
