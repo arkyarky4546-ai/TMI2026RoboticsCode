@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -26,7 +25,7 @@ public class SkeletonAuto extends OpMode {
     private final Pose startPose = new Pose(119.68,-19.9, -2.254); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
 
    private final Pose shootPose = new Pose(89.64,-54.57,-2.318);
-   private final Pose firstLoad = new Pose(82.02,-27.2,1.56);
+   private final Pose tape3 = new Pose(35.53,-22.82,1.56);
 
     //paths
     private Path score1;
@@ -87,15 +86,15 @@ public class SkeletonAuto extends OpMode {
         score1.setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading());
 
         load1 = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose,firstLoad))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), firstLoad.getHeading())
+                .addPath(new BezierLine(shootPose, tape3))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), tape3.getHeading(), .4)
                 //  .setHeadingConstraint(.95)
                 //  .setTranslationalConstraint(.95)
                 .build();
         
         score2 = follower.pathBuilder()
-                .addPath(new BezierLine(firstLoad,shootPose))
-                .setLinearHeadingInterpolation(firstLoad.getHeading(),shootPose.getHeading())
+                .addPath(new BezierLine(tape3,shootPose))
+                .setLinearHeadingInterpolation(tape3.getHeading(),shootPose.getHeading())
                 .build();
     }
     public void autonomousPathUpdate() throws InterruptedException {//we can add a lot more paths
@@ -118,7 +117,7 @@ public class SkeletonAuto extends OpMode {
                    actionTimer.resetTimer();
                     isShoot=true;
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2){
+                if(actionTimer.getElapsedTimeSeconds() > 5){
                     follower.followPath(load1);
                     actionTimer.resetTimer();
                     shoot = false;
@@ -133,7 +132,9 @@ public class SkeletonAuto extends OpMode {
                     actionTimer.resetTimer();
                     shoot = true;
                 }
-                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                if (actionTimer.getElapsedTimeSeconds() > 5) {
+                    intakeAndShoot.setPos(0,intakePos);
+                    actionTimer.resetTimer();
                     follower.followPath(score2);
                     shoot = false;
                     setPathState(3);
@@ -146,7 +147,7 @@ public class SkeletonAuto extends OpMode {
                     actionTimer.resetTimer();
                     isShoot=true;
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 2){
+                if(actionTimer.getElapsedTimeSeconds() > 6){
                     actionTimer.resetTimer();
                     shoot = false;
                     isShoot = false;
@@ -179,7 +180,8 @@ public class SkeletonAuto extends OpMode {
     }*/
     @Override
     public void loop() { //this runs constantly during auto and we just update the position of the follower and check if it is still busy and cycle through each case
-
+        turretLeft.setPosition(.18);
+        turretRight.setPosition(.18);
         follower.update();
         intakeAndShoot.update1(false,false, false, isShoot, false, follower, telemetry, auto,false);
         if(!auto) {
@@ -223,6 +225,8 @@ public class SkeletonAuto extends OpMode {
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
         turret.setModeBlue();
         Lime = new LimeLight(hardwareMap);
+        turretLeft.setPosition(.18);
+        turretRight.setPosition(.18);
         buildPaths();
     }
 
