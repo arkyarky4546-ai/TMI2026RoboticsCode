@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -26,6 +27,8 @@ public class SkeletonAuto extends OpMode {
 
    private final Pose shootPose = new Pose(89.64,-54.57,-2.318);
    private final Pose tape3 = new Pose(35.53,-22.82,1.56);
+
+   private final Pose tape3inter = new Pose(40.17,-57.7,1.516);
 
     //paths
     private Path score1;
@@ -86,14 +89,14 @@ public class SkeletonAuto extends OpMode {
         score1.setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading());
 
         load1 = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose, tape3))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), tape3.getHeading(), .4)
+                .addPath(new BezierCurve(shootPose,tape3inter,tape3))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), tape3.getHeading())
                 //  .setHeadingConstraint(.95)
                 //  .setTranslationalConstraint(.95)
                 .build();
         
         score2 = follower.pathBuilder()
-                .addPath(new BezierLine(tape3,shootPose))
+                .addPath(new BezierCurve(tape3,tape3inter,shootPose))
                 .setLinearHeadingInterpolation(tape3.getHeading(),shootPose.getHeading())
                 .build();
     }
