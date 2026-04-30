@@ -277,7 +277,7 @@ public class Chud15Blue extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                    if(actionTimer.getElapsedTimeSeconds() > 1.6) {
                         isShoot = false;
                         follower.followPath(hiLoad, .7, true);
 
@@ -326,13 +326,13 @@ public class Chud15Blue extends OpMode {
                 }
                 break;
             case 8:
-                if(shootTimer.milliseconds() > 700 && go) {
+                if(shootTimer.milliseconds() > 600 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.8) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.6) {
                     follower.followPath(hiLoad, .7, true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -406,7 +406,7 @@ public class Chud15Blue extends OpMode {
                     //go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.7) {
+                if(actionTimer.getElapsedTimeSeconds() > 1.6) {
                     follower.followPath(acSecondLoad);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
@@ -455,7 +455,7 @@ public class Chud15Blue extends OpMode {
                 }
                 break;
             case 15:
-                if(shootTimer.milliseconds() > 500 && go) {
+                if(shootTimer.milliseconds() > 400 && go) {
                     //push.setPosition(kickUp);
                     go = false;
                     isShoot = true;
