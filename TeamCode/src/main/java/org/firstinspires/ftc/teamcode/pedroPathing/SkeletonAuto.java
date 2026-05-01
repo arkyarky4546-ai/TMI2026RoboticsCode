@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -18,23 +20,44 @@ import org.firstinspires.ftc.teamcode.intakeShoot;
 
 @Autonomous(name = "SkeletonAuto", group = "Autonomous")
 public class SkeletonAuto extends OpMode {
+
     private Follower follower; //this guy just kinda executes the paths type stuff yk
     private Timer pathTimer, actionTimer, opmodeTimer; //Path timer can be used in the autonomousPathUpdate just to see if one of the paths failed or something
 
     //positions
     private int pathState; //just an int used later in autonomousPathUpdate for each of the cases (tells which path to do)
-    private final Pose startPose = new Pose(119.68,-19.9, -2.254); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
+    private final Pose startPose = new Pose(119.80,-22.17, 0.867); // Start Pose of our robot. (I think these are the right measurements, as 0 degrees corresponds to facing right the starting x is a bit weird as it depends on where on the line we start)
 
    private final Pose shootPose = new Pose(89.64,-54.57,-2.318);
    private final Pose tape3 = new Pose(35.53,-22.82,1.56);
 
    private final Pose tape3inter = new Pose(40.17,-57.7,1.516);
 
+   private final Pose tape2 = new Pose(56.68,-21.18,1.56);
+
+   private final Pose tape2inter = new Pose(58.46,-47.99,1.56);
+
+   private final Pose tape1 = new Pose(83.52,-21.76,1.56);
+
+   private final Pose tape1inter = new Pose(84.58,-49.24,1.56);
+
+   private final Pose end = new Pose(67.63,-32.34,0);
+
+
     //paths
     private Path score1;
     private PathChain load1;
 
     private PathChain score2;
+
+    private PathChain load2;
+
+    private PathChain score3;
+
+    private PathChain load3;
+
+    private PathChain score4;
+    private PathChain end1;
     private double IntegralSum = 0;
     private double lastError = 0;
     public static double Kp=0.0121;
@@ -99,6 +122,32 @@ public class SkeletonAuto extends OpMode {
                 .addPath(new BezierCurve(tape3,tape3inter,shootPose))
                 .setLinearHeadingInterpolation(tape3.getHeading(),shootPose.getHeading())
                 .build();
+
+        load2 = follower.pathBuilder()
+                .addPath(new BezierCurve(shootPose,tape2inter,tape2))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), tape2.getHeading())
+                //  .setHeadingConstraint(.95)
+                //  .setTranslationalConstraint(.95)
+                .build();
+        score3 = follower.pathBuilder()
+                .addPath(new BezierCurve(tape2,tape2inter,shootPose))
+                .setLinearHeadingInterpolation(tape2.getHeading(),shootPose.getHeading())
+                .build();
+        load3 = follower.pathBuilder()
+                .addPath(new BezierCurve(shootPose,tape1inter,tape1))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), tape1.getHeading())
+                //  .setHeadingConstraint(.95)
+                //  .setTranslationalConstraint(.95)
+                .build();
+        score4 = follower.pathBuilder()
+                .addPath(new BezierCurve(tape1,tape1inter,shootPose))
+                .setLinearHeadingInterpolation(tape1.getHeading(),shootPose.getHeading())
+                .build();
+        end1 = follower.pathBuilder()
+                .addPath(new BezierLine(shootPose,end))
+                .setLinearHeadingInterpolation(shootPose.getHeading(),end.getHeading())
+                .build();
+
     }
     public void autonomousPathUpdate() throws InterruptedException {//we can add a lot more paths
         switch (pathState) {
@@ -120,7 +169,7 @@ public class SkeletonAuto extends OpMode {
                    actionTimer.resetTimer();
                     isShoot=true;
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 5){
+                if(actionTimer.getElapsedTimeSeconds() > 3){
                     follower.followPath(load1);
                     actionTimer.resetTimer();
                     shoot = false;
@@ -135,7 +184,7 @@ public class SkeletonAuto extends OpMode {
                     actionTimer.resetTimer();
                     shoot = true;
                 }
-                if (actionTimer.getElapsedTimeSeconds() > 5) {
+                if (actionTimer.getElapsedTimeSeconds() > 1) {
                     intakeAndShoot.setPos(0,intakePos);
                     actionTimer.resetTimer();
                     follower.followPath(score2);
@@ -150,8 +199,9 @@ public class SkeletonAuto extends OpMode {
                     actionTimer.resetTimer();
                     isShoot=true;
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 6){
+                if(actionTimer.getElapsedTimeSeconds() > 3){
                     actionTimer.resetTimer();
+                    follower.followPath(load2);
                     shoot = false;
                     isShoot = false;
                     intakeAndShoot.setPos(0,intakePos);
@@ -160,7 +210,67 @@ public class SkeletonAuto extends OpMode {
                 break;
 
             case 4:
+                if(!follower.isBusy()&& shoot == false) {
+                    actionTimer.resetTimer();
+                    shoot = true;
+                }
+                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                    intakeAndShoot.setPos(0,intakePos);
+                    actionTimer.resetTimer();
+                    follower.followPath(score3);
+                    shoot = false;
+                    setPathState(5);
+                }
                 break;
+
+            case 5:
+                if(!follower.isBusy() && shoot == false){
+                    actionTimer.resetTimer();
+                    isShoot = true;
+                    shoot = true;
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 3){
+                    follower.followPath(load3);
+                    actionTimer.resetTimer();
+                    shoot = false;
+                    isShoot = false;
+                    intakeAndShoot.setPos(0,intakePos);
+                    setPathState(6);
+                }
+                break;
+
+            case 6:
+                if(!follower.isBusy()&& shoot == false) {
+                    actionTimer.resetTimer();
+                    shoot = true;
+                }
+                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                    intakeAndShoot.setPos(0,intakePos);
+                    actionTimer.resetTimer();
+                    follower.followPath(score4);
+                    shoot = false;
+                    setPathState(7);
+                }
+                break;
+
+            case 7:
+                if(!follower.isBusy() && shoot == false){
+                    actionTimer.resetTimer();
+                    isShoot = true;
+                    shoot = true;
+                }
+                if(actionTimer.getElapsedTimeSeconds() > 3){
+                    follower.followPath(end1);
+                    actionTimer.resetTimer();
+                    shoot = false;
+                    isShoot = false;
+                    intakeAndShoot.setPos(0,intakePos);
+                    setPathState(8);
+                }
+                break;
+            case 8:
+                break;
+
 
 
         }
@@ -206,6 +316,7 @@ public class SkeletonAuto extends OpMode {
         telemetry.addData("heading", follower.getPose().getHeading());
 
         telemetry.update();
+
     }
 
     @Override
