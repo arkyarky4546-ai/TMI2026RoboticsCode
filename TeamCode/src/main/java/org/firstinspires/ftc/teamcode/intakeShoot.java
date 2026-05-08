@@ -73,6 +73,8 @@ public class intakeShoot {
     private boolean setHoodVelocityTurret;
     final int BLUE = 1;
     final int RED = 2;
+    final int BLUEFAR = 3;
+    final int REDFAR = 4;
     private int mode;
     private boolean shootAc = true;
     private DistanceSensor disBL;
@@ -114,6 +116,7 @@ public class intakeShoot {
     public static double SHOOTOFFSET1 = 0;
     public static double HOODOFFSET = .00;
     private boolean sortWall = false;
+    private boolean superFar = false;
     private ElapsedTime oscillationTimer = new ElapsedTime();
 
     public intakeShoot(HardwareMap hardwareMap, String intake1, String intake2, String shoot1, String shoot2, String servoName, String servoName2, String wallName, String colorS1, String colorS2, String shooterHood, Follower follower) {
@@ -182,8 +185,16 @@ public class intakeShoot {
         double current = Math.abs(getVelocity());
 
         try{
-            if(follower.getPose().getX() < 30) {
+            if(follower.getPose().getX() < 0){
+                superFar = true;
+                shooterPower = PIDControl(1040, current);
+                if(!shootingBall){
+                    hoods.setPosition(0);
+                }
+            }
+            else if(follower.getPose().getX() < 30) {
                 far = true;
+                superFar = false;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos() + HOODOFFSET, 0.0, .57));
@@ -191,6 +202,7 @@ public class intakeShoot {
             }
             else{
                 far = false;
+                superFar = false;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET1, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
@@ -417,6 +429,12 @@ public class intakeShoot {
         if(mode == BLUE) {
             Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
             SHOOTOFFSET = 25;
+        }
+        if(mode == BLUEFAR){
+            Values.update(follower, ShooterConstants.GOAL_POSE_BLUE1, follower.getHeading());
+        }
+        if(mode == REDFAR){
+            Values.update(follower, ShooterConstants.GOAL_POSE_RED1, follower.getHeading());
         }
         else{
             Values.update(follower, ShooterConstants.GOAL_POSE_RED, follower.getHeading());
@@ -896,9 +914,15 @@ public class intakeShoot {
     public void setModeBlue(){
         mode = BLUE;
     }
+    public void setModeBlueFar(){
+        mode = BLUEFAR;
+    }
 
     public void setModeRed(){
         mode = RED;
+    }
+    public void setModeRedFar(){
+        mode = REDFAR;
     }
     public double getGreen(){
         return colorShoot.foundGreen();

@@ -217,7 +217,7 @@ public class Drivetrain {
             follower.setPose(new Pose(133.223, -110.30267, 0)); //far left corner of the field
         }
         else if(mode == BLUE){
-            follower.setPose(new Pose(123,-22, Math.toRadians(45)));
+            follower.setPose(new Pose(133,-36, Math.toRadians(0)));
         }
     }
 

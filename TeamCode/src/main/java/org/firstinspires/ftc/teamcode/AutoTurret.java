@@ -73,6 +73,10 @@ public class AutoTurret {
             servoRight.setPosition(Range.clip(targetPos, 0.0, 1.0));
             currentServoPosition = targetPos;
         }
+        if(!aim){
+            servoLeft.setPosition(CENTER_POSITION);
+            servoRight.setPosition(CENTER_POSITION);
+        }
     }
     public void updateAutoAutoBlue(Follower follower, Telemetry telemetry, double Angle, boolean aim) {
         if(aim) {

@@ -60,6 +60,7 @@ public class blueTeleopFlanker extends OpMode {
     private boolean patternFound = false;
     private Servo turretRight;
     boolean slow = false;
+    Servo turretLeft;
 
     @Override
     public void init() {
@@ -67,6 +68,7 @@ public class blueTeleopFlanker extends OpMode {
         drivetrain.setModeBlue();
         Lime = new LimeLight(hardwareMap);
         turretRight = hardwareMap.get(Servo.class, "turretRight");
+        turretLeft = hardwareMap.get(Servo.class, "turretLeft");
         // Initialize the new AutoTurret
         turret = new AutoTurret(hardwareMap, "turretLeft", "turretRight");
         turret.setModeBlue();
@@ -148,7 +150,10 @@ public class blueTeleopFlanker extends OpMode {
         if(aim){
             turret.updateAuto(drivetrain.getFollower(), telemetry, shooterAndIntake.turretAngle(), aim);
         }
-
+        if(!aim){
+            turretRight.setPosition(.73);
+            turretLeft.setPosition(.73);
+        }
         if(gamepad2.dpadDownWasPressed()){
             aim = !aim;
         }
