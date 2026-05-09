@@ -61,6 +61,7 @@ public class redTeleopFlanker extends OpMode {
     private boolean slow = false;
     private Servo turretRight;
     private Servo turretLeft;
+    boolean far = false;
 
     @Override
     public void init() {
@@ -155,7 +156,13 @@ public class redTeleopFlanker extends OpMode {
         }
 
         if(gamepad2.dpadDownWasPressed()){
-            aim = !aim;
+            far = !far;
+            if(far){
+                turret.setModeRedFar();
+            }
+            else{
+                turret.setModeRed();
+            }
         }
         if(!aim){
             turretRight.setPosition(.73);
@@ -225,7 +232,7 @@ public class redTeleopFlanker extends OpMode {
 
         //  shooterAndIntake.hoodPos(dynamicHoodPos);
 
-        shooterAndIntake.update(leftTrigger, false, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort, gamepad2.dpad_up, false);
+        shooterAndIntake.update(leftTrigger, false, gateLeftBumper, rightTrigger, rightBumper, drivetrain.getFollower(), telemetry, sort, gamepad2.dpad_up, false,far);
 
 
         telemetry.addData("RightTrigger (Shooting)", rightTrigger);

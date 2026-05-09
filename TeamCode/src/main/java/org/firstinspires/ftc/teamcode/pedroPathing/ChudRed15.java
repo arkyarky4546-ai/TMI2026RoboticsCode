@@ -264,9 +264,10 @@ public class ChudRed15 extends OpMode {
             case 5:
                 if(follower.getPathCompletion()<.96){
                     actionTimer.resetTimer();
+                    shootTimer.reset();
                 }
                 if(follower.getPathCompletion()>.97){
-                    if(shootTimer.milliseconds() > 700 && go) {
+                    if(shootTimer.milliseconds() > 500 && go) {
                         isShoot = true;
                         // push.setPosition(kickUp);
                         //shooting every 800 milliseconds
@@ -276,9 +277,9 @@ public class ChudRed15 extends OpMode {
                         shootTimer.reset();
 
                     }
-                    if(actionTimer.getElapsedTimeSeconds() > 1.7) {
+                    if(actionTimer.getElapsedTimeSeconds() > 1.5) {
                         isShoot = false;
-                        follower.followPath(hiLoad, .7, true);
+                        follower.followPath(hiLoad, .84, true);
 
                         //push servo is down now
                         // push.setPosition(kickZero);
@@ -325,14 +326,14 @@ public class ChudRed15 extends OpMode {
                 }
                 break;
             case 8:
-                if(shootTimer.milliseconds() > 800 && go) {
+                if(shootTimer.milliseconds() > 600 && go) {
                     //push.setPosition(kickUp);
                     isShoot = true;
                     go = false;
                     shootTimer.reset();
                 }
-                if(actionTimer.getElapsedTimeSeconds() > 1.81) {
-                    follower.followPath(hiLoad, .7, true);
+                if(actionTimer.getElapsedTimeSeconds() > 1.6) {
+                    follower.followPath(hiLoad, .84, true);
                     intakeAndShoot.setPos(0,intakePos);
                     isShoot = false;
                     go = true;

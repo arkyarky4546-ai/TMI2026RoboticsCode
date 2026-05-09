@@ -169,6 +169,262 @@ public class intakeShoot {
         return feedForward +fb;
     }
     //most of the times useful to have an update method to update servo positions or motor powers and other stuff
+    public void update(boolean intakeActive, boolean patternCycle, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort, boolean intakeout1, boolean gatePause, boolean fark) {
+        if(mode == BLUE) {
+            if(fark){
+                Values.update(follower, ShooterConstants.GOAL_POSE_BLUE1, follower.getHeading());
+            }
+            else {
+                Values.update(follower, ShooterConstants.GOAL_POSE_BLUE, follower.getHeading());
+            }
+            SHOOTOFFSET = 25;
+        }
+        else{
+            if(fark){
+                Values.update(follower, ShooterConstants.GOAL_POSE_RED1, follower.getHeading());
+            }
+            else{
+                Values.update(follower, ShooterConstants.GOAL_POSE_RED, follower.getHeading());
+            }
+            SHOOTOFFSET = 50;
+        }
+
+        double current = Math.abs(getVelocity());
+
+        try{
+            if(follower.getPose().getX() < 30 && !fark) {
+                far = true;
+                superFar = false;
+                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
+                if(!shootingBall) {
+                    hoods.setPosition(Range.clip(Values.getHoodPos() + HOODOFFSET, 0.0, .57));
+                }
+            }
+            else{
+                far = false;
+                superFar = false;
+                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET1, current);
+                if(!shootingBall) {
+                    hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
+                }
+
+            }
+
+        }
+        catch (NullPointerException e){
+            ;nIsTrue = true;
+        }
+        telemetry.addData("Theospeed", Values.getSpeed());
+        telemetry.addData("Acspeed", current);
+        telemetry.addData("nIsTrue", nIsTrue);
+        telemetry.addData("turretAngle", Values.getTurretPos());
+        telemetry.addData("speed", Values.getSpeed());
+        telemetry.addData("hoodAngle", Values.getHoodPos());
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        shootsetPower(shooterPower);
+        // shootsetVelocity(1000);
+        colorShoot.upColor(spindexer.getPos());
+        if (intakeActive) {
+            //spindexer.sSP(0,0);
+            intakesetPower(intakePower);
+            //wallPos(WALL_UP);
+            shootSequenceStep = 0;
+            ceiling.setPosition(ceilingUP);
+        }
+        else if (gateIntakeOut) {
+            intakesetPower(-intakePower);
+            wallPos(WALL_UP);
+            shootSequenceStep = 0;
+            ceiling.setPosition(ceilingUP);
+            if(gateIntakeOut){
+                rail.setPosition(railUP);
+                rail1.setPosition(railUP1);
+            }
+        }
+        else if(patternCycle){
+            intakesetPower(-intakePower);
+            rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
+        }
+        else if (intakeout1) {
+            intakesetPower(-intakePower);
+            //wallPos(WALL_UP);
+            //shootSequenceStep = 0;
+            //ceiling.setPosition(ceilingUP);
+            //if(gateIntakeOut){
+            //    rail.setPosition(railUP);
+            //  rail1.setPosition(railUP1);
+            //}
+        }
+
+        else if (debugActive) {
+            // wallPos(WALL_UP);
+            if(sensorReader.hasBallBL() && sensorReader.hasBallST()){
+                spindexer.sSP(0, 0);
+            }else if (sensorReader.hasBallBL()) {
+                spindexer.sSP(1, 0);
+            } else if (sensorReader.hasBallST()) {
+                spindexer.sSP(1, 0);
+            } else {
+                spindexer.sSP(0, 0);
+            }
+        }
+        else if(shootActive){
+
+            shootingBall = true;
+            if(shootAc){
+                shootAc = false;
+                shooting.reset();
+                currentPos = spindexer.getPos();
+
+            }
+            rail.setPosition(railDOWN);
+            rail1.setPosition(railDOWN);
+            intakesetPower(1);
+            wallPos(WALL_SHOOT);
+            ceiling.setPosition(ceilingDOWN);
+            if(!far) {
+                if (recoilTimer.milliseconds() > 40 && currentValue - .13 < hoods.getPosition() && shootReset) {
+                    hoods.setPosition(hoods.getPosition() - recoil);
+                    recoilTimer.reset();
+                }
+
+            }
+            else {
+                if (recoilTimer.milliseconds() > 30 && currentValue - .13 < hoods.getPosition() && shootReset) {
+                    hoods.setPosition(hoods.getPosition() - recoil);
+                    recoilTimer.reset();
+                }
+            }
+            if(!far){
+                if(shooting.milliseconds() > 200){
+                    if(!shootReset){
+                        shootReset = true;
+                        recoilTimer.reset();
+                        currentValue = Values.getHoodPos();
+                    }
+                    fastShootREAL(currentPos);
+                    rail.setPosition(railDOWN);
+                    rail1.setPosition(railDOWN);
+                    //shooting.reset();
+                }
+
+
+            }
+            else{
+                if(shooting.milliseconds() > 500){
+                    shooting.reset();
+                    if(!shootReset){
+                        shootReset = true;
+                        recoilTimer.reset();
+                        currentValue = Values.getHoodPos();
+                    }
+                    rail.setPosition(railDOWN);
+                    rail1.setPosition(railDOWN);
+                    simpleShoot();
+                }
+
+
+            }
+        }
+        /*else if (shootActive) {
+            shootsetVelocity(Values.getSpeed());
+            intakesetPower(1);
+
+            //  Wake up / Loop restart (Wall goes UP instantly)
+            if (shootSequenceStep == 0 || shootSequenceStep == 12) {
+                //spindexer.sSPT();
+                wallPos(WALL_UP);
+                shootTimer.reset();
+                shootSequenceStep = 1;
+            }
+
+            else if (shootSequenceStep == 1) {
+                if (shootTimer.milliseconds() > 400) {
+                    spindexer.sSPT();
+                    shootTimer.reset();
+                    //wallPos(WALL_SHOOT);
+                    shootSequenceStep = 2;
+                }
+            }
+
+            else if (shootSequenceStep == 2) {
+                if (spindexer.isAtTarget() || shootTimer.milliseconds() > 1500) {
+                    shootTimer.reset();
+                    shootSequenceStep = 3;
+                }
+            }
+
+            else if (shootSequenceStep == 3) {
+                if (shootTimer.milliseconds() > 150) {
+                    wallPos(WALL_SHOOT);
+                    shootTimer.reset();
+                    shootSequenceStep = 4;
+                }
+            }
+
+            //fire
+            else if (shootSequenceStep == 4) {
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.fastRot(spindexer.getPos());
+                    shootTimer.reset();
+                    shootSequenceStep = 5;
+                }
+            }
+
+            //detect jamming
+            else if (shootSequenceStep == 5) {
+                if (shootTimer.milliseconds() > 1500) {
+                    shootSequenceStep = 0; // Loop back to the top
+                }
+            }
+        }*/
+        else {
+            // IDLE STATE (Driver let go of all buttons)
+            intakeMotor1.setPower(0);
+            intakeMotor2.setPower(0);
+            shootAc = true;
+            shootReset = false;
+            shootingBall = false;
+
+
+            ceiling.setPosition(ceilingUP);
+            if (sort){
+                if(!sortWall) {
+                    sortWall = true;
+                    spindexer.sSP(0, 1);
+                }
+                wallPos(WALL_UP1);
+                rail.setPosition(railDOWN);
+                rail1.setPosition(railDOWN);
+            }
+            else if (!sort) {
+                spindexer.sSP(0, 0);
+                sortWall = false;
+                wallPos(WALL_UP);
+                rail.setPosition(railUP);
+                rail1.setPosition(railUP1);
+            }
+            // IDLE CLEANUP SEQUENCE
+            /*if (shootSequenceStep < 10) {
+                wallPos(WALL_SHOOT);
+                shootTimer.reset();
+                shootSequenceStep = 10;
+            }
+            else if (shootSequenceStep == 10) {
+                if (shootTimer.milliseconds() > 500) {
+                    spindexer.sSP(0, 0);
+                    shootSequenceStep = 12;
+                }
+            }
+            else if (shootSequenceStep == 12) {
+                // safe zone
+            }*/
+
+        }
+        spindexer.update();
+    }
 
     public void update(boolean intakeActive, boolean patternCycle, boolean gateIntakeOut, boolean shootActive, boolean debugActive, Follower follower, Telemetry telemetry, boolean sort, boolean intakeout1, boolean gatePause) {
         if(mode == BLUE) {
@@ -197,13 +453,13 @@ public class intakeShoot {
                 superFar = false;
                 shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(Range.clip(Values.getHoodPos() + HOODOFFSET, 0.0, .57));
+                    hoods.setPosition(Range.clip(Values.getHoodPos() + HOODOFFSET , 0.0, .57));
                 }
             }
             else{
                 far = false;
                 superFar = false;
-                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET1, current);
+                shooterPower = PIDControl(Values.getSpeed() + SHOOTOFFSET1 + .07, current);
                 if(!shootingBall) {
                     hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
                 }
@@ -453,9 +709,9 @@ public class intakeShoot {
             }
             else{
                 far = false;
-                shooterPower = PIDControl(Values.getSpeed() + 20 + SHOOTOFFSET, current);
+                shooterPower = PIDControl(Values.getSpeed()+ SHOOTOFFSET, current);
                 if(!shootingBall) {
-                    hoods.setPosition(Range.clip(Values.getHoodPos(), 0.0, .57));
+                    hoods.setPosition(Range.clip(Values.getHoodPos() + .3, 0.0, .57));
                 }
 
             }

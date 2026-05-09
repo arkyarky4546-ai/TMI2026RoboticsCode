@@ -78,6 +78,7 @@ public class AutoTurret {
             servoRight.setPosition(CENTER_POSITION);
         }
     }
+
     public void updateAutoAutoBlue(Follower follower, Telemetry telemetry, double Angle, boolean aim) {
         if(aim) {
             double servoAngleNeeded = Angle * gearRatio / 360; //356
@@ -110,6 +111,17 @@ public class AutoTurret {
     public void setModeBlue(){
         targetX = 138.0;
         targetY = -6.0;
+        //CENTER_POSITION = .89;
+    }
+    public void setModeRedFar(){
+        targetX = -40.0;
+        targetY = -86.0;
+        //CENTER_POSITION = .63;
+    }
+
+    public void setModeBlueFar(){
+        targetX = -40.0;
+        targetY = -72.0;
         //CENTER_POSITION = .89;
     }
     public void manualLeft(){
